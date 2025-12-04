@@ -1,0 +1,713 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E80000012D4A000000000001 /* ReelRoyaleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000001 /* ReelRoyaleApp.swift */; };
+		E80000012D4A000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000002 /* ContentView.swift */; };
+		E80000012D4A000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000003 /* Assets.xcassets */; };
+		E80000012D4A000000000101 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000101 /* User.swift */; };
+		E80000012D4A000000000102 /* Spot.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000102 /* Spot.swift */; };
+		E80000012D4A000000000103 /* Catch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000103 /* Catch.swift */; };
+		E80000012D4A000000000104 /* Territory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000104 /* Territory.swift */; };
+		E80000012D4A000000000105 /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000105 /* Like.swift */; };
+		E80000012D4A000000000106 /* WeatherConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000106 /* WeatherConditions.swift */; };
+		E80000012D4A000000000107 /* RegulationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000107 /* RegulationInfo.swift */; };
+		E80000012D4A000000000201 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000201 /* SupabaseService.swift */; };
+		E80000012D4A000000000202 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000202 /* AuthService.swift */; };
+		E80000012D4A000000000203 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000203 /* WeatherService.swift */; };
+		E80000012D4A000000000204 /* RegulationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000204 /* RegulationsService.swift */; };
+		E80000012D4A000000000205 /* FishIDService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000205 /* FishIDService.swift */; };
+		E80000012D4A000000000206 /* MeasurementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000206 /* MeasurementService.swift */; };
+		E80000012D4A000000000207 /* GameService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000207 /* GameService.swift */; };
+		E80000012D4A000000000208 /* ImageUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000208 /* ImageUploadService.swift */; };
+		E80000012D4A000000000301 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000301 /* UserRepository.swift */; };
+		E80000012D4A000000000302 /* SpotRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000302 /* SpotRepository.swift */; };
+		E80000012D4A000000000303 /* CatchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000303 /* CatchRepository.swift */; };
+		E80000012D4A000000000304 /* TerritoryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000304 /* TerritoryRepository.swift */; };
+		E80000012D4A000000000305 /* LikeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000305 /* LikeRepository.swift */; };
+		E80000012D4A000000000401 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000401 /* AuthViewModel.swift */; };
+		E80000012D4A000000000402 /* SpotsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000402 /* SpotsViewModel.swift */; };
+		E80000012D4A000000000403 /* SpotDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000403 /* SpotDetailViewModel.swift */; };
+		E80000012D4A000000000404 /* LogCatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000404 /* LogCatchViewModel.swift */; };
+		E80000012D4A000000000405 /* CommunityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000405 /* CommunityViewModel.swift */; };
+		E80000012D4A000000000406 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000406 /* ProfileViewModel.swift */; };
+		E80000012D4A000000000407 /* FishIDViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000407 /* FishIDViewModel.swift */; };
+		E80000012D4A000000000408 /* MeasurementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000408 /* MeasurementViewModel.swift */; };
+		E80000012D4A000000000501 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000501 /* MainTabView.swift */; };
+		E80000012D4A000000000502 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000502 /* AuthView.swift */; };
+		E80000012D4A000000000503 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000503 /* LoginView.swift */; };
+		E80000012D4A000000000504 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000504 /* SignUpView.swift */; };
+		E80000012D4A000000000505 /* ProfileSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000505 /* ProfileSetupView.swift */; };
+		E80000012D4A000000000506 /* SpotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000506 /* SpotsView.swift */; };
+		E80000012D4A000000000507 /* SpotMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000507 /* SpotMapView.swift */; };
+		E80000012D4A000000000508 /* SpotListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000508 /* SpotListView.swift */; };
+		E80000012D4A000000000509 /* SpotRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000509 /* SpotRowView.swift */; };
+		E80000012D4A000000000510 /* SpotDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000510 /* SpotDetailView.swift */; };
+		E80000012D4A000000000511 /* CommunityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000511 /* CommunityView.swift */; };
+		E80000012D4A000000000512 /* FeedItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000512 /* FeedItemView.swift */; };
+		E80000012D4A000000000513 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000513 /* ProfileView.swift */; };
+		E80000012D4A000000000514 /* CatchLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000514 /* CatchLogView.swift */; };
+		E80000012D4A000000000515 /* LogCatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000515 /* LogCatchView.swift */; };
+		E80000012D4A000000000516 /* CatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000516 /* CatchDetailView.swift */; };
+		E80000012D4A000000000517 /* MeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000517 /* MeasurementView.swift */; };
+		E80000012D4A000000000518 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000518 /* MoreView.swift */; };
+		E80000012D4A000000000519 /* FishIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000519 /* FishIDView.swift */; };
+		E80000012D4A000000000520 /* RegulationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000520 /* RegulationsView.swift */; };
+		E80000012D4A000000000521 /* CrownBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000521 /* CrownBadge.swift */; };
+		E80000012D4A000000000522 /* UserAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000522 /* UserAvatarView.swift */; };
+		E80000012D4A000000000523 /* CatchThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000523 /* CatchThumbnail.swift */; };
+		E80000012D4A000000000524 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000524 /* LoadingView.swift */; };
+		E80000012D4A000000000601 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000601 /* Extensions.swift */; };
+		E80000012D4A000000000602 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000602 /* Constants.swift */; };
+		E80000012D4A000000000603 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000603 /* AppState.swift */; };
+		E80000012D4A000000000604 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000604 /* LeaderboardView.swift */; };
+		E80000012D4A000000000605 /* TerritoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000605 /* TerritoryView.swift */; };
+		E80000012D4A000000000606 /* SpotPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000606 /* SpotPickerView.swift */; };
+		E80000012D4A000000000607 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000607 /* ImagePicker.swift */; };
+		E80000012D4A000000000608 /* ARMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000608 /* ARMeasurementView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E80000002D4A000000000000 /* ReelRoyale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReelRoyale.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E80000002D4A000000000001 /* ReelRoyaleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReelRoyaleApp.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E80000002D4A000000000101 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000102 /* Spot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spot.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000103 /* Catch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catch.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000104 /* Territory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Territory.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000105 /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000106 /* WeatherConditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherConditions.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000107 /* RegulationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegulationInfo.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000201 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000202 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000203 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000204 /* RegulationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegulationsService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000205 /* FishIDService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FishIDService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000206 /* MeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000207 /* GameService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000208 /* ImageUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000301 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000302 /* SpotRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotRepository.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000303 /* CatchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatchRepository.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000304 /* TerritoryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerritoryRepository.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000305 /* LikeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeRepository.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000401 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000402 /* SpotsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotsViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000403 /* SpotDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotDetailViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000404 /* LogCatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogCatchViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000405 /* CommunityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000406 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000407 /* FishIDViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FishIDViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000408 /* MeasurementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementViewModel.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000501 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000502 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000503 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000504 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000505 /* ProfileSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSetupView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000506 /* SpotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotsView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000507 /* SpotMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotMapView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000508 /* SpotListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotListView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000509 /* SpotRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotRowView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000510 /* SpotDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotDetailView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000511 /* CommunityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000512 /* FeedItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItemView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000513 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000514 /* CatchLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatchLogView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000515 /* LogCatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogCatchView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000516 /* CatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatchDetailView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000517 /* MeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000518 /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000519 /* FishIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FishIDView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000520 /* RegulationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegulationsView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000521 /* CrownBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrownBadge.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000522 /* UserAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAvatarView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000523 /* CatchThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatchThumbnail.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000524 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000601 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000602 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000603 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000604 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000605 /* TerritoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerritoryView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000606 /* SpotPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotPickerView.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000607 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000608 /* ARMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMeasurementView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E8000000FWBP00000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E80000002D4AROOT00000000 = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4AMAIN00000000 /* ReelRoyale */,
+				E80000002D4APROD00000000 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E80000002D4APROD00000000 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000000 /* ReelRoyale.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E80000002D4AMAIN00000000 /* ReelRoyale */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000001 /* ReelRoyaleApp.swift */,
+				E80000002D4A000000000002 /* ContentView.swift */,
+				E80000002D4A000000000003 /* Assets.xcassets */,
+				E80000002D4AMODL00000000 /* Models */,
+				E80000002D4ASRVC00000000 /* Services */,
+				E80000002D4AREPO00000000 /* Repositories */,
+				E80000002D4AVMDL00000000 /* ViewModels */,
+				E80000002D4AVIWS00000000 /* Views */,
+				E80000002D4AUTLS00000000 /* Utilities */,
+			);
+			path = ReelRoyale;
+			sourceTree = "<group>";
+		};
+		E80000002D4AMODL00000000 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000101 /* User.swift */,
+				E80000002D4A000000000102 /* Spot.swift */,
+				E80000002D4A000000000103 /* Catch.swift */,
+				E80000002D4A000000000104 /* Territory.swift */,
+				E80000002D4A000000000105 /* Like.swift */,
+				E80000002D4A000000000106 /* WeatherConditions.swift */,
+				E80000002D4A000000000107 /* RegulationInfo.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E80000002D4ASRVC00000000 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000201 /* SupabaseService.swift */,
+				E80000002D4A000000000202 /* AuthService.swift */,
+				E80000002D4A000000000203 /* WeatherService.swift */,
+				E80000002D4A000000000204 /* RegulationsService.swift */,
+				E80000002D4A000000000205 /* FishIDService.swift */,
+				E80000002D4A000000000206 /* MeasurementService.swift */,
+				E80000002D4A000000000207 /* GameService.swift */,
+				E80000002D4A000000000208 /* ImageUploadService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E80000002D4AREPO00000000 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000301 /* UserRepository.swift */,
+				E80000002D4A000000000302 /* SpotRepository.swift */,
+				E80000002D4A000000000303 /* CatchRepository.swift */,
+				E80000002D4A000000000304 /* TerritoryRepository.swift */,
+				E80000002D4A000000000305 /* LikeRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		E80000002D4AVMDL00000000 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000401 /* AuthViewModel.swift */,
+				E80000002D4A000000000402 /* SpotsViewModel.swift */,
+				E80000002D4A000000000403 /* SpotDetailViewModel.swift */,
+				E80000002D4A000000000404 /* LogCatchViewModel.swift */,
+				E80000002D4A000000000405 /* CommunityViewModel.swift */,
+				E80000002D4A000000000406 /* ProfileViewModel.swift */,
+				E80000002D4A000000000407 /* FishIDViewModel.swift */,
+				E80000002D4A000000000408 /* MeasurementViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E80000002D4AVIWS00000000 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000501 /* MainTabView.swift */,
+				E80000002D4AAUTH00000000 /* Auth */,
+				E80000002D4ASPTS00000000 /* Spots */,
+				E80000002D4ACOMM00000000 /* Community */,
+				E80000002D4APROF00000000 /* Profile */,
+				E80000002D4ACTCH00000000 /* Catch */,
+				E80000002D4AMORE00000000 /* More */,
+				E80000002D4ACMPS00000000 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E80000002D4AAUTH00000000 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000502 /* AuthView.swift */,
+				E80000002D4A000000000503 /* LoginView.swift */,
+				E80000002D4A000000000504 /* SignUpView.swift */,
+				E80000002D4A000000000505 /* ProfileSetupView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		E80000002D4ASPTS00000000 /* Spots */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000506 /* SpotsView.swift */,
+				E80000002D4A000000000507 /* SpotMapView.swift */,
+				E80000002D4A000000000508 /* SpotListView.swift */,
+				E80000002D4A000000000509 /* SpotRowView.swift */,
+				E80000002D4A000000000510 /* SpotDetailView.swift */,
+				E80000002D4A000000000604 /* LeaderboardView.swift */,
+				E80000002D4A000000000605 /* TerritoryView.swift */,
+			);
+			path = Spots;
+			sourceTree = "<group>";
+		};
+		E80000002D4ACOMM00000000 /* Community */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000511 /* CommunityView.swift */,
+				E80000002D4A000000000512 /* FeedItemView.swift */,
+			);
+			path = Community;
+			sourceTree = "<group>";
+		};
+		E80000002D4APROF00000000 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000513 /* ProfileView.swift */,
+				E80000002D4A000000000514 /* CatchLogView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		E80000002D4ACTCH00000000 /* Catch */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000515 /* LogCatchView.swift */,
+				E80000002D4A000000000516 /* CatchDetailView.swift */,
+				E80000002D4A000000000517 /* MeasurementView.swift */,
+				E80000002D4A000000000606 /* SpotPickerView.swift */,
+				E80000002D4A000000000607 /* ImagePicker.swift */,
+				E80000002D4A000000000608 /* ARMeasurementView.swift */,
+			);
+			path = Catch;
+			sourceTree = "<group>";
+		};
+		E80000002D4AMORE00000000 /* More */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000518 /* MoreView.swift */,
+				E80000002D4A000000000519 /* FishIDView.swift */,
+				E80000002D4A000000000520 /* RegulationsView.swift */,
+			);
+			path = More;
+			sourceTree = "<group>";
+		};
+		E80000002D4ACMPS00000000 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000521 /* CrownBadge.swift */,
+				E80000002D4A000000000522 /* UserAvatarView.swift */,
+				E80000002D4A000000000523 /* CatchThumbnail.swift */,
+				E80000002D4A000000000524 /* LoadingView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E80000002D4AUTLS00000000 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000601 /* Extensions.swift */,
+				E80000002D4A000000000602 /* Constants.swift */,
+				E80000002D4A000000000603 /* AppState.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E80000002D4ATARG00000001 /* ReelRoyale */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E80000002D4ABCFG00000001 /* Build configuration list for PBXNativeTarget "ReelRoyale" */;
+			buildPhases = (
+				E80000002D4ASRCS00000001 /* Sources */,
+				E8000000FWBP00000001 /* Frameworks */,
+				E80000002D4ARESC00000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReelRoyale;
+			packageProductDependencies = (
+				E80000002D4APKGD00000001 /* Supabase */,
+			);
+			productName = ReelRoyale;
+			productReference = E80000002D4A000000000000 /* ReelRoyale.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E80000002D4APROJ00000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					E80000002D4ATARG00000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = E80000002D4ABCFG00000002 /* Build configuration list for PBXProject "ReelRoyale" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E80000002D4AROOT00000000;
+			packageReferences = (
+				E80000002D4APKGR00000001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			productRefGroup = E80000002D4APROD00000000 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E80000002D4ATARG00000001 /* ReelRoyale */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E80000002D4ARESC00000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E80000012D4A000000000003 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E80000002D4ASRCS00000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E80000012D4A000000000001 /* ReelRoyaleApp.swift in Sources */,
+				E80000012D4A000000000002 /* ContentView.swift in Sources */,
+				E80000012D4A000000000101 /* User.swift in Sources */,
+				E80000012D4A000000000102 /* Spot.swift in Sources */,
+				E80000012D4A000000000103 /* Catch.swift in Sources */,
+				E80000012D4A000000000104 /* Territory.swift in Sources */,
+				E80000012D4A000000000105 /* Like.swift in Sources */,
+				E80000012D4A000000000106 /* WeatherConditions.swift in Sources */,
+				E80000012D4A000000000107 /* RegulationInfo.swift in Sources */,
+				E80000012D4A000000000201 /* SupabaseService.swift in Sources */,
+				E80000012D4A000000000202 /* AuthService.swift in Sources */,
+				E80000012D4A000000000203 /* WeatherService.swift in Sources */,
+				E80000012D4A000000000204 /* RegulationsService.swift in Sources */,
+				E80000012D4A000000000205 /* FishIDService.swift in Sources */,
+				E80000012D4A000000000206 /* MeasurementService.swift in Sources */,
+				E80000012D4A000000000207 /* GameService.swift in Sources */,
+				E80000012D4A000000000208 /* ImageUploadService.swift in Sources */,
+				E80000012D4A000000000301 /* UserRepository.swift in Sources */,
+				E80000012D4A000000000302 /* SpotRepository.swift in Sources */,
+				E80000012D4A000000000303 /* CatchRepository.swift in Sources */,
+				E80000012D4A000000000304 /* TerritoryRepository.swift in Sources */,
+				E80000012D4A000000000305 /* LikeRepository.swift in Sources */,
+				E80000012D4A000000000401 /* AuthViewModel.swift in Sources */,
+				E80000012D4A000000000402 /* SpotsViewModel.swift in Sources */,
+				E80000012D4A000000000403 /* SpotDetailViewModel.swift in Sources */,
+				E80000012D4A000000000404 /* LogCatchViewModel.swift in Sources */,
+				E80000012D4A000000000405 /* CommunityViewModel.swift in Sources */,
+				E80000012D4A000000000406 /* ProfileViewModel.swift in Sources */,
+				E80000012D4A000000000407 /* FishIDViewModel.swift in Sources */,
+				E80000012D4A000000000408 /* MeasurementViewModel.swift in Sources */,
+				E80000012D4A000000000501 /* MainTabView.swift in Sources */,
+				E80000012D4A000000000502 /* AuthView.swift in Sources */,
+				E80000012D4A000000000503 /* LoginView.swift in Sources */,
+				E80000012D4A000000000504 /* SignUpView.swift in Sources */,
+				E80000012D4A000000000505 /* ProfileSetupView.swift in Sources */,
+				E80000012D4A000000000506 /* SpotsView.swift in Sources */,
+				E80000012D4A000000000507 /* SpotMapView.swift in Sources */,
+				E80000012D4A000000000508 /* SpotListView.swift in Sources */,
+				E80000012D4A000000000509 /* SpotRowView.swift in Sources */,
+				E80000012D4A000000000510 /* SpotDetailView.swift in Sources */,
+				E80000012D4A000000000511 /* CommunityView.swift in Sources */,
+				E80000012D4A000000000512 /* FeedItemView.swift in Sources */,
+				E80000012D4A000000000513 /* ProfileView.swift in Sources */,
+				E80000012D4A000000000514 /* CatchLogView.swift in Sources */,
+				E80000012D4A000000000515 /* LogCatchView.swift in Sources */,
+				E80000012D4A000000000516 /* CatchDetailView.swift in Sources */,
+				E80000012D4A000000000517 /* MeasurementView.swift in Sources */,
+				E80000012D4A000000000518 /* MoreView.swift in Sources */,
+				E80000012D4A000000000519 /* FishIDView.swift in Sources */,
+				E80000012D4A000000000520 /* RegulationsView.swift in Sources */,
+				E80000012D4A000000000521 /* CrownBadge.swift in Sources */,
+				E80000012D4A000000000522 /* UserAvatarView.swift in Sources */,
+				E80000012D4A000000000523 /* CatchThumbnail.swift in Sources */,
+				E80000012D4A000000000524 /* LoadingView.swift in Sources */,
+				E80000012D4A000000000601 /* Extensions.swift in Sources */,
+				E80000012D4A000000000602 /* Constants.swift in Sources */,
+				E80000012D4A000000000603 /* AppState.swift in Sources */,
+				E80000012D4A000000000604 /* LeaderboardView.swift in Sources */,
+				E80000012D4A000000000605 /* TerritoryView.swift in Sources */,
+				E80000012D4A000000000606 /* SpotPickerView.swift in Sources */,
+				E80000012D4A000000000607 /* ImagePicker.swift in Sources */,
+				E80000012D4A000000000608 /* ARMeasurementView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E80000002D4ABCFG00000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E80000002D4ABCFG00000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E80000002D4ABCFG00000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReelRoyale/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ReelRoyale needs your location to show nearby fishing spots and log catch locations.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "ReelRoyale needs photo library access to select photos of your catches.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reelroyale.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E80000002D4ABCFG00000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReelRoyale/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ReelRoyale needs your location to show nearby fishing spots and log catch locations.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "ReelRoyale needs photo library access to select photos of your catches.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reelroyale.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E80000002D4ABCFG00000001 /* Build configuration list for PBXNativeTarget "ReelRoyale" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E80000002D4ABCFG00000005 /* Debug */,
+				E80000002D4ABCFG00000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E80000002D4ABCFG00000002 /* Build configuration list for PBXProject "ReelRoyale" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E80000002D4ABCFG00000003 /* Debug */,
+				E80000002D4ABCFG00000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E80000002D4APKGR00000001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E80000002D4APKGD00000001 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E80000002D4APKGR00000001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E80000002D4APROJ00000001 /* Project object */;
+}
+
