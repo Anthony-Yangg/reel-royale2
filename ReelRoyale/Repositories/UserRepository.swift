@@ -37,7 +37,7 @@ final class SupabaseUserRepository: UserRepositoryProtocol {
     }
     
     func getUser(byUsername username: String) async throws -> User? {
-        let results: [User] = try await supabase.database
+        let results: [User] = try await supabase.client
             .from(AppConstants.Supabase.Tables.profiles)
             .select()
             .eq("username", value: username)
@@ -70,7 +70,7 @@ final class SupabaseUserRepository: UserRepositoryProtocol {
             updated_at: Date()
         )
         
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.profiles)
             .update(update)
             .eq("id", value: user.id)
@@ -84,7 +84,7 @@ final class SupabaseUserRepository: UserRepositoryProtocol {
     func getUsers(byIds ids: [String]) async throws -> [User] {
         guard !ids.isEmpty else { return [] }
         
-        return try await supabase.database
+        return try await supabase.client
             .from(AppConstants.Supabase.Tables.profiles)
             .select()
             .in("id", values: ids)
@@ -93,7 +93,7 @@ final class SupabaseUserRepository: UserRepositoryProtocol {
     }
     
     func searchUsers(query: String, limit: Int = 20) async throws -> [User] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.profiles)
             .select()
             .ilike("username", pattern: "%\(query)%")

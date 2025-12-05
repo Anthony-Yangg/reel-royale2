@@ -48,7 +48,7 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
     }
     
     func getSpots(forTerritory territoryId: String) async throws -> [Spot] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
             .select()
             .eq("territory_id", value: territoryId)
@@ -69,7 +69,7 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
         let minLon = coordinate.longitude - lonDelta
         let maxLon = coordinate.longitude + lonDelta
         
-        let spots: [Spot] = try await supabase.database
+        let spots: [Spot] = try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
             .select()
             .gte("latitude", value: minLat)
@@ -93,7 +93,7 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
     }
     
     func getSpots(ofType waterType: WaterType) async throws -> [Spot] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
             .select()
             .eq("water_type", value: waterType.rawValue)
@@ -138,7 +138,7 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
             updated_at: Date()
         )
         
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
             .update(update)
             .eq("id", value: spot.id)
@@ -146,7 +146,7 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
     }
     
     func getSpotsRuledBy(userId: String) async throws -> [Spot] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
             .select()
             .eq("current_king_user_id", value: userId)
@@ -155,7 +155,7 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
     }
     
     func searchSpots(query: String, limit: Int = 20) async throws -> [Spot] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
             .select()
             .ilike("name", pattern: "%\(query)%")

@@ -28,16 +28,12 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
     private func loadModel() {
         // TODO: Add actual Core ML model file (FishClassifier.mlmodelc)
         // For now, this will fail gracefully and use fallback
-        do {
-            // Attempt to load bundled model
-            // let config = MLModelConfiguration()
-            // let model = try FishClassifier(configuration: config).model
-            // mlModel = try VNCoreMLModel(for: model)
-            mlModel = nil
-        } catch {
-            print("Failed to load Core ML model: \(error)")
-            mlModel = nil
-        }
+        
+        // Attempt to load bundled model
+        // let config = MLModelConfiguration()
+        // let model = try FishClassifier(configuration: config).model
+        // mlModel = try VNCoreMLModel(for: model)
+        mlModel = nil
     }
     
     func identifyFish(from image: UIImage) async throws -> FishIDResult {

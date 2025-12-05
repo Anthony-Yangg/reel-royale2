@@ -98,7 +98,11 @@ final class ARMeasurementService: NSObject, MeasurementServiceProtocol {
     
     /// Perform a hit test at a screen point
     func hitTest(at point: CGPoint, in view: ARSCNView) -> simd_float3? {
-        let results = view.hitTest(point, types: [.featurePoint, .estimatedHorizontalPlane])
+        guard let query = view.raycastQuery(from: point, allowing: .estimatedPlane, alignment: .any) else {
+            return nil
+        }
+        
+        let results = view.session.raycast(query)
         
         guard let result = results.first else { return nil }
         

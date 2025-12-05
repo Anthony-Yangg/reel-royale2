@@ -82,7 +82,7 @@ final class SupabaseTerritoryRepository: TerritoryRepositoryProtocol {
             updated_at: Date()
         )
         
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.territories)
             .update(update)
             .eq("id", value: territory.id)
@@ -100,9 +100,9 @@ final class SupabaseTerritoryRepository: TerritoryRepositoryProtocol {
         }
         
         // Also update the spot's territory reference
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
-            .update(["territory_id": territoryId, "updated_at": Date()])
+            .update(["territory_id": territoryId, "updated_at": Date().ISO8601Format()])
             .eq("id", value: spotId)
             .execute()
     }
@@ -116,15 +116,15 @@ final class SupabaseTerritoryRepository: TerritoryRepositoryProtocol {
         try await updateTerritory(territory)
         
         // Also clear the spot's territory reference
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.spots)
-            .update(["territory_id": NSNull(), "updated_at": Date()])
+            .update(["territory_id": nil, "updated_at": Date().ISO8601Format()])
             .eq("id", value: spotId)
             .execute()
     }
     
     func searchTerritories(query: String, limit: Int = 20) async throws -> [Territory] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.territories)
             .select()
             .ilike("name", pattern: "%\(query)%")

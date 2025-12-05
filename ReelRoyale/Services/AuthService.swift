@@ -45,23 +45,37 @@ final class SupabaseAuthService: AuthServiceProtocol {
             password: password
         )
         
-        guard let userId = authResponse.user?.id.uuidString else {
-            throw AppError.authError("Failed to create user")
+        let user = authResponse.user
+        
+        // The user profile is created automatically by the handle_new_user trigger in Supabase.
+        // We just need to fetch the newly created profile. Add retry + manual fallback in case of trigger delay.
+        var userProfile: User?
+        for _ in 0..<3 {
+            userProfile = try await userRepository.getUser(byId: user.id.uuidString)
+            if userProfile != nil {
+                break
+            }
+            try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
         }
         
-        // Create profile in database
-        let user = User(
-            id: userId,
-            username: "", // Will be set during profile setup
-            createdAt: Date()
-        )
+        if userProfile == nil {
+            let fallback = User(
+                id: user.id.uuidString,
+                username: "",
+                createdAt: Date()
+            )
+            try await userRepository.createUser(fallback)
+            userProfile = try await userRepository.getUser(byId: user.id.uuidString)
+        }
         
-        try await userRepository.createUser(user)
+        guard let finalUserProfile = userProfile else {
+            throw AppError.notFound("Newly created user profile could not be found.")
+        }
         
         // Notify app of login
         NotificationCenter.default.post(name: .userDidLogin, object: nil)
         
-        return user
+        return finalUserProfile
     }
     
     func signIn(email: String, password: String) async throws -> User {
@@ -70,14 +84,33 @@ final class SupabaseAuthService: AuthServiceProtocol {
             password: password
         )
         
-        guard let user = try await userRepository.getUser(byId: session.user.id.uuidString) else {
+        // session.user is non-optional, so we can access it directly.
+        // Fetch the profile with a short retry; if still missing, create a minimal profile.
+        var userProfile: User?
+        for _ in 0..<3 {
+            userProfile = try await userRepository.getUser(byId: session.user.id.uuidString)
+            if userProfile != nil { break }
+            try await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+        }
+        
+        if userProfile == nil {
+            let fallback = User(
+                id: session.user.id.uuidString,
+                username: "",
+                createdAt: Date()
+            )
+            try await userRepository.createUser(fallback)
+            userProfile = try await userRepository.getUser(byId: session.user.id.uuidString)
+        }
+        
+        guard let finalUserProfile = userProfile else {
             throw AppError.notFound("User profile")
         }
         
         // Notify app of login
         NotificationCenter.default.post(name: .userDidLogin, object: nil)
         
-        return user
+        return finalUserProfile
     }
     
     func signOut() async throws {

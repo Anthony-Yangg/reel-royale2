@@ -73,7 +73,7 @@ final class SupabaseCatchRepository: CatchRepositoryProtocol {
             updated_at: Date()
         )
         
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.catches)
             .update(update)
             .eq("id", value: fishCatch.id)
@@ -85,7 +85,7 @@ final class SupabaseCatchRepository: CatchRepositoryProtocol {
     }
     
     func getCatches(forSpot spotId: String) async throws -> [FishCatch] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.catches)
             .select()
             .eq("spot_id", value: spotId)
@@ -95,7 +95,7 @@ final class SupabaseCatchRepository: CatchRepositoryProtocol {
     }
     
     func getCatches(forUser userId: String) async throws -> [FishCatch] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.catches)
             .select()
             .eq("user_id", value: userId)
@@ -105,7 +105,7 @@ final class SupabaseCatchRepository: CatchRepositoryProtocol {
     }
     
     func getRecentPublicCatches(limit: Int = 20, offset: Int = 0) async throws -> [FishCatch] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.catches)
             .select()
             .or("visibility.eq.public,visibility.eq.friends_only")
@@ -116,7 +116,7 @@ final class SupabaseCatchRepository: CatchRepositoryProtocol {
     }
     
     func getBestCatch(forSpot spotId: String) async throws -> FishCatch? {
-        let catches: [FishCatch] = try await supabase.database
+        let catches: [FishCatch] = try await supabase.client
             .from(AppConstants.Supabase.Tables.catches)
             .select()
             .eq("spot_id", value: spotId)
@@ -130,7 +130,7 @@ final class SupabaseCatchRepository: CatchRepositoryProtocol {
     }
     
     func getPublicCatches(forSpot spotId: String, limit: Int = 20) async throws -> [FishCatch] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.catches)
             .select()
             .eq("spot_id", value: spotId)

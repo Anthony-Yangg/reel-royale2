@@ -173,9 +173,21 @@ final class LogCatchViewModel: ObservableObject {
             return
         }
         
-        guard let spot = selectedSpot ?? (try? await spotRepository.getSpot(byId: selectedSpotId)) else {
-            showError(message: "Selected spot not found")
-            return
+        // Ensure spot is loaded
+        let spotToProcess: Spot
+        if let selectedSpot = selectedSpot {
+            spotToProcess = selectedSpot
+        } else {
+            do {
+                guard let fetchedSpot = try await spotRepository.getSpot(byId: selectedSpotId) else {
+                    showError(message: "Selected spot could not be loaded.")
+                    return
+                }
+                spotToProcess = fetchedSpot
+            } catch {
+                showError(message: "Error fetching spot details: \(error.localizedDescription)")
+                return
+            }
         }
         
         isSubmitting = true
@@ -191,7 +203,7 @@ final class LogCatchViewModel: ObservableObject {
             
             // Get weather snapshot
             var weatherSnapshot: String?
-            if let weather = try? await weatherService.getWeather(for: spot) {
+            if let weather = try? await weatherService.getWeather(for: spotToProcess) {
                 let encoder = JSONEncoder()
                 if let data = try? encoder.encode(weather) {
                     weatherSnapshot = String(data: data, encoding: .utf8)
@@ -218,7 +230,7 @@ final class LogCatchViewModel: ObservableObject {
             let savedCatch = try await catchRepository.createCatch(fishCatch)
             
             // Process game logic (king updates)
-            let result = try await gameService.processCatch(savedCatch, at: spot)
+            let result = try await gameService.processCatch(savedCatch, at: spotToProcess)
             catchResult = result
             
             // Notify

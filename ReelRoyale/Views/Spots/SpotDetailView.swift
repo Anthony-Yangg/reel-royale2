@@ -59,11 +59,12 @@ struct SpotDetailView: View {
     private func spotHeader(_ spot: Spot) -> some View {
         VStack(spacing: 0) {
             // Mini map
-            Map(coordinateRegion: .constant(MKCoordinateRegion(
+            Map(initialPosition: .region(MKCoordinateRegion(
                 center: spot.coordinate,
                 span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-            )), annotationItems: [spot]) { spot in
-                MapMarker(coordinate: spot.coordinate, tint: .oceanBlue)
+            ))) {
+                Marker(spot.name, coordinate: spot.coordinate)
+                    .tint(Color.oceanBlue)
             }
             .frame(height: 200)
             .allowsHitTesting(false)
@@ -217,7 +218,7 @@ struct SpotDetailView: View {
         VStack(spacing: 4) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundColor(.oceanBlue)
+                .foregroundColor(Color.oceanBlue)
             Text(title)
                 .font(.caption)
                 .fontWeight(.semibold)
@@ -291,7 +292,7 @@ struct SpotDetailView: View {
                 NavigationLink(value: NavigationDestination.leaderboard) {
                     Text("See All")
                         .font(.caption)
-                        .foregroundColor(.oceanBlue)
+                        .foregroundColor(Color.oceanBlue)
                 }
             }
             
@@ -350,7 +351,7 @@ struct SpotDetailView: View {
                     Text("View Regulations")
                 }
                 .fontWeight(.medium)
-                .foregroundColor(.oceanBlue)
+                .foregroundColor(Color.oceanBlue)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
                 .background(Color.oceanBlue.opacity(0.1))
@@ -397,7 +398,7 @@ struct LeaderboardRowView: View {
             Text(entry.fishCatch.sizeDisplay)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundColor(.oceanBlue)
+                .foregroundColor(Color.oceanBlue)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

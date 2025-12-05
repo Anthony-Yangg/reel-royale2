@@ -63,11 +63,10 @@ struct ProfileSetupView: View {
                             }
                         }
                         .onChange(of: selectedPhotoItem) { _, newItem in
-                            Task {
-                                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                                   let image = UIImage(data: data) {
-                                    viewModel.avatarImage = image
-                                }
+                            Task { @MainActor in
+                                guard let data = try? await newItem?.loadTransferable(type: Data.self),
+                                      let image = UIImage(data: data) else { return }
+                                viewModel.avatarImage = image
                             }
                         }
                         

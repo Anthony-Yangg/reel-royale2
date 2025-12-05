@@ -1,9 +1,7 @@
 import Foundation
 import Supabase
 
-/// Core Supabase client wrapper
 final class SupabaseService {
-    /// The Supabase client instance
     let client: SupabaseClient
     
     init() {
@@ -15,11 +13,6 @@ final class SupabaseService {
             supabaseURL: url,
             supabaseKey: AppConstants.Supabase.anonKey
         )
-    }
-    
-    /// Access to the database
-    var database: PostgrestClient {
-        client.database
     }
     
     /// Access to auth
@@ -52,7 +45,7 @@ final class SupabaseService {
 extension SupabaseService {
     /// Fetch all rows from a table
     func fetchAll<T: Decodable>(from table: String) async throws -> [T] {
-        try await database
+        try await client
             .from(table)
             .select()
             .execute()
@@ -61,7 +54,7 @@ extension SupabaseService {
     
     /// Fetch single row by ID
     func fetchById<T: Decodable>(from table: String, id: String) async throws -> T? {
-        let results: [T] = try await database
+        let results: [T] = try await client
             .from(table)
             .select()
             .eq("id", value: id)
@@ -72,7 +65,7 @@ extension SupabaseService {
     
     /// Insert a row
     func insert<T: Encodable>(_ item: T, into table: String) async throws {
-        try await database
+        try await client
             .from(table)
             .insert(item)
             .execute()
@@ -80,7 +73,7 @@ extension SupabaseService {
     
     /// Insert and return the inserted row
     func insertAndReturn<T: Codable>(_ item: T, into table: String) async throws -> T {
-        try await database
+        try await client
             .from(table)
             .insert(item)
             .select()
@@ -91,7 +84,7 @@ extension SupabaseService {
     
     /// Update a row by ID
     func update<T: Encodable>(_ item: T, in table: String, id: String) async throws {
-        try await database
+        try await client
             .from(table)
             .update(item)
             .eq("id", value: id)
@@ -100,7 +93,7 @@ extension SupabaseService {
     
     /// Delete a row by ID
     func delete(from table: String, id: String) async throws {
-        try await database
+        try await client
             .from(table)
             .delete()
             .eq("id", value: id)
@@ -118,13 +111,9 @@ extension SupabaseService {
         data: Data,
         contentType: String = "image/jpeg"
     ) async throws -> String {
-        try await storage
+        _ = try await storage
             .from(bucket)
-            .upload(
-                path: path,
-                file: data,
-                options: FileOptions(contentType: contentType)
-            )
+            .upload(path, data: data, options: FileOptions(contentType: contentType))
         
         // Return the public URL
         let publicURL = try storage.from(bucket).getPublicURL(path: path)

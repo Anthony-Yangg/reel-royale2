@@ -81,11 +81,7 @@ extension Double {
 
 // MARK: - CLLocationCoordinate2D Extensions
 
-extension CLLocationCoordinate2D: Equatable {
-    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
-        lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
-    }
-    
+extension CLLocationCoordinate2D {
     /// Distance to another coordinate in meters
     func distance(to other: CLLocationCoordinate2D) -> Double {
         let thisLocation = CLLocation(latitude: latitude, longitude: longitude)

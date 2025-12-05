@@ -42,7 +42,7 @@ final class SupabaseLikeRepository: LikeRepositoryProtocol {
     }
     
     func removeLike(catchId: String, userId: String) async throws {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.likes)
             .delete()
             .eq("catch_id", value: catchId)
@@ -51,7 +51,7 @@ final class SupabaseLikeRepository: LikeRepositoryProtocol {
     }
     
     func hasUserLiked(catchId: String, userId: String) async throws -> Bool {
-        let likes: [Like] = try await supabase.database
+        let likes: [Like] = try await supabase.client
             .from(AppConstants.Supabase.Tables.likes)
             .select()
             .eq("catch_id", value: catchId)
@@ -64,7 +64,7 @@ final class SupabaseLikeRepository: LikeRepositoryProtocol {
     }
     
     func getLikeCount(for catchId: String) async throws -> Int {
-        let likes: [Like] = try await supabase.database
+        let likes: [Like] = try await supabase.client
             .from(AppConstants.Supabase.Tables.likes)
             .select()
             .eq("catch_id", value: catchId)
@@ -78,7 +78,7 @@ final class SupabaseLikeRepository: LikeRepositoryProtocol {
         guard !catchIds.isEmpty else { return [:] }
         
         // Get all likes for the given catches
-        let likes: [Like] = try await supabase.database
+        let likes: [Like] = try await supabase.client
             .from(AppConstants.Supabase.Tables.likes)
             .select()
             .in("catch_id", values: catchIds)
@@ -103,7 +103,7 @@ final class SupabaseLikeRepository: LikeRepositoryProtocol {
     }
     
     func getLikes(for catchId: String) async throws -> [Like] {
-        try await supabase.database
+        try await supabase.client
             .from(AppConstants.Supabase.Tables.likes)
             .select()
             .eq("catch_id", value: catchId)

@@ -24,7 +24,7 @@ final class SupabaseRegulationsService: RegulationsServiceProtocol {
     }
     
     func getRegulations(for spotId: String) async throws -> RegulationInfo? {
-        let results: [RegulationInfo] = try await supabase.database
+        let results: [RegulationInfo] = try await supabase.client
             .from(AppConstants.Supabase.Tables.regulations)
             .select()
             .eq("spot_id", value: spotId)
@@ -36,7 +36,7 @@ final class SupabaseRegulationsService: RegulationsServiceProtocol {
     }
     
     func getRegulations(forTerritory territoryId: String) async throws -> RegulationInfo? {
-        let results: [RegulationInfo] = try await supabase.database
+        let results: [RegulationInfo] = try await supabase.client
             .from(AppConstants.Supabase.Tables.regulations)
             .select()
             .eq("territory_id", value: territoryId)
@@ -48,7 +48,7 @@ final class SupabaseRegulationsService: RegulationsServiceProtocol {
     }
     
     func getRegulations(forRegion regionName: String) async throws -> RegulationInfo? {
-        let results: [RegulationInfo] = try await supabase.database
+        let results: [RegulationInfo] = try await supabase.client
             .from(AppConstants.Supabase.Tables.regulations)
             .select()
             .ilike("region_name", pattern: "%\(regionName)%")

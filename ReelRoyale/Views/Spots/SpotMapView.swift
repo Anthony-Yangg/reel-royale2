@@ -7,19 +7,22 @@ struct SpotMapView: View {
     @Binding var region: MKCoordinateRegion
     
     var body: some View {
-        Map(coordinateRegion: $region, annotationItems: spots) { spotDetails in
-            MapAnnotation(coordinate: spotDetails.spot.coordinate) {
-                SpotMapPin(
-                    spotDetails: spotDetails,
-                    isSelected: selectedSpot?.id == spotDetails.spot.id
-                )
-                .onTapGesture {
-                    withAnimation(.spring()) {
-                        selectedSpot = spotDetails.spot
+        Map {
+            ForEach(spots) { spotDetails in
+                Annotation(spotDetails.spot.name, coordinate: spotDetails.spot.coordinate) {
+                    SpotMapPin(
+                        spotDetails: spotDetails,
+                        isSelected: selectedSpot?.id == spotDetails.spot.id
+                    )
+                    .onTapGesture {
+                        withAnimation(.spring()) {
+                            selectedSpot = spotDetails.spot
+                        }
                     }
                 }
             }
         }
+        .mapStyle(.standard(elevation: .realistic))
         .ignoresSafeArea(edges: .bottom)
     }
 }

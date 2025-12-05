@@ -126,22 +126,29 @@ final class MeasurementViewModel: ObservableObject {
 // MARK: - AR View Coordinator
 
 /// Coordinator for ARSCNView interactions
-class ARMeasurementCoordinator: NSObject {
+class ARMeasurementCoordinator: NSObject, ARSCNViewDelegate {
     var viewModel: MeasurementViewModel
     var startPoint: simd_float3?
+    weak var arView: ARSCNView?
     
     init(viewModel: MeasurementViewModel) {
         self.viewModel = viewModel
     }
     
+    @objc func handleTap(_ gesture: UITapGestureRecognizer) {
+        guard let arView = gesture.view as? ARSCNView else { return }
+        let location = gesture.location(in: arView)
+        handleTap(at: location, in: arView)
+    }
+    
     func handleTap(at point: CGPoint, in view: ARSCNView) {
-        guard let service = AppState.shared.measurementService as? ARMeasurementService else {
-            return
-        }
-        
-        guard let hitPoint = service.hitTest(at: point, in: view) else { return }
-        
         Task { @MainActor in
+            guard let service = AppState.shared.measurementService as? ARMeasurementService else {
+                return
+            }
+            
+            guard let hitPoint = service.hitTest(at: point, in: view) else { return }
+            
             switch viewModel.measurementState {
             case .scanning:
                 service.setStartPoint(hitPoint)
