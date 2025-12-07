@@ -173,9 +173,22 @@ final class LogCatchViewModel: ObservableObject {
             return
         }
         
-        guard let spot = selectedSpot ?? (try? await spotRepository.getSpot(byId: selectedSpotId)) else {
-            showError(message: "Selected spot not found")
-            return
+        // Resolve spot (either already selected or fetched)
+        let spot: Spot
+        if let currentSpot = selectedSpot {
+            spot = currentSpot
+        } else {
+            do {
+                guard let fetched = try await spotRepository.getSpot(byId: selectedSpotId) else {
+                    showError(message: "Selected spot not found")
+                    return
+                }
+                spot = fetched
+                selectedSpot = fetched
+            } catch {
+                showError(message: "Failed to load selected spot: \(error.localizedDescription)")
+                return
+            }
         }
         
         isSubmitting = true

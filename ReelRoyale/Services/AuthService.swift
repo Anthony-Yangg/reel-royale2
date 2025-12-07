@@ -45,23 +45,20 @@ final class SupabaseAuthService: AuthServiceProtocol {
             password: password
         )
         
-        guard let userId = authResponse.user?.id.uuidString else {
-            throw AppError.authError("Failed to create user")
+        // Supabase signUp returns a non-optional user in the latest SDK
+        let userId = authResponse.user.id.uuidString
+        
+        // Profile is created by the auth trigger (handle_new_user) defined in supabase-schema.sql.
+        // If email confirmation is enabled, there may be no session yet; defer profile setup until sign-in.
+        let createdUser: User
+        if let profile = try? await userRepository.getUser(byId: userId) {
+            createdUser = profile
+        } else {
+            // Fallback placeholder; will be completed in profile setup.
+            createdUser = User(id: userId, username: "", createdAt: Date())
         }
         
-        // Create profile in database
-        let user = User(
-            id: userId,
-            username: "", // Will be set during profile setup
-            createdAt: Date()
-        )
-        
-        try await userRepository.createUser(user)
-        
-        // Notify app of login
-        NotificationCenter.default.post(name: .userDidLogin, object: nil)
-        
-        return user
+        return createdUser
     }
     
     func signIn(email: String, password: String) async throws -> User {

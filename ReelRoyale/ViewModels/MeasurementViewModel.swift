@@ -49,6 +49,10 @@ final class MeasurementViewModel: ObservableObject {
         measurementState == .completed && currentLength != nil
     }
     
+    var measuredWithAR: Bool {
+        measurementState == .completed
+    }
+    
     // MARK: - Initialization
     
     init(measurementService: MeasurementServiceProtocol? = nil) {
@@ -126,9 +130,11 @@ final class MeasurementViewModel: ObservableObject {
 // MARK: - AR View Coordinator
 
 /// Coordinator for ARSCNView interactions
+@MainActor
 class ARMeasurementCoordinator: NSObject {
     var viewModel: MeasurementViewModel
     var startPoint: simd_float3?
+    weak var arView: ARSCNView?
     
     init(viewModel: MeasurementViewModel) {
         self.viewModel = viewModel

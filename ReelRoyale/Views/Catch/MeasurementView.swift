@@ -183,10 +183,6 @@ struct MeasurementView: View {
     }
     
     @State private var demoValue: Double = 45.0
-    
-    private var measuredWithAR: Bool {
-        viewModel.measurementState == .completed
-    }
 }
 
 struct DemoMeasurementSlider: View {
@@ -240,8 +236,6 @@ struct ARMeasurementViewRepresentable: UIViewRepresentable {
 }
 
 extension ARMeasurementCoordinator: ARSCNViewDelegate {
-    weak var arView: ARSCNView?
-    
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
         guard let arView = gesture.view as? ARSCNView else { return }
         let location = gesture.location(in: arView)

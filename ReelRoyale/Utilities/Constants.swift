@@ -6,8 +6,8 @@ enum AppConstants {
     /// Supabase configuration
     /// IMPORTANT: Replace these with your actual Supabase project credentials
     enum Supabase {
-        static let projectURL = "https://your-project.supabase.co"
-        static let anonKey = "your-anon-key"
+        static let projectURL = "https://dtteukpeqgnfaccwjxme.supabase.co"
+        static let anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dGV1a3BlcWduZmFjY3dqeG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ5Mzg0MjcsImV4cCI6MjA4MDUxNDQyN30.1BCEAsWBfgNlCej9vk2-foATxSFkiQTqwixNbKfxt-E"
         
         /// Storage bucket names
         enum Buckets {
@@ -74,11 +74,6 @@ enum AppConstants {
 
 /// App color palette - Deep ocean/fishing theme
 extension Color {
-    static let appBackground = Color("AppBackground")
-    static let appPrimary = Color("AppPrimary")
-    static let appSecondary = Color("AppSecondary")
-    static let appAccent = Color("AppAccent")
-    
     // Fallback colors if asset catalog colors aren't set
     static let deepOcean = Color(red: 0.05, green: 0.15, blue: 0.25)
     static let oceanBlue = Color(red: 0.10, green: 0.35, blue: 0.55)

@@ -103,10 +103,20 @@ final class AuthViewModel: ObservableObject {
         
         do {
             let user = try await authService.signUp(email: email, password: password)
-            AppState.shared.currentUser = user
-            AppState.shared.needsProfileSetup = true
-            AppState.shared.isAuthenticated = true
-            clearForm()
+            
+            // Ensure we have an active session; if email confirmation is enabled, session may be nil
+            let session = await AppState.shared.supabaseService.currentSession
+            if session == nil {
+                // No session yet (likely email confirmation flow). Ask user to confirm and sign in.
+                AppState.shared.isAuthenticated = false
+                AppState.shared.needsProfileSetup = false
+                showError(message: "Check your email to confirm your account, then sign in to continue.")
+            } else {
+                AppState.shared.currentUser = user
+                AppState.shared.needsProfileSetup = true
+                AppState.shared.isAuthenticated = true
+                clearForm()
+            }
         } catch {
             showError(message: error.localizedDescription)
         }

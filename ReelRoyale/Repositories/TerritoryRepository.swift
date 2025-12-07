@@ -31,6 +31,34 @@ protocol TerritoryRepositoryProtocol {
 final class SupabaseTerritoryRepository: TerritoryRepositoryProtocol {
     private let supabase: SupabaseService
     
+    /// Encodable payloads to avoid type-mismatch issues when updating via dictionaries
+    private struct TerritoryUpdatePayload: Encodable {
+        let name: String
+        let description: String?
+        let spot_ids: [String]
+        let image_url: String?
+        let region_name: String?
+        let center_latitude: Double?
+        let center_longitude: Double?
+        let updated_at: Date
+        
+        init(from territory: Territory) {
+            self.name = territory.name
+            self.description = territory.description
+            self.spot_ids = territory.spotIds
+            self.image_url = territory.imageURL
+            self.region_name = territory.regionName
+            self.center_latitude = territory.centerLatitude
+            self.center_longitude = territory.centerLongitude
+            self.updated_at = Date()
+        }
+    }
+    
+    private struct SpotTerritoryUpdate: Encodable {
+        let territory_id: String?
+        let updated_at: Date
+    }
+    
     init(supabase: SupabaseService) {
         self.supabase = supabase
     }
@@ -60,31 +88,9 @@ final class SupabaseTerritoryRepository: TerritoryRepositoryProtocol {
     }
     
     func updateTerritory(_ territory: Territory) async throws {
-        struct TerritoryUpdate: Encodable {
-            let name: String
-            let description: String?
-            let spot_ids: [String]
-            let image_url: String?
-            let region_name: String?
-            let center_latitude: Double?
-            let center_longitude: Double?
-            let updated_at: Date
-        }
-        
-        let update = TerritoryUpdate(
-            name: territory.name,
-            description: territory.description,
-            spot_ids: territory.spotIds,
-            image_url: territory.imageURL,
-            region_name: territory.regionName,
-            center_latitude: territory.centerLatitude,
-            center_longitude: territory.centerLongitude,
-            updated_at: Date()
-        )
-        
         try await supabase.database
             .from(AppConstants.Supabase.Tables.territories)
-            .update(update)
+            .update(TerritoryUpdatePayload(from: territory))
             .eq("id", value: territory.id)
             .execute()
     }
@@ -102,7 +108,7 @@ final class SupabaseTerritoryRepository: TerritoryRepositoryProtocol {
         // Also update the spot's territory reference
         try await supabase.database
             .from(AppConstants.Supabase.Tables.spots)
-            .update(["territory_id": territoryId, "updated_at": Date()])
+            .update(SpotTerritoryUpdate(territory_id: territoryId, updated_at: Date()))
             .eq("id", value: spotId)
             .execute()
     }
@@ -118,7 +124,7 @@ final class SupabaseTerritoryRepository: TerritoryRepositoryProtocol {
         // Also clear the spot's territory reference
         try await supabase.database
             .from(AppConstants.Supabase.Tables.spots)
-            .update(["territory_id": NSNull(), "updated_at": Date()])
+            .update(SpotTerritoryUpdate(territory_id: nil, updated_at: Date()))
             .eq("id", value: spotId)
             .execute()
     }
