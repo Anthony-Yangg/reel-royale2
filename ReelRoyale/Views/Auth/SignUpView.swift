@@ -23,8 +23,8 @@ struct SignUpView: View {
                         .accentColor(.seafoam)
                 }
                 .padding()
-                .background(Color.white.opacity(0.1))
-                .cornerRadius(12)
+                .background(Color.white.opacity(0.12))
+                .cornerRadius(16)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(viewModel.email.isEmpty || viewModel.isEmailValid ? Color.white.opacity(0.2) : Color.coral, lineWidth: 1)
@@ -47,8 +47,8 @@ struct SignUpView: View {
                         .accentColor(.seafoam)
                 }
                 .padding()
-                .background(Color.white.opacity(0.1))
-                .cornerRadius(12)
+                .background(Color.white.opacity(0.12))
+                .cornerRadius(16)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(viewModel.password.isEmpty || viewModel.isPasswordValid ? Color.white.opacity(0.2) : Color.coral, lineWidth: 1)
@@ -77,8 +77,8 @@ struct SignUpView: View {
                         .accentColor(.seafoam)
                 }
                 .padding()
-                .background(Color.white.opacity(0.1))
-                .cornerRadius(12)
+                .background(Color.white.opacity(0.12))
+                .cornerRadius(16)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(viewModel.confirmPassword.isEmpty || viewModel.doPasswordsMatch ? Color.white.opacity(0.2) : Color.coral, lineWidth: 1)
@@ -106,17 +106,19 @@ struct SignUpView: View {
                             .fontWeight(.semibold)
                     }
                 }
+                .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
+                .padding(.vertical, 18)
                 .background(
                     LinearGradient(
-                        colors: [Color.seafoam, Color.oceanBlue],
+                        colors: [Color.aquaHighlight, Color.navyPrimary],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
                 )
-                .cornerRadius(12)
+                .cornerRadius(24)
+                .shadow(color: Color.aquaHighlight.opacity(0.4), radius: 8, x: 0, y: 4)
             }
             .disabled(viewModel.isLoading || !viewModel.canSignUp)
             .opacity(viewModel.canSignUp ? 1 : 0.6)

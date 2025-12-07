@@ -19,7 +19,7 @@ struct MoreView: View {
                 NavigationLink(value: NavigationDestination.measureFish) {
                     MoreRowView(
                         icon: "ruler",
-                        iconColor: .seafoam,
+                        iconColor: .aquaHighlight,
                         title: "Measure Fish",
                         subtitle: "Use AR to measure catch length"
                     )
@@ -33,7 +33,7 @@ struct MoreView: View {
                 NavigationLink(value: NavigationDestination.regulations(spotId: nil)) {
                     MoreRowView(
                         icon: "doc.text.fill",
-                        iconColor: .oceanBlue,
+                        iconColor: .navyPrimary,
                         title: "Regulations",
                         subtitle: "Fishing rules and limits"
                     )
@@ -127,7 +127,7 @@ struct MoreView: View {
                         .font(.largeTitle)
                         .foregroundStyle(
                             LinearGradient(
-                                colors: [.seafoam, .coral],
+                                colors: [.aquaHighlight, .coralAccent],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
@@ -175,26 +175,26 @@ struct MoreRowView: View {
     var body: some View {
         HStack(spacing: 16) {
             ZStack {
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: 12)
                     .fill(iconColor.opacity(0.15))
-                    .frame(width: 40, height: 40)
+                    .frame(width: 44, height: 44)
                 
                 Image(systemName: icon)
-                    .font(.system(size: 18))
+                    .font(.system(size: 20, weight: .medium))
                     .foregroundColor(iconColor)
             }
             
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.body)
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.primary)
                 
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.system(size: 13, design: .rounded))
                     .foregroundColor(.secondary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
     }
 }
 

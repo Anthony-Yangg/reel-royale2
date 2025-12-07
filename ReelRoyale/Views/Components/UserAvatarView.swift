@@ -46,7 +46,7 @@ struct UserAvatarView: View {
         Circle()
             .fill(
                 LinearGradient(
-                    colors: [Color.oceanBlue, Color.seafoam],
+                    colors: [Color.navyPrimary, Color.aquaHighlight],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -54,7 +54,7 @@ struct UserAvatarView: View {
             .frame(width: size, height: size)
             .overlay(
                 Text(initials)
-                    .font(.system(size: size * 0.4, weight: .semibold))
+                    .font(.system(size: size * 0.4, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
             )
     }

@@ -4,7 +4,7 @@ import SwiftUI
 struct CatchThumbnail: View {
     let photoURL: String?
     var size: CGFloat = 60
-    var cornerRadius: CGFloat = 8
+    var cornerRadius: CGFloat = 16
     var showPlaceholder: Bool = true
     
     var body: some View {
@@ -37,7 +37,7 @@ struct CatchThumbnail: View {
     
     private var loadingView: some View {
         RoundedRectangle(cornerRadius: cornerRadius)
-            .fill(Color.gray.opacity(0.2))
+            .fill(Color.navyPrimary.opacity(0.1))
             .frame(width: size, height: size)
             .overlay(
                 ProgressView()
@@ -49,7 +49,7 @@ struct CatchThumbnail: View {
         RoundedRectangle(cornerRadius: cornerRadius)
             .fill(
                 LinearGradient(
-                    colors: [Color.oceanBlue.opacity(0.3), Color.seafoam.opacity(0.3)],
+                    colors: [Color.navyPrimary.opacity(0.2), Color.aquaHighlight.opacity(0.2)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -57,8 +57,8 @@ struct CatchThumbnail: View {
             .frame(width: size, height: size)
             .overlay(
                 Image(systemName: "fish.fill")
-                    .font(.system(size: size * 0.4))
-                    .foregroundColor(Color.oceanBlue.opacity(0.5))
+                    .font(.system(size: size * 0.4, weight: .medium))
+                    .foregroundColor(Color.navyPrimary.opacity(0.4))
             )
     }
 }
@@ -67,7 +67,7 @@ struct CatchThumbnail: View {
 struct CatchPhotoView: View {
     let photoURL: String?
     var aspectRatio: CGFloat = 4/3
-    var cornerRadius: CGFloat = 12
+    var cornerRadius: CGFloat = 20
     
     var body: some View {
         if let urlString = photoURL,
@@ -95,7 +95,7 @@ struct CatchPhotoView: View {
     
     private var loadingView: some View {
         RoundedRectangle(cornerRadius: cornerRadius)
-            .fill(Color.gray.opacity(0.2))
+            .fill(Color.navyPrimary.opacity(0.1))
             .aspectRatio(aspectRatio, contentMode: .fit)
             .overlay(
                 ProgressView()
@@ -106,7 +106,7 @@ struct CatchPhotoView: View {
         RoundedRectangle(cornerRadius: cornerRadius)
             .fill(
                 LinearGradient(
-                    colors: [Color.deepOcean, Color.oceanBlue],
+                    colors: [Color.navyDark, Color.navyPrimary],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -115,9 +115,9 @@ struct CatchPhotoView: View {
             .overlay(
                 VStack(spacing: 12) {
                     Image(systemName: "photo.on.rectangle.angled")
-                        .font(.system(size: 40))
+                        .font(.system(size: 40, weight: .medium))
                     Text("No photo")
-                        .font(.caption)
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
                 }
                 .foregroundColor(.white.opacity(0.5))
             )

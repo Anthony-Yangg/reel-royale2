@@ -56,7 +56,13 @@ struct CommunityView: View {
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
-                        .foregroundColor(.seafoam)
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [Color.coralAccent, Color.sunnyYellow],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                 }
             }
         }

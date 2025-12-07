@@ -1,4 +1,5 @@
 import SwiftUI
+import MapboxMaps
 
 @main
 struct ReelRoyaleApp: App {
@@ -7,6 +8,7 @@ struct ReelRoyaleApp: App {
     init() {
         // Configure app state and services
         AppState.shared.configure()
+        MapboxOptions.accessToken = AppConstants.Mapbox.accessToken
         
         // Configure appearance
         configureAppearance()

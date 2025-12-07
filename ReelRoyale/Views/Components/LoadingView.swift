@@ -22,13 +22,13 @@ struct LoadingView: View {
     var body: some View {
         VStack(spacing: 16) {
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .seafoam))
+                .progressViewStyle(CircularProgressViewStyle(tint: .navyPrimary))
                 .scaleEffect(size.scale)
             
             if let message = message {
                 Text(message)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .foregroundColor(.navyPrimary.opacity(0.7))
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -53,13 +53,16 @@ struct LoadingOverlay: View {
                     
                     if let message = message {
                         Text(message)
-                            .font(.subheadline)
+                            .font(.system(size: 14, weight: .medium, design: .rounded))
                             .foregroundColor(.white)
                     }
                 }
                 .padding(32)
-                .background(Color.deepOcean.opacity(0.9))
-                .cornerRadius(16)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.navyPrimary.opacity(0.95))
+                        .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 8)
+                )
             }
         }
     }
@@ -75,18 +78,23 @@ struct EmptyStateView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Image(systemName: icon)
-                .font(.system(size: 60))
-                .foregroundColor(Color.oceanBlue.opacity(0.5))
+            ZStack {
+                Circle()
+                    .fill(Color.navyPrimary.opacity(0.1))
+                    .frame(width: 100, height: 100)
+                
+                Image(systemName: icon)
+                    .font(.system(size: 40, weight: .medium))
+                    .foregroundColor(Color.navyPrimary.opacity(0.5))
+            }
             
             Text(title)
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.system(size: 22, weight: .bold, design: .rounded))
                 .foregroundColor(.primary)
             
             if let message = message {
                 Text(message)
-                    .font(.body)
+                    .font(.system(size: 15, design: .rounded))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
@@ -95,12 +103,21 @@ struct EmptyStateView: View {
             if let actionTitle = actionTitle, let action = action {
                 Button(action: action) {
                     Text(actionTitle)
-                        .fontWeight(.semibold)
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 12)
-                        .background(Color.oceanBlue)
-                        .cornerRadius(12)
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 14)
+                        .background(
+                            Capsule()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [Color.coralAccent, Color.sunnyYellow],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .shadow(color: Color.coralAccent.opacity(0.4), radius: 8, x: 0, y: 4)
+                        )
                 }
                 .padding(.top, 8)
             }
@@ -117,32 +134,40 @@ struct ErrorStateView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 50))
-                .foregroundColor(.coral)
+            ZStack {
+                Circle()
+                    .fill(Color.coralAccent.opacity(0.15))
+                    .frame(width: 80, height: 80)
+                
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 35))
+                    .foregroundColor(.coralAccent)
+            }
             
             Text("Something went wrong")
-                .font(.title3)
-                .fontWeight(.semibold)
+                .font(.system(size: 20, weight: .bold, design: .rounded))
             
             Text(message)
-                .font(.body)
+                .font(.system(size: 14, design: .rounded))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             
             if let retryAction = retryAction {
                 Button(action: retryAction) {
-                    HStack {
+                    HStack(spacing: 8) {
                         Image(systemName: "arrow.clockwise")
                         Text("Try Again")
                     }
-                    .fontWeight(.semibold)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
                     .foregroundColor(.white)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
-                    .background(Color.oceanBlue)
-                    .cornerRadius(12)
+                    .background(
+                        Capsule()
+                            .fill(Color.navyPrimary)
+                            .shadow(color: Color.navyPrimary.opacity(0.3), radius: 6, x: 0, y: 3)
+                    )
                 }
                 .padding(.top, 8)
             }

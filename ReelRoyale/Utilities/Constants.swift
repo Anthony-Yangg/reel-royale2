@@ -33,16 +33,23 @@ enum AppConstants {
         static let baseURL = "https://api.openweathermap.org/data/2.5"
     }
     
+    enum Mapbox {
+        static let accessToken = "pk.eyJ1IjoibWFwYm94dXNlcjQyIiwiYSI6ImNtaXY4ZG1pdjF1angzZXB3ajhlZzhwd2wifQ.A8FaAx4KAAwpbC83uClcZA"
+    }
+    
     /// AI Fish ID configuration (for future cloud ML endpoint)
     enum FishID {
         static let baseURL = "https://your-fish-id-api.com"
         static let apiKey = "your-fish-id-api-key"
     }
     
-    /// App UI constants
+    /// App UI constants - Cartoonish game style
     enum UI {
-        static let cornerRadius: CGFloat = 12
-        static let smallCornerRadius: CGFloat = 8
+        static let cornerRadius: CGFloat = 16
+        static let cardCornerRadius: CGFloat = 20
+        static let pillCornerRadius: CGFloat = 24
+        static let buttonCornerRadius: CGFloat = 28
+        static let smallCornerRadius: CGFloat = 12
         static let padding: CGFloat = 16
         static let smallPadding: CGFloat = 8
         static let avatarSize: CGFloat = 44
@@ -50,10 +57,16 @@ enum AppConstants {
         static let thumbnailSize: CGFloat = 60
         static let iconSize: CGFloat = 24
         
-        /// Animation durations
+        /// Shadow values for playful depth
+        static let cardShadowRadius: CGFloat = 8
+        static let cardShadowY: CGFloat = 4
+        static let cardShadowOpacity: Double = 0.12
+        
+        /// Animation durations - bouncy feel
         static let quickAnimation: Double = 0.2
-        static let standardAnimation: Double = 0.3
+        static let standardAnimation: Double = 0.35
         static let slowAnimation: Double = 0.5
+        static let bouncyAnimation: Double = 0.6
     }
     
     /// Game mechanics constants
@@ -72,18 +85,33 @@ enum AppConstants {
     }
 }
 
-/// App color palette - Deep ocean/fishing theme
+/// App color palette - Dark Blue Cartoonish Game Theme
 extension Color {
-    // Fallback colors if asset catalog colors aren't set
-    static let deepOcean = Color(red: 0.05, green: 0.15, blue: 0.25)
-    static let oceanBlue = Color(red: 0.10, green: 0.35, blue: 0.55)
-    static let seafoam = Color(red: 0.35, green: 0.75, blue: 0.70)
-    static let coral = Color(red: 0.95, green: 0.45, blue: 0.35)
-    static let sunset = Color(red: 0.95, green: 0.65, blue: 0.30)
-    static let sand = Color(red: 0.96, green: 0.93, blue: 0.85)
+    // Primary - Dark Navy Blue (game-like feel)
+    static let navyPrimary = Color(red: 0.10, green: 0.23, blue: 0.36)     // #1A3A5C
+    static let navyLight = Color(red: 0.18, green: 0.35, blue: 0.52)       // Lighter navy
+    static let navyDark = Color(red: 0.05, green: 0.12, blue: 0.20)        // Darker navy
+    
+    // Playful Accent Colors
+    static let coralAccent = Color(red: 1.0, green: 0.45, blue: 0.35)      // Bright coral CTA
+    static let aquaHighlight = Color(red: 0.30, green: 0.85, blue: 0.80)   // Aqua/seafoam
+    static let sunnyYellow = Color(red: 1.0, green: 0.82, blue: 0.30)      // Golden/crown
+    static let mintGreen = Color(red: 0.40, green: 0.85, blue: 0.55)       // Success green
+    
+    // Background & Cards
+    static let creamBackground = Color(red: 0.98, green: 0.96, blue: 0.93)
+    static let cardWhite = Color.white
+    
+    // Legacy aliases for backwards compatibility
+    static let deepOcean = navyDark
+    static let oceanBlue = navyPrimary
+    static let seafoam = aquaHighlight
+    static let coral = coralAccent
+    static let sunset = sunnyYellow
+    static let sand = creamBackground
     static let driftwood = Color(red: 0.55, green: 0.45, blue: 0.35)
-    static let kelp = Color(red: 0.25, green: 0.45, blue: 0.35)
-    static let crown = Color(red: 0.95, green: 0.75, blue: 0.20)
+    static let kelp = mintGreen
+    static let crown = sunnyYellow
 }
 
 /// Common fish species for picker

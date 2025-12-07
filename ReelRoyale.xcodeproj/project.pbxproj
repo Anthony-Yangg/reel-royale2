@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C89A1E582EE9117700B63486 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = E80000002D4APKGD00000001 /* Supabase */; };
 		E80000012D4A000000000001 /* ReelRoyaleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000001 /* ReelRoyaleApp.swift */; };
 		E80000012D4A000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000002 /* ContentView.swift */; };
 		E80000012D4A000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000003 /* Assets.xcassets */; };
@@ -70,6 +71,7 @@
 		E80000012D4A000000000606 /* SpotPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000606 /* SpotPickerView.swift */; };
 		E80000012D4A000000000607 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000607 /* ImagePicker.swift */; };
 		E80000012D4A000000000608 /* ARMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000608 /* ARMeasurementView.swift */; };
+		E80000012D4A000000000700 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = E80000002D4APKGD00000002 /* MapboxMaps */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -144,26 +146,56 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C89A1E582EE9117700B63486 /* Supabase in Frameworks */,
+				E80000012D4A000000000700 /* MapboxMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E80000002D4AROOT00000000 = {
+		E80000002D4AAUTH00000000 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4AMAIN00000000 /* ReelRoyale */,
-				E80000002D4APROD00000000 /* Products */,
+				E80000002D4A000000000502 /* AuthView.swift */,
+				E80000002D4A000000000503 /* LoginView.swift */,
+				E80000002D4A000000000504 /* SignUpView.swift */,
+				E80000002D4A000000000505 /* ProfileSetupView.swift */,
 			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
-		E80000002D4APROD00000000 /* Products */ = {
+		E80000002D4ACMPS00000000 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4A000000000000 /* ReelRoyale.app */,
+				E80000002D4A000000000521 /* CrownBadge.swift */,
+				E80000002D4A000000000522 /* UserAvatarView.swift */,
+				E80000002D4A000000000523 /* CatchThumbnail.swift */,
+				E80000002D4A000000000524 /* LoadingView.swift */,
 			);
-			name = Products;
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E80000002D4ACOMM00000000 /* Community */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000511 /* CommunityView.swift */,
+				E80000002D4A000000000512 /* FeedItemView.swift */,
+			);
+			path = Community;
+			sourceTree = "<group>";
+		};
+		E80000002D4ACTCH00000000 /* Catch */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000515 /* LogCatchView.swift */,
+				E80000002D4A000000000516 /* CatchDetailView.swift */,
+				E80000002D4A000000000517 /* MeasurementView.swift */,
+				E80000002D4A000000000606 /* SpotPickerView.swift */,
+				E80000002D4A000000000607 /* ImagePicker.swift */,
+				E80000002D4A000000000608 /* ARMeasurementView.swift */,
+			);
+			path = Catch;
 			sourceTree = "<group>";
 		};
 		E80000002D4AMAIN00000000 /* ReelRoyale */ = {
@@ -196,6 +228,67 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		E80000002D4AMORE00000000 /* More */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000518 /* MoreView.swift */,
+				E80000002D4A000000000519 /* FishIDView.swift */,
+				E80000002D4A000000000520 /* RegulationsView.swift */,
+			);
+			path = More;
+			sourceTree = "<group>";
+		};
+		E80000002D4APROD00000000 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000000 /* ReelRoyale.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E80000002D4APROF00000000 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000513 /* ProfileView.swift */,
+				E80000002D4A000000000514 /* CatchLogView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		E80000002D4AREPO00000000 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000301 /* UserRepository.swift */,
+				E80000002D4A000000000302 /* SpotRepository.swift */,
+				E80000002D4A000000000303 /* CatchRepository.swift */,
+				E80000002D4A000000000304 /* TerritoryRepository.swift */,
+				E80000002D4A000000000305 /* LikeRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		E80000002D4AROOT00000000 = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4AMAIN00000000 /* ReelRoyale */,
+				E80000002D4APROD00000000 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E80000002D4ASPTS00000000 /* Spots */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000506 /* SpotsView.swift */,
+				E80000002D4A000000000507 /* SpotMapView.swift */,
+				E80000002D4A000000000508 /* SpotListView.swift */,
+				E80000002D4A000000000509 /* SpotRowView.swift */,
+				E80000002D4A000000000510 /* SpotDetailView.swift */,
+				E80000002D4A000000000604 /* LeaderboardView.swift */,
+				E80000002D4A000000000605 /* TerritoryView.swift */,
+			);
+			path = Spots;
+			sourceTree = "<group>";
+		};
 		E80000002D4ASRVC00000000 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -211,31 +304,14 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		E80000002D4AREPO00000000 /* Repositories */ = {
+		E80000002D4AUTLS00000000 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4A000000000301 /* UserRepository.swift */,
-				E80000002D4A000000000302 /* SpotRepository.swift */,
-				E80000002D4A000000000303 /* CatchRepository.swift */,
-				E80000002D4A000000000304 /* TerritoryRepository.swift */,
-				E80000002D4A000000000305 /* LikeRepository.swift */,
+				E80000002D4A000000000601 /* Extensions.swift */,
+				E80000002D4A000000000602 /* Constants.swift */,
+				E80000002D4A000000000603 /* AppState.swift */,
 			);
-			path = Repositories;
-			sourceTree = "<group>";
-		};
-		E80000002D4AVMDL00000000 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000401 /* AuthViewModel.swift */,
-				E80000002D4A000000000402 /* SpotsViewModel.swift */,
-				E80000002D4A000000000403 /* SpotDetailViewModel.swift */,
-				E80000002D4A000000000404 /* LogCatchViewModel.swift */,
-				E80000002D4A000000000405 /* CommunityViewModel.swift */,
-				E80000002D4A000000000406 /* ProfileViewModel.swift */,
-				E80000002D4A000000000407 /* FishIDViewModel.swift */,
-				E80000002D4A000000000408 /* MeasurementViewModel.swift */,
-			);
-			path = ViewModels;
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		E80000002D4AVIWS00000000 /* Views */ = {
@@ -253,91 +329,19 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		E80000002D4AAUTH00000000 /* Auth */ = {
+		E80000002D4AVMDL00000000 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4A000000000502 /* AuthView.swift */,
-				E80000002D4A000000000503 /* LoginView.swift */,
-				E80000002D4A000000000504 /* SignUpView.swift */,
-				E80000002D4A000000000505 /* ProfileSetupView.swift */,
+				E80000002D4A000000000401 /* AuthViewModel.swift */,
+				E80000002D4A000000000402 /* SpotsViewModel.swift */,
+				E80000002D4A000000000403 /* SpotDetailViewModel.swift */,
+				E80000002D4A000000000404 /* LogCatchViewModel.swift */,
+				E80000002D4A000000000405 /* CommunityViewModel.swift */,
+				E80000002D4A000000000406 /* ProfileViewModel.swift */,
+				E80000002D4A000000000407 /* FishIDViewModel.swift */,
+				E80000002D4A000000000408 /* MeasurementViewModel.swift */,
 			);
-			path = Auth;
-			sourceTree = "<group>";
-		};
-		E80000002D4ASPTS00000000 /* Spots */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000506 /* SpotsView.swift */,
-				E80000002D4A000000000507 /* SpotMapView.swift */,
-				E80000002D4A000000000508 /* SpotListView.swift */,
-				E80000002D4A000000000509 /* SpotRowView.swift */,
-				E80000002D4A000000000510 /* SpotDetailView.swift */,
-				E80000002D4A000000000604 /* LeaderboardView.swift */,
-				E80000002D4A000000000605 /* TerritoryView.swift */,
-			);
-			path = Spots;
-			sourceTree = "<group>";
-		};
-		E80000002D4ACOMM00000000 /* Community */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000511 /* CommunityView.swift */,
-				E80000002D4A000000000512 /* FeedItemView.swift */,
-			);
-			path = Community;
-			sourceTree = "<group>";
-		};
-		E80000002D4APROF00000000 /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000513 /* ProfileView.swift */,
-				E80000002D4A000000000514 /* CatchLogView.swift */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
-		E80000002D4ACTCH00000000 /* Catch */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000515 /* LogCatchView.swift */,
-				E80000002D4A000000000516 /* CatchDetailView.swift */,
-				E80000002D4A000000000517 /* MeasurementView.swift */,
-				E80000002D4A000000000606 /* SpotPickerView.swift */,
-				E80000002D4A000000000607 /* ImagePicker.swift */,
-				E80000002D4A000000000608 /* ARMeasurementView.swift */,
-			);
-			path = Catch;
-			sourceTree = "<group>";
-		};
-		E80000002D4AMORE00000000 /* More */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000518 /* MoreView.swift */,
-				E80000002D4A000000000519 /* FishIDView.swift */,
-				E80000002D4A000000000520 /* RegulationsView.swift */,
-			);
-			path = More;
-			sourceTree = "<group>";
-		};
-		E80000002D4ACMPS00000000 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000521 /* CrownBadge.swift */,
-				E80000002D4A000000000522 /* UserAvatarView.swift */,
-				E80000002D4A000000000523 /* CatchThumbnail.swift */,
-				E80000002D4A000000000524 /* LoadingView.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		E80000002D4AUTLS00000000 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000601 /* Extensions.swift */,
-				E80000002D4A000000000602 /* Constants.swift */,
-				E80000002D4A000000000603 /* AppState.swift */,
-			);
-			path = Utilities;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -358,6 +362,7 @@
 			name = ReelRoyale;
 			packageProductDependencies = (
 				E80000002D4APKGD00000001 /* Supabase */,
+				E80000002D4APKGD00000002 /* MapboxMaps */,
 			);
 			productName = ReelRoyale;
 			productReference = E80000002D4A000000000000 /* ReelRoyale.app */;
@@ -389,6 +394,7 @@
 			mainGroup = E80000002D4AROOT00000000;
 			packageReferences = (
 				E80000002D4APKGR00000001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				E80000002D4APKGR00000002 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 			);
 			productRefGroup = E80000002D4APROD00000000 /* Products */;
 			projectDirPath = "";
@@ -610,9 +616,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 38PQPSKBRL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReelRoyale/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ReelRoyale needs your location to show nearby fishing spots and log catch locations.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "ReelRoyale needs photo library access to select photos of your catches.";
@@ -642,9 +650,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 38PQPSKBRL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReelRoyale/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ReelRoyale needs your location to show nearby fishing spots and log catch locations.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "ReelRoyale needs photo library access to select photos of your catches.";
@@ -698,6 +708,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		E80000002D4APKGR00000002 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -706,8 +724,12 @@
 			package = E80000002D4APKGR00000001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
 		};
+		E80000002D4APKGD00000002 /* MapboxMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E80000002D4APKGR00000002 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
+		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E80000002D4APROJ00000001 /* Project object */;
 }
-

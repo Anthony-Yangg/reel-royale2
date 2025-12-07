@@ -38,6 +38,7 @@ final class SpotsViewModel: ObservableObject {
     private let catchRepository: CatchRepositoryProtocol
     private let territoryRepository: TerritoryRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
+    private static let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     
     // MARK: - Enums
     
@@ -79,12 +80,60 @@ final class SpotsViewModel: ObservableObject {
         catchRepository: CatchRepositoryProtocol? = nil,
         territoryRepository: TerritoryRepositoryProtocol? = nil
     ) {
-        self.spotRepository = spotRepository ?? AppState.shared.spotRepository
-        self.userRepository = userRepository ?? AppState.shared.userRepository
-        self.catchRepository = catchRepository ?? AppState.shared.catchRepository
-        self.territoryRepository = territoryRepository ?? AppState.shared.territoryRepository
+        let previewRepos = Self.previewRepositories()
+        self.spotRepository = Self.resolve(
+            injected: spotRepository,
+            appValue: AppState.shared.spotRepository,
+            previewValue: previewRepos?.spotRepository
+        )
+        self.userRepository = Self.resolve(
+            injected: userRepository,
+            appValue: AppState.shared.userRepository,
+            previewValue: previewRepos?.userRepository
+        )
+        self.catchRepository = Self.resolve(
+            injected: catchRepository,
+            appValue: AppState.shared.catchRepository,
+            previewValue: previewRepos?.catchRepository
+        )
+        self.territoryRepository = Self.resolve(
+            injected: territoryRepository,
+            appValue: AppState.shared.territoryRepository,
+            previewValue: previewRepos?.territoryRepository
+        )
         
         setupBindings()
+    }
+    
+    private static func resolve<T>(
+        injected: T?,
+        appValue: T?,
+        previewValue: T?
+    ) -> T {
+        if let injected = injected { return injected }
+        if let appValue = appValue { return appValue }
+        if let previewValue = previewValue { return previewValue }
+        fatalError("Dependencies not configured")
+    }
+    
+    private static func previewRepositories() -> (
+        spotRepository: SpotRepositoryProtocol,
+        userRepository: UserRepositoryProtocol,
+        catchRepository: CatchRepositoryProtocol,
+        territoryRepository: TerritoryRepositoryProtocol
+    )? {
+        #if DEBUG
+        guard isPreview else { return nil }
+        let dependencies = SpotsPreviewDependencies.make()
+        return (
+            spotRepository: dependencies.spotRepository,
+            userRepository: dependencies.userRepository,
+            catchRepository: dependencies.catchRepository,
+            territoryRepository: dependencies.territoryRepository
+        )
+        #else
+        return nil
+        #endif
     }
     
     private func setupBindings() {
@@ -245,4 +294,270 @@ final class SpotsViewModel: ObservableObject {
         selectedSpot = spot
     }
 }
+
+#if DEBUG
+private struct SpotsPreviewDependencies {
+    let spotRepository: SpotRepositoryProtocol
+    let userRepository: UserRepositoryProtocol
+    let catchRepository: CatchRepositoryProtocol
+    let territoryRepository: TerritoryRepositoryProtocol
+    
+    static func make() -> SpotsPreviewDependencies {
+        let data = SpotsPreviewData.sample
+        let spotRepository = MockSpotRepository(spots: data.spots)
+        let userRepository = MockUserRepository(users: data.users)
+        let catchRepository = MockCatchRepository(catches: data.catches)
+        let territoryRepository = MockTerritoryRepository(territories: data.territories)
+        return SpotsPreviewDependencies(
+            spotRepository: spotRepository,
+            userRepository: userRepository,
+            catchRepository: catchRepository,
+            territoryRepository: territoryRepository
+        )
+    }
+}
+
+private struct SpotsPreviewData {
+    let spots: [Spot]
+    let users: [User]
+    let catches: [FishCatch]
+    let territories: [Territory]
+    
+    static let sample: SpotsPreviewData = {
+        let user = User(
+            id: "user-preview",
+            username: "RiverKing",
+            avatarURL: nil,
+            homeLocation: "Bay Area",
+            bio: "Local angler"
+        )
+        let spot = Spot(
+            name: "Clearwater Lake",
+            description: "Crystal clear water with trophy trout.",
+            latitude: 37.7749,
+            longitude: -122.4194,
+            waterType: .lake,
+            territoryId: "territory-preview",
+            currentKingUserId: user.id,
+            currentBestCatchId: "catch-preview",
+            currentBestSize: 24,
+            currentBestUnit: "in",
+            imageURL: nil,
+            regionName: "California"
+        )
+        let fishCatch = FishCatch(
+            id: "catch-preview",
+            userId: user.id,
+            spotId: spot.id,
+            photoURL: nil,
+            species: "Rainbow Trout",
+            sizeValue: 24,
+            sizeUnit: "in",
+            visibility: .public,
+            hideExactLocation: false,
+            notes: "Caught near the inlet",
+            weatherSnapshot: nil,
+            measuredWithAR: false
+        )
+        let territory = Territory(
+            id: "territory-preview",
+            name: "Preview Territory",
+            description: "Sample region for previews",
+            spotIds: [spot.id],
+            imageURL: nil,
+            regionName: "Northern Bay",
+            centerLatitude: spot.latitude,
+            centerLongitude: spot.longitude
+        )
+        return SpotsPreviewData(
+            spots: [spot],
+            users: [user],
+            catches: [fishCatch],
+            territories: [territory]
+        )
+    }()
+}
+
+private final class MockSpotRepository: SpotRepositoryProtocol {
+    private var spots: [Spot]
+    
+    init(spots: [Spot]) {
+        self.spots = spots
+    }
+    
+    func getAllSpots() async throws -> [Spot] {
+        spots
+    }
+    
+    func getSpot(byId id: String) async throws -> Spot? {
+        spots.first { $0.id == id }
+    }
+    
+    func getSpots(forTerritory territoryId: String) async throws -> [Spot] {
+        spots.filter { $0.territoryId == territoryId }
+    }
+    
+    func getSpots(near coordinate: CLLocationCoordinate2D, radiusMeters: Double) async throws -> [Spot] {
+        spots
+    }
+    
+    func getSpots(ofType waterType: WaterType) async throws -> [Spot] {
+        spots.filter { $0.waterType == waterType }
+    }
+    
+    func createSpot(_ spot: Spot) async throws -> Spot {
+        spot
+    }
+    
+    func updateSpot(_ spot: Spot) async throws {
+        if let index = spots.firstIndex(where: { $0.id == spot.id }) {
+            spots[index] = spot
+        }
+    }
+    
+    func getSpotsRuledBy(userId: String) async throws -> [Spot] {
+        spots.filter { $0.currentKingUserId == userId }
+    }
+    
+    func searchSpots(query: String, limit: Int) async throws -> [Spot] {
+        Array(spots.filter { $0.name.localizedCaseInsensitiveContains(query) }.prefix(limit))
+    }
+}
+
+private final class MockUserRepository: UserRepositoryProtocol {
+    private var usersById: [String: User]
+    
+    init(users: [User]) {
+        self.usersById = Dictionary(uniqueKeysWithValues: users.map { ($0.id, $0) })
+    }
+    
+    func getUser(byId id: String) async throws -> User? {
+        usersById[id]
+    }
+    
+    func getUser(byUsername username: String) async throws -> User? {
+        usersById.values.first { $0.username == username }
+    }
+    
+    func createUser(_ user: User) async throws {
+        usersById[user.id] = user
+    }
+    
+    func updateUser(_ user: User) async throws {
+        usersById[user.id] = user
+    }
+    
+    func getAllUsers() async throws -> [User] {
+        Array(usersById.values)
+    }
+    
+    func getUsers(byIds ids: [String]) async throws -> [User] {
+        ids.compactMap { usersById[$0] }
+    }
+    
+    func searchUsers(query: String, limit: Int) async throws -> [User] {
+        let filtered = usersById.values.filter { $0.username.localizedCaseInsensitiveContains(query) }
+        return Array(filtered.prefix(limit))
+    }
+}
+
+private final class MockCatchRepository: CatchRepositoryProtocol {
+    private var catches: [FishCatch]
+    
+    init(catches: [FishCatch]) {
+        self.catches = catches
+    }
+    
+    func createCatch(_ fishCatch: FishCatch) async throws -> FishCatch {
+        catches.append(fishCatch)
+        return fishCatch
+    }
+    
+    func getCatch(byId id: String) async throws -> FishCatch? {
+        catches.first { $0.id == id }
+    }
+    
+    func updateCatch(_ fishCatch: FishCatch) async throws {
+        if let index = catches.firstIndex(where: { $0.id == fishCatch.id }) {
+            catches[index] = fishCatch
+        }
+    }
+    
+    func deleteCatch(id: String) async throws {
+        catches.removeAll { $0.id == id }
+    }
+    
+    func getCatches(forSpot spotId: String) async throws -> [FishCatch] {
+        catches.filter { $0.spotId == spotId }
+    }
+    
+    func getCatches(forUser userId: String) async throws -> [FishCatch] {
+        catches.filter { $0.userId == userId }
+    }
+    
+    func getRecentPublicCatches(limit: Int, offset: Int) async throws -> [FishCatch] {
+        Array(catches.dropFirst(offset).prefix(limit))
+    }
+    
+    func getBestCatch(forSpot spotId: String) async throws -> FishCatch? {
+        catches
+            .filter { $0.spotId == spotId }
+            .sorted { $0.sizeValue > $1.sizeValue }
+            .first
+    }
+    
+    func getPublicCatches(forSpot spotId: String, limit: Int) async throws -> [FishCatch] {
+        Array(catches.filter { $0.spotId == spotId }.prefix(limit))
+    }
+}
+
+private final class MockTerritoryRepository: TerritoryRepositoryProtocol {
+    private var territories: [Territory]
+    
+    init(territories: [Territory]) {
+        self.territories = territories
+    }
+    
+    func getAllTerritories() async throws -> [Territory] {
+        territories
+    }
+    
+    func getTerritory(byId id: String) async throws -> Territory? {
+        territories.first { $0.id == id }
+    }
+    
+    func getTerritory(forSpot spotId: String) async throws -> Territory? {
+        territories.first { $0.spotIds.contains(spotId) }
+    }
+    
+    func createTerritory(_ territory: Territory) async throws -> Territory {
+        territories.append(territory)
+        return territory
+    }
+    
+    func updateTerritory(_ territory: Territory) async throws {
+        if let index = territories.firstIndex(where: { $0.id == territory.id }) {
+            territories[index] = territory
+        }
+    }
+    
+    func addSpot(_ spotId: String, to territoryId: String) async throws {
+        if let index = territories.firstIndex(where: { $0.id == territoryId }) {
+            if !territories[index].spotIds.contains(spotId) {
+                territories[index].spotIds.append(spotId)
+            }
+        }
+    }
+    
+    func removeSpot(_ spotId: String, from territoryId: String) async throws {
+        if let index = territories.firstIndex(where: { $0.id == territoryId }) {
+            territories[index].spotIds.removeAll { $0 == spotId }
+        }
+    }
+    
+    func searchTerritories(query: String, limit: Int) async throws -> [Territory] {
+        Array(territories.filter { $0.name.localizedCaseInsensitiveContains(query) }.prefix(limit))
+    }
+}
+#endif
 

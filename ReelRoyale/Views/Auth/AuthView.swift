@@ -5,84 +5,103 @@ struct AuthView: View {
     
     var body: some View {
         ZStack {
-            // Background
+            // Background - Dark navy gradient
             LinearGradient(
-                colors: [Color.deepOcean, Color.oceanBlue],
+                colors: [Color.navyDark, Color.navyPrimary, Color.navyLight],
                 startPoint: .top,
                 endPoint: .bottom
             )
             .ignoresSafeArea()
             
-            // Decorative elements
+            // Decorative elements - playful bubbles
             GeometryReader { geometry in
                 Circle()
-                    .fill(Color.seafoam.opacity(0.1))
+                    .fill(Color.aquaHighlight.opacity(0.12))
                     .frame(width: 300, height: 300)
                     .offset(x: -100, y: -100)
                 
                 Circle()
-                    .fill(Color.coral.opacity(0.1))
+                    .fill(Color.coralAccent.opacity(0.1))
                     .frame(width: 200, height: 200)
                     .offset(x: geometry.size.width - 100, y: geometry.size.height - 200)
+                
+                Circle()
+                    .fill(Color.sunnyYellow.opacity(0.08))
+                    .frame(width: 150, height: 150)
+                    .offset(x: geometry.size.width * 0.6, y: geometry.size.height * 0.3)
             }
             
             ScrollView {
                 VStack(spacing: 32) {
                     // Logo section
                     VStack(spacing: 16) {
-                        Image(systemName: "fish.fill")
-                            .font(.system(size: 70))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: [Color.seafoam, Color.coral],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
+                        ZStack {
+                            // Glow effect behind logo
+                            Circle()
+                                .fill(Color.aquaHighlight.opacity(0.2))
+                                .frame(width: 120, height: 120)
+                                .blur(radius: 20)
+                            
+                            Image(systemName: "fish.fill")
+                                .font(.system(size: 70))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [Color.aquaHighlight, Color.coralAccent],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
                                 )
-                            )
+                        }
                         
                         Text("Reel Royale")
                             .font(.system(size: 32, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                         
                         Text("Claim your throne")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.7))
+                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                            .foregroundColor(.aquaHighlight)
                     }
                     .padding(.top, 60)
                     
-                    // Auth toggle
+                    // Auth toggle - pill style
                     HStack(spacing: 0) {
                         Button {
-                            withAnimation {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                 isShowingLogin = true
                             }
                         } label: {
                             Text("Sign In")
-                                .fontWeight(.semibold)
-                                .foregroundColor(isShowingLogin ? .white : .white.opacity(0.5))
+                                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                .foregroundColor(isShowingLogin ? .navyPrimary : .white.opacity(0.6))
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(isShowingLogin ? Color.white.opacity(0.2) : Color.clear)
-                                .cornerRadius(8)
+                                .padding(.vertical, 14)
+                                .background(
+                                    Capsule()
+                                        .fill(isShowingLogin ? Color.white : Color.clear)
+                                )
                         }
                         
                         Button {
-                            withAnimation {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                 isShowingLogin = false
                             }
                         } label: {
                             Text("Sign Up")
-                                .fontWeight(.semibold)
-                                .foregroundColor(!isShowingLogin ? .white : .white.opacity(0.5))
+                                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                .foregroundColor(!isShowingLogin ? .navyPrimary : .white.opacity(0.6))
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(!isShowingLogin ? Color.white.opacity(0.2) : Color.clear)
-                                .cornerRadius(8)
+                                .padding(.vertical, 14)
+                                .background(
+                                    Capsule()
+                                        .fill(!isShowingLogin ? Color.white : Color.clear)
+                                )
                         }
                     }
                     .padding(4)
-                    .background(Color.white.opacity(0.1))
-                    .cornerRadius(12)
+                    .background(
+                        Capsule()
+                            .fill(Color.white.opacity(0.15))
+                    )
                     .padding(.horizontal, 32)
                     
                     // Auth form

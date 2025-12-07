@@ -24,11 +24,11 @@ struct LoginView: View {
                         .accentColor(.seafoam)
                 }
                 .padding()
-                .background(Color.white.opacity(0.1))
-                .cornerRadius(12)
+                .background(Color.white.opacity(0.12))
+                .cornerRadius(16)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.white.opacity(0.25), lineWidth: 1.5)
                 )
             }
             
@@ -83,17 +83,19 @@ struct LoginView: View {
                             .fontWeight(.semibold)
                     }
                 }
+                .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
+                .padding(.vertical, 18)
                 .background(
                     LinearGradient(
-                        colors: [Color.coral, Color.sunset],
+                        colors: [Color.coralAccent, Color.sunnyYellow],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
                 )
-                .cornerRadius(12)
+                .cornerRadius(24)
+                .shadow(color: Color.coralAccent.opacity(0.4), radius: 8, x: 0, y: 4)
             }
             .disabled(viewModel.isLoading || !viewModel.canSignIn)
             .opacity(viewModel.canSignIn ? 1 : 0.6)

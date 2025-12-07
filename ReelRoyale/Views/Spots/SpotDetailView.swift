@@ -58,13 +58,23 @@ struct SpotDetailView: View {
     @ViewBuilder
     private func spotHeader(_ spot: Spot) -> some View {
         VStack(spacing: 0) {
-            // Mini map
-            Map(coordinateRegion: .constant(MKCoordinateRegion(
-                center: spot.coordinate,
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-            )), annotationItems: [spot]) { spot in
-                MapMarker(coordinate: spot.coordinate, tint: .oceanBlue)
-            }
+            MapboxSpotsView(
+                spots: [
+                    SpotWithDetails(
+                        spot: spot,
+                        kingUser: viewModel.kingUser,
+                        bestCatch: viewModel.bestCatch,
+                        territory: viewModel.territory?.territory,
+                        distance: nil,
+                        catchCount: viewModel.leaderboard.count
+                    )
+                ],
+                selectedSpot: .constant(nil),
+                region: .constant(MKCoordinateRegion(
+                    center: spot.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                ))
+            )
             .frame(height: 200)
             .allowsHitTesting(false)
             
@@ -324,37 +334,42 @@ struct SpotDetailView: View {
             Button {
                 appState.spotsNavigationPath.append(NavigationDestination.logCatch(spotId: spot.id))
             } label: {
-                HStack {
+                HStack(spacing: 8) {
                     Image(systemName: "plus.circle.fill")
                     Text("Log a Catch")
                 }
-                .fontWeight(.semibold)
+                .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
+                .padding(.vertical, 18)
                 .background(
-                    LinearGradient(
-                        colors: [Color.coral, Color.sunset],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.coralAccent, Color.sunnyYellow],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .shadow(color: Color.coralAccent.opacity(0.4), radius: 8, x: 0, y: 4)
                 )
-                .cornerRadius(12)
             }
             
             Button {
                 appState.spotsNavigationPath.append(NavigationDestination.regulations(spotId: spot.id))
             } label: {
-                HStack {
-                    Image(systemName: "doc.text")
+                HStack(spacing: 8) {
+                    Image(systemName: "doc.text.fill")
                     Text("View Regulations")
                 }
-                .fontWeight(.medium)
-                .foregroundColor(.oceanBlue)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundColor(.navyPrimary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(Color.oceanBlue.opacity(0.1))
-                .cornerRadius(12)
+                .padding(.vertical, 16)
+                .background(
+                    Capsule()
+                        .fill(Color.navyPrimary.opacity(0.1))
+                )
             }
         }
         .padding(.horizontal)

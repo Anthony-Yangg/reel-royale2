@@ -160,36 +160,44 @@ struct ProfileView: View {
     private func statCard(value: String, label: String, icon: String, color: Color) -> some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
-                .font(.title2)
+                .font(.system(size: 24, weight: .bold))
                 .foregroundColor(color)
             
             Text(value)
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(size: 28, weight: .bold, design: .rounded))
             
             Text(label)
-                .font(.caption)
+                .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding()
-        .background(color.opacity(0.1))
-        .cornerRadius(16)
+        .padding(.vertical, 16)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.cardWhite)
+                .shadow(color: color.opacity(0.2), radius: 8, x: 0, y: 4)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(color.opacity(0.2), lineWidth: 2)
+        )
     }
     
     private func extraStatItem(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
-                .font(.caption)
+                .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundColor(.secondary)
             Text(value)
-                .font(.subheadline)
-                .fontWeight(.medium)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.cardWhite)
+                .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 3)
+        )
     }
     
     @ViewBuilder
@@ -254,13 +262,18 @@ struct ProfileView: View {
                 await viewModel.signOut()
             }
         } label: {
-            Text("Sign Out")
-                .fontWeight(.medium)
-                .foregroundColor(.coral)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.coral.opacity(0.1))
-                .cornerRadius(12)
+            HStack {
+                Image(systemName: "arrow.right.circle.fill")
+                Text("Sign Out")
+            }
+            .font(.system(size: 16, weight: .semibold, design: .rounded))
+            .foregroundColor(.coralAccent)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(
+                Capsule()
+                    .fill(Color.coralAccent.opacity(0.12))
+            )
         }
         .padding(.horizontal)
     }
