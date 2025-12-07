@@ -1,0 +1,48 @@
+# macOS
+.DS_Store
+
+# Xcode user data & derived products
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# CocoaPods (not used, but ignore if added)
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+
+# Carthage
+Carthage/Build/
+
+# Logs & coverage
+*.log
+*.xccoverage
+*.xcresult
+
+# Ruby / bundler
+.bundle/
+vendor/bundle/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# SwiftLint / formatting caches
+.swiftlint.yml~
+swiftformat.*.cache
+
+# Editor
+.idea/
+.vscode/
