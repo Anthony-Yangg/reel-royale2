@@ -152,6 +152,151 @@ struct CatchWithDetails: Identifiable, Equatable {
     var id: String { fishCatch.id }
 }
 
+struct CommunityPost: Identifiable, Codable, Equatable, Hashable {
+    let id: String
+    let userId: String
+    var mediaURLs: [String]
+    var caption: String
+    var locationName: String?
+    var hashtags: [String]
+    let createdAt: Date
+    var updatedAt: Date?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId = "user_id"
+        case mediaURLs = "media_urls"
+        case caption
+        case locationName = "location_name"
+        case hashtags
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+    }
+    
+    init(
+        id: String = UUID().uuidString,
+        userId: String,
+        mediaURLs: [String],
+        caption: String,
+        locationName: String? = nil,
+        hashtags: [String] = [],
+        createdAt: Date = Date(),
+        updatedAt: Date? = nil
+    ) {
+        self.id = id
+        self.userId = userId
+        self.mediaURLs = mediaURLs
+        self.caption = caption
+        self.locationName = locationName
+        self.hashtags = hashtags
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+}
+
+struct CommunityComment: Identifiable, Codable, Equatable, Hashable {
+    let id: String
+    let postId: String
+    let userId: String
+    var text: String
+    let createdAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case postId = "post_id"
+        case userId = "user_id"
+        case text
+        case createdAt = "created_at"
+    }
+    
+    init(
+        id: String = UUID().uuidString,
+        postId: String,
+        userId: String,
+        text: String,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.postId = postId
+        self.userId = userId
+        self.text = text
+        self.createdAt = createdAt
+    }
+}
+
+struct CommunityPostDetails: Identifiable, Equatable {
+    let post: CommunityPost
+    let author: User?
+    var likeCount: Int
+    var commentCount: Int
+    var isLikedByCurrentUser: Bool
+    var isFollowingAuthor: Bool
+    
+    var id: String { post.id }
+}
+
+struct Follow: Identifiable, Codable, Equatable, Hashable {
+    let id: String
+    let followerId: String
+    let followingId: String
+    let createdAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case followerId = "follower_id"
+        case followingId = "following_id"
+        case createdAt = "created_at"
+    }
+    
+    init(
+        id: String = UUID().uuidString,
+        followerId: String,
+        followingId: String,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.followerId = followerId
+        self.followingId = followingId
+        self.createdAt = createdAt
+    }
+}
+
+struct PostLike: Identifiable, Codable, Equatable, Hashable {
+    let id: String
+    let postId: String
+    let userId: String
+    let createdAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case postId = "post_id"
+        case userId = "user_id"
+        case createdAt = "created_at"
+    }
+    
+    init(
+        id: String = UUID().uuidString,
+        postId: String,
+        userId: String,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.postId = postId
+        self.userId = userId
+        self.createdAt = createdAt
+    }
+}
+
+struct PostLikeInfo {
+    let postId: String
+    let totalCount: Int
+    let isLikedByCurrentUser: Bool
+    
+    static func empty(for postId: String) -> PostLikeInfo {
+        PostLikeInfo(postId: postId, totalCount: 0, isLikedByCurrentUser: false)
+    }
+}
+
 /// Input for creating a new catch
 struct CreateCatchInput {
     var spotId: String

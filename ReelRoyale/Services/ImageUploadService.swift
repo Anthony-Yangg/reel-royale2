@@ -14,6 +14,8 @@ protocol ImageUploadServiceProtocol {
     
     /// Delete an image by URL
     func deleteImage(at url: String) async throws
+    
+    func uploadCommunityPostMedia(_ image: UIImage, for postId: String) async throws -> String
 }
 
 /// Supabase Storage implementation for image uploads
@@ -64,6 +66,17 @@ final class SupabaseImageUploadService: ImageUploadServiceProtocol {
         }
         
         try await supabase.deleteFile(bucket: components.bucket, path: components.path)
+    }
+    
+    func uploadCommunityPostMedia(_ image: UIImage, for postId: String) async throws -> String {
+        let data = try prepareImage(image, maxSize: 2048)
+        let path = "\(postId)/media_\(UUID().uuidString).jpg"
+        
+        return try await supabase.uploadFile(
+            bucket: AppConstants.Supabase.Buckets.communityPosts,
+            path: path,
+            data: data
+        )
     }
     
     // MARK: - Private Helpers

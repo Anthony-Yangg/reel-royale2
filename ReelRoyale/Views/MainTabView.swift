@@ -5,7 +5,6 @@ struct MainTabView: View {
     
     var body: some View {
         TabView(selection: $appState.selectedTab) {
-            // Spots Tab
             NavigationStack(path: $appState.spotsNavigationPath) {
                 SpotsView()
                     .navigationDestination(for: NavigationDestination.self) { destination in
@@ -17,7 +16,6 @@ struct MainTabView: View {
             }
             .tag(AppTab.spots)
             
-            // Community Tab
             NavigationStack(path: $appState.communityNavigationPath) {
                 CommunityView()
                     .navigationDestination(for: NavigationDestination.self) { destination in
@@ -29,7 +27,6 @@ struct MainTabView: View {
             }
             .tag(AppTab.community)
             
-            // Profile Tab
             NavigationStack(path: $appState.profileNavigationPath) {
                 ProfileView()
                     .navigationDestination(for: NavigationDestination.self) { destination in
@@ -41,7 +38,6 @@ struct MainTabView: View {
             }
             .tag(AppTab.profile)
             
-            // More Tab
             NavigationStack {
                 MoreView()
                     .navigationDestination(for: NavigationDestination.self) { destination in
@@ -88,11 +84,16 @@ struct MainTabView: View {
             
         case .settings:
             SettingsView()
+            
+        case .createPost:
+            CreatePostView()
+            
+        case .postDetail(let postId):
+            PostDetailView(postId: postId)
         }
     }
 }
 
-// Settings placeholder
 struct SettingsView: View {
     var body: some View {
         List {
@@ -131,4 +132,3 @@ struct SettingsView: View {
     MainTabView()
         .environmentObject(AppState.shared)
 }
-

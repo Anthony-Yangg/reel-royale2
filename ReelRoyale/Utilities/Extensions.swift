@@ -194,6 +194,7 @@ extension Notification.Name {
     static let catchCreated = Notification.Name("catchCreated")
     static let spotUpdated = Notification.Name("spotUpdated")
     static let kingDethroned = Notification.Name("kingDethroned")
+    static let communityPostCreated = Notification.Name("communityPostCreated")
 }
 
 // MARK: - Error Handling

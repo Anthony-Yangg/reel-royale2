@@ -8,18 +8,19 @@ struct MeasurementView: View {
     
     var body: some View {
         ZStack {
-            // AR View
             if viewModel.isARAvailable {
-                ARMeasurementViewRepresentable(viewModel: viewModel)
-                    .ignoresSafeArea()
+                ZStack {
+                    ARMeasurementViewRepresentable(viewModel: viewModel)
+                        .ignoresSafeArea()
+                    
+                    ARMeasurementGuidelines(state: viewModel.measurementState)
+                        .allowsHitTesting(false)
+                }
             } else {
-                // Fallback for simulator or unsupported devices
                 simulatorFallbackView
             }
             
-            // Overlay UI
             VStack {
-                // Top bar
                 HStack {
                     Button {
                         viewModel.stopSession()
@@ -224,11 +225,14 @@ struct ARMeasurementViewRepresentable: UIViewRepresentable {
         arView.addGestureRecognizer(tapGesture)
         
         context.coordinator.arView = arView
+        viewModel.attachARView(arView)
         
         return arView
     }
     
-    func updateUIView(_ uiView: ARSCNView, context: Context) {}
+    func updateUIView(_ uiView: ARSCNView, context: Context) {
+        context.coordinator.update(state: viewModel.measurementState)
+    }
     
     func makeCoordinator() -> ARMeasurementCoordinator {
         ARMeasurementCoordinator(viewModel: viewModel)

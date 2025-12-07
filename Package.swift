@@ -20,7 +20,8 @@ let package = Package(
             name: "ReelRoyale",
             dependencies: [
                 .product(name: "Supabase", package: "supabase-swift"),
-            ]
+            ],
+            resources: [.process(".env")]
         ),
     ]
 )

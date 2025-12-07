@@ -63,10 +63,7 @@ class ARMeasurementHelper {
     }
 }
 
-/// Extended AR Coordinator with visualization
 extension ARMeasurementCoordinator {
-    private static var measurementHelper = ARMeasurementHelper()
-    
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         // Could add real-time measurement updates here
     }

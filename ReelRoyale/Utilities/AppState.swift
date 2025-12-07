@@ -2,6 +2,152 @@ import Foundation
 import SwiftUI
 import Combine
 
+protocol CommunityPostRepositoryProtocol {
+    func createPost(_ post: CommunityPost) async throws -> CommunityPost
+    func getFeed(limit: Int, offset: Int) async throws -> [CommunityPost]
+    func getPost(by id: String) async throws -> CommunityPost?
+    func getComments(for postId: String) async throws -> [CommunityComment]
+    func addComment(_ comment: CommunityComment) async throws -> CommunityComment
+    func toggleLike(postId: String, userId: String) async throws -> Bool
+    func getLikeInfo(for postIds: [String], currentUserId: String) async throws -> [String: PostLikeInfo]
+}
+
+final class SupabaseCommunityPostRepository: CommunityPostRepositoryProtocol {
+    private let supabase: SupabaseService
+    
+    init(supabase: SupabaseService) {
+        self.supabase = supabase
+    }
+    
+    func createPost(_ post: CommunityPost) async throws -> CommunityPost {
+        try await supabase.insertAndReturn(post, into: AppConstants.Supabase.Tables.communityPosts)
+    }
+    
+    func getFeed(limit: Int, offset: Int) async throws -> [CommunityPost] {
+        try await supabase.database
+            .from(AppConstants.Supabase.Tables.communityPosts)
+            .select()
+            .order("created_at", ascending: false)
+            .range(from: offset, to: offset + limit - 1)
+            .execute()
+            .value
+    }
+    
+    func getPost(by id: String) async throws -> CommunityPost? {
+        try await supabase.fetchById(from: AppConstants.Supabase.Tables.communityPosts, id: id)
+    }
+    
+    func getComments(for postId: String) async throws -> [CommunityComment] {
+        try await supabase.database
+            .from(AppConstants.Supabase.Tables.postComments)
+            .select()
+            .eq("post_id", value: postId)
+            .order("created_at", ascending: true)
+            .execute()
+            .value
+    }
+    
+    func addComment(_ comment: CommunityComment) async throws -> CommunityComment {
+        try await supabase.insertAndReturn(comment, into: AppConstants.Supabase.Tables.postComments)
+    }
+    
+    func toggleLike(postId: String, userId: String) async throws -> Bool {
+        let hasLiked = try await hasUserLiked(postId: postId, userId: userId)
+        if hasLiked {
+            try await removeLike(postId: postId, userId: userId)
+            return false
+        } else {
+            _ = try await addLike(postId: postId, userId: userId)
+            return true
+        }
+    }
+    
+    func getLikeInfo(for postIds: [String], currentUserId: String) async throws -> [String: PostLikeInfo] {
+        guard !postIds.isEmpty else { return [:] }
+        let likes: [PostLike] = try await supabase.database
+            .from(AppConstants.Supabase.Tables.postLikes)
+            .select()
+            .in("post_id", values: postIds)
+            .execute()
+            .value
+        var likeInfo: [String: PostLikeInfo] = [:]
+        for postId in postIds {
+            let postLikes = likes.filter { $0.postId == postId }
+            let isLiked = postLikes.contains { $0.userId == currentUserId }
+            likeInfo[postId] = PostLikeInfo(postId: postId, totalCount: postLikes.count, isLikedByCurrentUser: isLiked)
+        }
+        return likeInfo
+    }
+    
+    private func addLike(postId: String, userId: String) async throws -> PostLike {
+        let like = PostLike(postId: postId, userId: userId)
+        return try await supabase.insertAndReturn(like, into: AppConstants.Supabase.Tables.postLikes)
+    }
+    
+    private func removeLike(postId: String, userId: String) async throws {
+        try await supabase.database
+            .from(AppConstants.Supabase.Tables.postLikes)
+            .delete()
+            .eq("post_id", value: postId)
+            .eq("user_id", value: userId)
+            .execute()
+    }
+    
+    private func hasUserLiked(postId: String, userId: String) async throws -> Bool {
+        let likes: [PostLike] = try await supabase.database
+            .from(AppConstants.Supabase.Tables.postLikes)
+            .select()
+            .eq("post_id", value: postId)
+            .eq("user_id", value: userId)
+            .limit(1)
+            .execute()
+            .value
+        return !likes.isEmpty
+    }
+}
+
+protocol FollowRepositoryProtocol {
+    func isFollowing(followerId: String, followingId: String) async throws -> Bool
+    func toggleFollow(followerId: String, followingId: String) async throws -> Bool
+}
+
+final class SupabaseFollowRepository: FollowRepositoryProtocol {
+    private let supabase: SupabaseService
+    
+    init(supabase: SupabaseService) {
+        self.supabase = supabase
+    }
+    
+    func isFollowing(followerId: String, followingId: String) async throws -> Bool {
+        let follows: [Follow] = try await supabase.database
+            .from(AppConstants.Supabase.Tables.follows)
+            .select()
+            .eq("follower_id", value: followerId)
+            .eq("following_id", value: followingId)
+            .limit(1)
+            .execute()
+            .value
+        return !follows.isEmpty
+    }
+    
+    func toggleFollow(followerId: String, followingId: String) async throws -> Bool {
+        let currentlyFollowing = try await isFollowing(followerId: followerId, followingId: followingId)
+        if currentlyFollowing {
+            try await supabase.database
+                .from(AppConstants.Supabase.Tables.follows)
+                .delete()
+                .eq("follower_id", value: followerId)
+                .eq("following_id", value: followingId)
+                .execute()
+            return false
+        } else {
+            let follow = Follow(followerId: followerId, followingId: followingId)
+            _ = try await supabase.insertAndReturn(follow, into: AppConstants.Supabase.Tables.follows)
+            return true
+        }
+    }
+}
+
 /// Global application state
 @MainActor
 final class AppState: ObservableObject {
@@ -46,6 +192,8 @@ final class AppState: ObservableObject {
     private(set) var catchRepository: CatchRepositoryProtocol!
     private(set) var territoryRepository: TerritoryRepositoryProtocol!
     private(set) var likeRepository: LikeRepositoryProtocol!
+    private(set) var communityPostRepository: CommunityPostRepositoryProtocol!
+    private(set) var followRepository: FollowRepositoryProtocol!
     private(set) var weatherService: WeatherServiceProtocol!
     private(set) var regulationsService: RegulationsServiceProtocol!
     private(set) var fishIDService: FishIDServiceProtocol!
@@ -68,12 +216,14 @@ final class AppState: ObservableObject {
         catchRepository = SupabaseCatchRepository(supabase: supabaseService)
         territoryRepository = SupabaseTerritoryRepository(supabase: supabaseService)
         likeRepository = SupabaseLikeRepository(supabase: supabaseService)
+        communityPostRepository = SupabaseCommunityPostRepository(supabase: supabaseService)
+        followRepository = SupabaseFollowRepository(supabase: supabaseService)
         
         // Initialize services
         authService = SupabaseAuthService(supabase: supabaseService, userRepository: userRepository)
         weatherService = OpenWeatherService()
         regulationsService = SupabaseRegulationsService(supabase: supabaseService)
-        fishIDService = CoreMLFishIDService()
+        fishIDService = OpenRouterFishIDService()
         measurementService = ARMeasurementService()
         imageUploadService = SupabaseImageUploadService(supabase: supabaseService)
         gameService = GameService(
@@ -193,5 +343,7 @@ enum NavigationDestination: Hashable {
     case measureFish
     case leaderboard
     case settings
+    case createPost
+    case postDetail(postId: String)
 }
 

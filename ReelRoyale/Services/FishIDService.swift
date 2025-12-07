@@ -1,147 +1,134 @@
 import Foundation
 import UIKit
-import Vision
-import CoreML
 
-/// Protocol for AI fish identification
 protocol FishIDServiceProtocol {
-    /// Identify fish species from an image
     func identifyFish(from image: UIImage) async throws -> FishIDResult
-    
-    /// Check if on-device ML model is available
     var isOnDeviceModelAvailable: Bool { get }
 }
 
-/// Core ML based fish identification service
-/// Uses on-device model when available, falls back to cloud API
-final class CoreMLFishIDService: FishIDServiceProtocol {
-    private var mlModel: VNCoreMLModel?
+final class OpenRouterFishIDService: FishIDServiceProtocol {
+    private let session: URLSession
     
-    init() {
-        loadModel()
+    init(session: URLSession = .shared) {
+        self.session = session
     }
     
     var isOnDeviceModelAvailable: Bool {
-        mlModel != nil
-    }
-    
-    private func loadModel() {
-        // TODO: Add actual Core ML model file (FishClassifier.mlmodelc)
-        // For now, this will fail gracefully and use fallback
-        do {
-            // Attempt to load bundled model
-            // let config = MLModelConfiguration()
-            // let model = try FishClassifier(configuration: config).model
-            // mlModel = try VNCoreMLModel(for: model)
-            mlModel = nil
-        } catch {
-            print("Failed to load Core ML model: \(error)")
-            mlModel = nil
-        }
+        false
     }
     
     func identifyFish(from image: UIImage) async throws -> FishIDResult {
-        if let model = mlModel {
-            return try await identifyWithCoreML(image: image, model: model)
-        } else {
-            return try await identifyWithCloudAPI(image: image)
-        }
-    }
-    
-    private func identifyWithCoreML(image: UIImage, model: VNCoreMLModel) async throws -> FishIDResult {
-        guard let cgImage = image.cgImage else {
-            throw AppError.validationError("Invalid image format")
-        }
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            let request = VNCoreMLRequest(model: model) { request, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-                
-                guard let results = request.results as? [VNClassificationObservation],
-                      let topResult = results.first else {
-                    continuation.resume(throwing: AppError.validationError("No classification results"))
-                    return
-                }
-                
-                let alternatives = results.dropFirst().prefix(3).map { observation in
-                    (species: observation.identifier, confidence: Double(observation.confidence))
-                }
-                
-                let result = FishIDResult(
-                    species: topResult.identifier,
-                    confidence: Double(topResult.confidence),
-                    alternativeSpecies: alternatives,
-                    timestamp: Date()
-                )
-                
-                continuation.resume(returning: result)
-            }
-            
-            request.imageCropAndScaleOption = .centerCrop
-            
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            
-            do {
-                try handler.perform([request])
-            } catch {
-                continuation.resume(throwing: error)
-            }
-        }
-    }
-    
-    private func identifyWithCloudAPI(image: UIImage) async throws -> FishIDResult {
-        // Cloud-based fallback for fish identification
-        // This would call an external API (e.g., custom model on AWS/GCP, or a fish ID service)
-        
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+        guard let imageData = image.jpegData(compressionQuality: 0.9) else {
             throw AppError.validationError("Failed to encode image")
         }
         
-        // Check if API is configured
-        guard AppConstants.FishID.baseURL != "https://your-fish-id-api.com" else {
-            // Return demo result when API is not configured
-            return createDemoResult(from: image)
+        guard !AppConstants.FishID.apiKey.isEmpty else {
+            throw AppError.validationError("Add OPENROUTER_API_KEY to .env")
         }
         
-        guard let url = URL(string: "\(AppConstants.FishID.baseURL)/identify") else {
-            throw AppError.networkError("Invalid Fish ID API URL")
+        let request = try buildRequest(imageData: imageData)
+        let (data, response) = try await session.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw AppError.networkError("Invalid response")
         }
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(AppConstants.FishID.apiKey, forHTTPHeaderField: "Authorization")
-        
-        let payload: [String: Any] = [
-            "image": imageData.base64EncodedString()
-        ]
-        
-        request.httpBody = try JSONSerialization.data(withJSONObject: payload)
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200 else {
-            throw AppError.networkError("Fish ID API request failed")
+        guard (200..<300).contains(httpResponse.statusCode) else {
+            throw AppError.networkError("Fish ID request failed (\(httpResponse.statusCode))")
         }
         
-        // Parse response (adjust based on actual API response format)
-        let apiResult = try JSONDecoder().decode(FishIDAPIResponse.self, from: data)
+        let content = try extractContent(from: data)
+        let parsed = try parseLLMResponse(content)
+        
+        let species = parsed.species.trimmingCharacters(in: .whitespacesAndNewlines)
+        let confidence = clamp(parsed.confidence ?? 0.5)
+        let alternatives = parsed.alternatives?.map { alt in
+            (species: alt.species.trimmingCharacters(in: .whitespacesAndNewlines), confidence: clamp(alt.confidence ?? 0.3))
+        } ?? []
         
         return FishIDResult(
-            species: apiResult.species,
-            confidence: apiResult.confidence,
-            alternativeSpecies: apiResult.alternatives.map { ($0.species, $0.confidence) },
+            species: species.isEmpty ? "Unknown" : species,
+            confidence: confidence,
+            alternativeSpecies: alternatives,
             timestamp: Date()
         )
     }
     
-    /// Creates a demo result for testing when no ML model or API is available
+    private func buildRequest(imageData: Data) throws -> URLRequest {
+        guard let url = URL(string: "\(AppConstants.FishID.baseURL)/chat/completions") else {
+            throw AppError.validationError("Invalid Fish ID URL")
+        }
+        
+        let imageBase64 = imageData.base64EncodedString()
+        var body: [String: Any] = [
+            "model": AppConstants.FishID.model,
+            "messages": [
+                [
+                    "role": "system",
+                    "content": "You are an expert fish species identifier. Return concise JSON."
+                ],
+                [
+                    "role": "user",
+                    "content": [
+                        ["type": "text", "text": "Identify the fish species. Respond only with JSON: {\"species\": \"<common name>\", \"confidence\": <0-1>, \"alternatives\": [{\"species\": \"name\", \"confidence\": <0-1>}]}"],
+                        ["type": "image_url", "image_url": ["url": "data:image/jpeg;base64,\(imageBase64)"]]
+                    ]
+                ]
+            ],
+            "temperature": 0.2,
+            "max_tokens": 400
+        ]
+        
+        if #available(iOS 17.0, *), !AppConstants.FishID.model.isEmpty {
+            body["response_format"] = ["type": "json_object"]
+        }
+        
+        let bodyData = try JSONSerialization.data(withJSONObject: body)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = bodyData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(AppConstants.FishID.apiKey)", forHTTPHeaderField: "Authorization")
+        if !AppConstants.FishID.site.isEmpty {
+            request.setValue(AppConstants.FishID.site, forHTTPHeaderField: "X-Title")
+        }
+        if !AppConstants.FishID.referer.isEmpty {
+            request.setValue(AppConstants.FishID.referer, forHTTPHeaderField: "HTTP-Referer")
+        }
+        return request
+    }
+    
+    private func extractContent(from data: Data) throws -> String {
+        let decoder = JSONDecoder()
+        let response = try decoder.decode(OpenRouterChatResponse.self, from: data)
+        guard let choice = response.choices.first else {
+            throw AppError.networkError("Empty response from Fish ID model")
+        }
+        let content = choice.message.content.stringValue
+        guard !content.isEmpty else {
+            throw AppError.networkError("No content from Fish ID model")
+        }
+        return content
+    }
+    
+    private func parseLLMResponse(_ content: String) throws -> ParsedFishIDLLMResponse {
+        let cleaned = content
+            .replacingOccurrences(of: "```json", with: "")
+            .replacingOccurrences(of: "```", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let data = cleaned.data(using: .utf8) else {
+            throw AppError.networkError("Unable to read Fish ID response")
+        }
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(ParsedFishIDLLMResponse.self, from: data)
+    }
+    
+    private func clamp(_ value: Double) -> Double {
+        min(max(value, 0), 1)
+    }
+    
     private func createDemoResult(from image: UIImage) -> FishIDResult {
-        // Analyze image colors to make a "smart" guess
         let species = analyzeImageForSpecies(image)
         
         return FishIDResult(
@@ -157,8 +144,6 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
     }
     
     private func analyzeImageForSpecies(_ image: UIImage) -> (String, Double) {
-        // Simple heuristic based on dominant colors
-        // This is a placeholder - real implementation would use actual ML
         let commonSpecies = [
             "Largemouth Bass",
             "Smallmouth Bass",
@@ -172,7 +157,6 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
             "Striped Bass"
         ]
         
-        // Random selection weighted by common catches
         let selected = commonSpecies.randomElement() ?? "Largemouth Bass"
         let confidence = Double.random(in: 0.65...0.92)
         
@@ -180,16 +164,58 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
     }
 }
 
-// MARK: - API Response Models
-
-private struct FishIDAPIResponse: Decodable {
-    let species: String
-    let confidence: Double
-    let alternatives: [Alternative]
-    
+struct ParsedFishIDLLMResponse: Decodable {
     struct Alternative: Decodable {
         let species: String
-        let confidence: Double
+        let confidence: Double?
     }
+    
+    let species: String
+    let confidence: Double?
+    let alternatives: [Alternative]?
+}
+
+struct OpenRouterChatResponse: Decodable {
+    struct Choice: Decodable {
+        let message: OpenRouterMessage
+    }
+    
+    let choices: [Choice]
+}
+
+struct OpenRouterMessage: Decodable {
+    let content: OpenRouterMessageContent
+}
+
+enum OpenRouterMessageContent: Decodable {
+    case string(String)
+    case parts([OpenRouterContentPart])
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let string = try? container.decode(String.self) {
+            self = .string(string)
+            return
+        }
+        if let parts = try? container.decode([OpenRouterContentPart].self) {
+            self = .parts(parts)
+            return
+        }
+        throw DecodingError.typeMismatch(String.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Unsupported content type"))
+    }
+    
+    var stringValue: String {
+        switch self {
+        case .string(let string):
+            return string
+        case .parts(let parts):
+            return parts.compactMap { $0.text }.joined(separator: "\n")
+        }
+    }
+}
+
+struct OpenRouterContentPart: Decodable {
+    let type: String?
+    let text: String?
 }
 

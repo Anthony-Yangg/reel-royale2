@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import ARKit
+import SceneKit
 
 /// ViewModel for AR Fish Measurement screen
 @MainActor
@@ -57,6 +58,9 @@ final class MeasurementViewModel: ObservableObject {
     
     init(measurementService: MeasurementServiceProtocol? = nil) {
         self.measurementService = measurementService ?? AppState.shared.measurementService
+        if !self.measurementService.isARAvailable {
+            instructions = "AR not available on this device or simulator. Use the demo slider or try on a supported device."
+        }
         setupBindings()
     }
     
@@ -76,6 +80,7 @@ final class MeasurementViewModel: ObservableObject {
     
     func startSession() async {
         guard isARAvailable else {
+            instructions = "AR not available on this device or simulator. Use the demo slider or try on a supported device."
             showError(message: "AR is not available on this device")
             return
         }
@@ -119,6 +124,11 @@ final class MeasurementViewModel: ObservableObject {
         instructions = "Tap the head of the fish to start measuring"
     }
     
+    func attachARView(_ view: ARSCNView) {
+        guard let service = measurementService as? ARMeasurementService else { return }
+        service.attach(to: view)
+    }
+    
     // MARK: - Helpers
     
     private func showError(message: String) {
@@ -135,9 +145,17 @@ class ARMeasurementCoordinator: NSObject {
     var viewModel: MeasurementViewModel
     var startPoint: simd_float3?
     weak var arView: ARSCNView?
+    let measurementHelper = ARMeasurementHelper()
     
     init(viewModel: MeasurementViewModel) {
         self.viewModel = viewModel
+    }
+    
+    func update(state: MeasurementViewModel.MeasurementState) {
+        guard let scene = arView?.scene else { return }
+        if state == .scanning || state == .ready {
+            measurementHelper.reset(in: scene)
+        }
     }
     
     func handleTap(at point: CGPoint, in view: ARSCNView) {
@@ -152,10 +170,15 @@ class ARMeasurementCoordinator: NSObject {
             case .scanning:
                 service.setStartPoint(hitPoint)
                 startPoint = hitPoint
+                measurementHelper.reset(in: view.scene)
+                let vector = SCNVector3(hitPoint.x, hitPoint.y, hitPoint.z)
+                measurementHelper.setStartPoint(vector, in: view.scene)
                 viewModel.setStartPoint()
                 
             case .startPointSet:
                 service.setEndPoint(hitPoint)
+                let vector = SCNVector3(hitPoint.x, hitPoint.y, hitPoint.z)
+                measurementHelper.setEndPoint(vector, in: view.scene)
                 viewModel.setEndPoint()
                 
             default:

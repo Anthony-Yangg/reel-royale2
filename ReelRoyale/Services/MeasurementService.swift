@@ -1,6 +1,7 @@
 import Foundation
 import ARKit
 import RealityKit
+import SceneKit
 import Combine
 
 /// Protocol for fish measurement operations
@@ -27,6 +28,7 @@ protocol MeasurementServiceProtocol {
 /// ARKit-based fish length measurement service
 final class ARMeasurementService: NSObject, MeasurementServiceProtocol {
     private var arSession: ARSession?
+    weak var arView: ARSCNView?
     private var startPoint: simd_float3?
     private var endPoint: simd_float3?
     
@@ -44,19 +46,35 @@ final class ARMeasurementService: NSObject, MeasurementServiceProtocol {
         ARWorldTrackingConfiguration.isSupported
     }
     
+    func attach(to view: ARSCNView) {
+        arView = view
+        arSession = view.session
+        arSession?.delegate = self
+    }
+    
     func startSession() async throws {
         guard isARAvailable else {
             throw AppError.validationError("AR is not supported on this device")
         }
         
-        arSession = ARSession()
-        arSession?.delegate = self
+        let session: ARSession
+        if let existingSession = arSession {
+            session = existingSession
+        } else if let viewSession = arView?.session {
+            session = viewSession
+        } else {
+            session = ARSession()
+        }
+        
+        arSession = session
+        arView?.session = session
+        session.delegate = self
         
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal, .vertical]
         configuration.environmentTexturing = .automatic
         
-        arSession?.run(configuration)
+        session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
     
     func stopSession() {

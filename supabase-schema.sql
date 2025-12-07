@@ -343,5 +343,65 @@ INSERT INTO regulations (region_name, title, content, license_required, license_
     ('Florida', 'Florida Saltwater Fishing Regulations', 'Regulations for saltwater fishing in Florida waters. Visit myfwc.com for complete and current regulations.', true, 'Florida Saltwater Fishing License required.', ARRAY['Some species require stamps', 'Seasonal closures apply to certain species'])
 ON CONFLICT DO NOTHING;
 
+CREATE TABLE IF NOT EXISTS community_posts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    media_urls TEXT[] NOT NULL DEFAULT '{}',
+    caption TEXT NOT NULL,
+    location_name TEXT,
+    hashtags TEXT[] DEFAULT '{}',
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+ALTER TABLE community_posts ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY community_posts_select ON community_posts FOR SELECT USING (true);
+CREATE POLICY community_posts_insert ON community_posts FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY community_posts_update ON community_posts FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY community_posts_delete ON community_posts FOR DELETE USING (auth.uid() = user_id);
+
+CREATE TABLE IF NOT EXISTS community_post_likes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    post_id UUID NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE(post_id, user_id)
+);
+
+ALTER TABLE community_post_likes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY community_post_likes_select ON community_post_likes FOR SELECT USING (true);
+CREATE POLICY community_post_likes_insert ON community_post_likes FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY community_post_likes_delete ON community_post_likes FOR DELETE USING (auth.uid() = user_id);
+
+CREATE TABLE IF NOT EXISTS community_post_comments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    post_id UUID NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    text TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+ALTER TABLE community_post_comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY community_post_comments_select ON community_post_comments FOR SELECT USING (true);
+CREATE POLICY community_post_comments_insert ON community_post_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY community_post_comments_delete ON community_post_comments FOR DELETE USING (auth.uid() = user_id);
+
+CREATE TABLE IF NOT EXISTS user_follows (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    follower_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    following_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE(follower_id, following_id)
+);
+
+ALTER TABLE user_follows ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY user_follows_select ON user_follows FOR SELECT USING (true);
+CREATE POLICY user_follows_insert ON user_follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
+CREATE POLICY user_follows_delete ON user_follows FOR DELETE USING (auth.uid() = follower_id);
+
 COMMIT;
 

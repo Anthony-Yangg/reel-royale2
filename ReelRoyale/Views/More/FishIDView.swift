@@ -1,5 +1,4 @@
 import SwiftUI
-import PhotosUI
 
 struct FishIDView: View {
     var initialImage: UIImage?
@@ -7,131 +6,39 @@ struct FishIDView: View {
     
     @StateObject private var viewModel = FishIDViewModel()
     @Environment(\.dismiss) var dismiss
-    @State private var photoItem: PhotosPickerItem?
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                // Header
-                VStack(spacing: 8) {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 50))
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [.purple, .pink],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                    
-                    Text("AI Fish Identification")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    Text("Take or select a photo to identify the species")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.top, 16)
-                
-                // Image section
-                VStack(spacing: 16) {
-                    if let image = viewModel.selectedImage {
+        ZStack {
+            Color.black.ignoresSafeArea()
+            
+            if let image = viewModel.selectedImage {
+                ScrollView {
+                    VStack(spacing: 24) {
+                        header
+                        
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 250)
+                            .frame(height: 260)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(Color.purple.opacity(0.3), lineWidth: 2)
                             )
+                            .padding(.horizontal)
                         
-                        HStack {
-                            PhotosPicker(selection: $photoItem, matching: .images) {
-                                Label("Change Photo", systemImage: "photo")
-                                    .font(.caption)
-                            }
-                            
-                            Spacer()
-                            
-                            Button {
-                                viewModel.reset()
-                            } label: {
-                                Label("Clear", systemImage: "xmark.circle")
-                                    .font(.caption)
-                                    .foregroundColor(.coral)
-                            }
+                        actionButtons
+                        
+                        if let result = viewModel.identificationResult {
+                            resultSection(result)
+                            resultActions(result)
                         }
-                    } else {
-                        VStack(spacing: 16) {
-                            PhotosPicker(selection: $photoItem, matching: .images) {
-                                VStack(spacing: 16) {
-                                    Image(systemName: "camera.fill")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(.purple)
-                                    
-                                    Text("Add a Photo")
-                                        .font(.headline)
-                                        .foregroundColor(.primary)
-                                    
-                                    Text("Take or select a clear photo of your fish")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 200)
-                                .background(Color.purple.opacity(0.1))
-                                .cornerRadius(16)
-                            }
-                        }
+                        
+                        tipsSection
+                        
+                        Spacer(minLength: 32)
                     }
                 }
-                .padding(.horizontal)
-                
-                // Identify button
-                if viewModel.selectedImage != nil {
-                    Button {
-                        Task {
-                            await viewModel.identifyFish()
-                        }
-                    } label: {
-                        HStack {
-                            if viewModel.isIdentifying {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            } else {
-                                Image(systemName: "sparkles")
-                                Text("Identify Fish")
-                            }
-                        }
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(
-                            LinearGradient(
-                                colors: [.purple, .pink],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .cornerRadius(12)
-                    }
-                    .disabled(viewModel.isIdentifying)
-                    .padding(.horizontal)
-                }
-                
-                // Result section
-                if let result = viewModel.identificationResult {
-                    resultSection(result)
-                }
-                
-                // Tips section
-                tipsSection
-                
-                Spacer(minLength: 32)
             }
         }
         .navigationTitle("Fish ID")
@@ -145,24 +52,167 @@ struct FishIDView: View {
                 }
             }
         }
-        .onChange(of: photoItem) { _, newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let image = UIImage(data: data) {
-                    viewModel.setImage(image)
-                }
-            }
-        }
         .onAppear {
             if let image = initialImage {
                 viewModel.setImage(image)
             }
+            viewModel.showCamera = true
         }
         .alert("Error", isPresented: $viewModel.showError) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .fullScreenCover(isPresented: $viewModel.showCamera) {
+            ZStack {
+                CameraPicker(
+                    image: Binding(
+                        get: { viewModel.selectedImage },
+                        set: { newValue in
+                            if let image = newValue {
+                                viewModel.setImage(image)
+                            }
+                        }
+                    )
+                )
+                .ignoresSafeArea()
+                
+                VStack(spacing: 12) {
+                    instructionBox(text: "Frame the entire fish within the viewfinder.")
+                    instructionBox(text: "Keep the camera steady and avoid glare.")
+                    instructionBox(text: "Use good lighting for best accuracy.")
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .top)
+            }
+        }
+    }
+    
+    private var header: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 50))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [.purple, .pink],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+            
+            Text("AI Fish Identification")
+                .font(.title2)
+                .fontWeight(.bold)
+            
+            Text("Capture a clear photo to identify the species")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding(.top, 16)
+    }
+    
+    private var actionButtons: some View {
+        VStack(spacing: 12) {
+            Button {
+                Task {
+                    await viewModel.identifyFish()
+                }
+            } label: {
+                HStack {
+                    if viewModel.isIdentifying {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    } else {
+                        Image(systemName: "sparkles")
+                        Text("Identify Fish")
+                    }
+                }
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(
+                    LinearGradient(
+                        colors: [.purple, .pink],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .cornerRadius(12)
+            }
+            .disabled(viewModel.isIdentifying)
+            .padding(.horizontal)
+            
+            Button {
+                viewModel.reset()
+                viewModel.showCamera = true
+            } label: {
+                HStack {
+                    Image(systemName: "camera.fill")
+                    Text("Retake Photo")
+                }
+                .fontWeight(.semibold)
+                .foregroundColor(.purple)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.purple.opacity(0.12))
+                .cornerRadius(12)
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    @ViewBuilder
+    private func resultActions(_ result: FishIDResult) -> some View {
+        VStack(spacing: 12) {
+            Button {
+                if let onSelect = onSpeciesSelected {
+                    onSelect(result.species)
+                } else {
+                    viewModel.errorMessage = "Add to log is unavailable here"
+                    viewModel.showError = true
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "plus.circle.fill")
+                    Text("Add to Log")
+                }
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.green)
+                .cornerRadius(12)
+            }
+            
+            Button {
+                viewModel.reset()
+                viewModel.showCamera = true
+            } label: {
+                HStack {
+                    Image(systemName: "camera.fill")
+                    Text("Take Another Picture")
+                }
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.blue)
+                .cornerRadius(12)
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    private func instructionBox(text: String) -> some View {
+        Text(text)
+            .font(.footnote)
+            .foregroundColor(.white)
+            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.black.opacity(0.55))
+            .cornerRadius(10)
     }
     
     @ViewBuilder

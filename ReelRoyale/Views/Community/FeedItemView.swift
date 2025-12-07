@@ -1,36 +1,31 @@
 import SwiftUI
 
 struct FeedItemView: View {
-    let item: CatchWithDetails
+    let item: CommunityPostDetails
     let onLikeTapped: () -> Void
+    let onCommentTapped: () -> Void
+    let onFollowTapped: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Header - User info
             HStack(spacing: 12) {
-                UserAvatarView(user: item.user, size: 44, showCrown: item.isCurrentKing)
+                UserAvatarView(user: item.author, size: 44, showCrown: false)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 6) {
-                        Text(item.user?.username ?? "Anonymous")
-                            .font(.headline)
-                        
-                        if item.isCurrentKing {
-                            CrownBadge(size: .small)
-                        }
-                    }
-                    
+                    Text(item.author?.username ?? "Anonymous")
+                        .font(.headline)
                     HStack(spacing: 8) {
-                        if let spot = item.spot {
-                            Text(spot.name)
+                        let hasLocation = !(item.post.locationName ?? "").isEmpty
+                        if let location = item.post.locationName, hasLocation {
+                            Text(location)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
-                        
-                        Text("•")
-                            .foregroundColor(.secondary)
-                        
-                        Text(item.fishCatch.createdAt.relativeTime)
+                        if !(item.post.locationName ?? "").isEmpty {
+                            Text("•")
+                                .foregroundColor(.secondary)
+                        }
+                        Text(item.post.createdAt.relativeTime)
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -38,99 +33,69 @@ struct FeedItemView: View {
                 
                 Spacer()
                 
-                // Privacy indicator
-                Image(systemName: item.fishCatch.visibility.icon)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                if let currentUserId = AppState.shared.currentUser?.id, currentUserId != item.post.userId {
+                    Button {
+                        onFollowTapped()
+                    } label: {
+                        Text(item.isFollowingAuthor ? "Following" : "Follow")
+                            .font(.caption)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(item.isFollowingAuthor ? Color.oceanBlue.opacity(0.15) : Color.seafoam.opacity(0.2))
+                            .foregroundColor(item.isFollowingAuthor ? .oceanBlue : .seafoam)
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             
-            // Catch photo
-            if let photoURL = item.fishCatch.photoURL {
+            if let photoURL = item.post.mediaURLs.first {
                 CatchPhotoView(photoURL: photoURL)
-                    .frame(maxHeight: 300)
+                    .frame(maxHeight: 320)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             
-            // Catch details
-            HStack(spacing: 16) {
-                // Species and size
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.fishCatch.species)
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                    
-                    HStack(spacing: 8) {
-                        Label(item.fishCatch.sizeDisplay, systemImage: "ruler")
-                            .font(.subheadline)
-                            .foregroundColor(.oceanBlue)
-                        
-                        if item.fishCatch.measuredWithAR {
-                            Image(systemName: "arkit")
-                                .font(.caption)
-                                .foregroundColor(.seafoam)
-                        }
-                    }
-                }
-                
-                Spacer()
-                
-                // New King badge
-                if item.isCurrentKing {
-                    NewKingBadge()
-                }
-            }
-            
-            // Notes
-            if let notes = item.fishCatch.notes, !notes.isEmpty {
-                Text(notes)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(item.post.caption)
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .lineLimit(3)
+                if !item.post.hashtags.isEmpty {
+                    Text(item.post.hashtags.map { "#\($0)" }.joined(separator: " "))
+                        .font(.caption)
+                        .foregroundColor(.oceanBlue)
+                }
             }
             
             Divider()
             
-            // Actions
             HStack(spacing: 24) {
-                // Like button
                 Button(action: onLikeTapped) {
                     HStack(spacing: 6) {
                         Image(systemName: item.isLikedByCurrentUser ? "heart.fill" : "heart")
                             .foregroundColor(item.isLikedByCurrentUser ? .coral : .secondary)
-                        
-                        if item.likeCount > 0 {
-                            Text("\(item.likeCount)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        Text("\(item.likeCount)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                 }
                 .buttonStyle(.plain)
                 
-                // Comment placeholder
-                HStack(spacing: 6) {
-                    Image(systemName: "bubble.right")
-                        .foregroundColor(.secondary)
-                    Text("0")
-                        .font(.caption)
+                Button(action: onCommentTapped) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "bubble.right")
+                            .foregroundColor(.secondary)
+                        Text("\(item.commentCount)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .buttonStyle(.plain)
+                
+                ShareLink(item: shareItem) {
+                    Image(systemName: "square.and.arrow.up")
                         .foregroundColor(.secondary)
                 }
-                
-                // Share placeholder
-                Image(systemName: "square.and.arrow.up")
-                    .foregroundColor(.secondary)
                 
                 Spacer()
-                
-                // Spot link
-                if let spot = item.spot {
-                    HStack(spacing: 4) {
-                        Image(systemName: "mappin.circle.fill")
-                        Text(item.fishCatch.hideExactLocation ? "Location hidden" : spot.name)
-                    }
-                    .font(.caption)
-                    .foregroundColor(.oceanBlue)
-                }
             }
             .padding(.top, 4)
         }
@@ -139,32 +104,37 @@ struct FeedItemView: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2)
     }
+    
+    private var shareItem: String {
+        if let first = item.post.mediaURLs.first {
+            return "\(item.post.caption)\n\(first)"
+        } else {
+            return item.post.caption
+        }
+    }
 }
 
 #Preview {
-    ScrollView {
-        FeedItemView(
-            item: CatchWithDetails(
-                fishCatch: FishCatch(
-                    id: "1",
-                    userId: "1",
-                    spotId: "1",
-                    species: "Largemouth Bass",
-                    sizeValue: 52.5,
-                    sizeUnit: "cm",
-                    notes: "Great catch today! The weather was perfect and the fish were biting."
-                ),
-                user: User(id: "1", username: "FishMaster"),
-                spot: Spot(id: "1", name: "Lake Evergreen", latitude: 0, longitude: 0),
-                likeCount: 12,
-                isLikedByCurrentUser: true,
-                isCurrentKing: true
-            )
-        ) {
-            print("Like tapped")
-        }
-        .padding()
-    }
-    .background(Color(.systemGray6))
+    let post = CommunityPostDetails(
+        post: CommunityPost(
+            userId: "1",
+            mediaURLs: [],
+            caption: "Great day on the water",
+            locationName: "Lake Evergreen",
+            hashtags: ["bass", "fishing"]
+        ),
+        author: User(id: "1", username: "FishMaster"),
+        likeCount: 12,
+        commentCount: 3,
+        isLikedByCurrentUser: true,
+        isFollowingAuthor: false
+    )
+    FeedItemView(
+        item: post,
+        onLikeTapped: {},
+        onCommentTapped: {},
+        onFollowTapped: {}
+    )
+    .padding()
 }
 
