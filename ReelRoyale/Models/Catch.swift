@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 /// Size unit for fish measurements
 enum SizeUnit: String, Codable, CaseIterable, Identifiable {
@@ -57,7 +58,12 @@ enum CatchVisibility: String, Codable, CaseIterable, Identifiable {
 struct FishCatch: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let userId: String
-    let spotId: String
+    var spotId: String? // Optional now, as assignment might fail or be pending
+    
+    // Location data
+    var latitude: Double
+    var longitude: Double
+    
     var photoURL: String?
     var species: String
     var sizeValue: Double
@@ -74,6 +80,8 @@ struct FishCatch: Identifiable, Codable, Equatable, Hashable {
         case id
         case userId = "user_id"
         case spotId = "spot_id"
+        case latitude
+        case longitude
         case photoURL = "photo_url"
         case species
         case sizeValue = "size_value"
@@ -90,7 +98,9 @@ struct FishCatch: Identifiable, Codable, Equatable, Hashable {
     init(
         id: String = UUID().uuidString,
         userId: String,
-        spotId: String,
+        spotId: String? = nil,
+        latitude: Double,
+        longitude: Double,
         photoURL: String? = nil,
         species: String,
         sizeValue: Double,
@@ -106,6 +116,8 @@ struct FishCatch: Identifiable, Codable, Equatable, Hashable {
         self.id = id
         self.userId = userId
         self.spotId = spotId
+        self.latitude = latitude
+        self.longitude = longitude
         self.photoURL = photoURL
         self.species = species
         self.sizeValue = sizeValue
@@ -117,6 +129,10 @@ struct FishCatch: Identifiable, Codable, Equatable, Hashable {
         self.measuredWithAR = measuredWithAR
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+    
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
     
     var isPublic: Bool {
@@ -154,7 +170,9 @@ struct CatchWithDetails: Identifiable, Equatable {
 
 /// Input for creating a new catch
 struct CreateCatchInput {
-    var spotId: String
+    var spotId: String?
+    var latitude: Double
+    var longitude: Double
     var photoData: Data?
     var species: String
     var sizeValue: Double
@@ -165,7 +183,9 @@ struct CreateCatchInput {
     var measuredWithAR: Bool
     
     init(
-        spotId: String = "",
+        spotId: String? = nil,
+        latitude: Double = 0,
+        longitude: Double = 0,
         photoData: Data? = nil,
         species: String = "",
         sizeValue: Double = 0,
@@ -176,6 +196,8 @@ struct CreateCatchInput {
         measuredWithAR: Bool = false
     ) {
         self.spotId = spotId
+        self.latitude = latitude
+        self.longitude = longitude
         self.photoData = photoData
         self.species = species
         self.sizeValue = sizeValue
@@ -187,7 +209,6 @@ struct CreateCatchInput {
     }
     
     var isValid: Bool {
-        !spotId.isEmpty && !species.isEmpty && sizeValue > 0
+        !species.isEmpty && sizeValue > 0 && (latitude != 0 || longitude != 0)
     }
 }
-

@@ -124,7 +124,12 @@ final class ProfileViewModel: ObservableObject {
         var enriched: [CatchWithDetails] = []
         
         for fishCatch in catches {
-            let spot = try? await spotRepository.getSpot(byId: fishCatch.spotId)
+            let spot: Spot?
+            if let spotId = fishCatch.spotId {
+                spot = try? await spotRepository.getSpot(byId: spotId)
+            } else {
+                spot = nil
+            }
             let isKing = spot?.currentKingUserId == fishCatch.userId
             
             enriched.append(CatchWithDetails(

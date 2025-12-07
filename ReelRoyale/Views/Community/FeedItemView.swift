@@ -149,6 +149,8 @@ struct FeedItemView: View {
                     id: "1",
                     userId: "1",
                     spotId: "1",
+                    latitude: 0,
+                    longitude: 0,
                     species: "Largemouth Bass",
                     sizeValue: 52.5,
                     sizeUnit: "cm",

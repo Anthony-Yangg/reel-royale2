@@ -12,11 +12,14 @@ protocol SpotRepositoryProtocol {
     /// Get spots for a territory
     func getSpots(forTerritory territoryId: String) async throws -> [Spot]
     
+    /// Get spots for a waterbody
+    func getSpots(forWaterbody waterbodyId: String) async throws -> [Spot]
+    
     /// Get spots near a location
     func getSpots(near coordinate: CLLocationCoordinate2D, radiusMeters: Double) async throws -> [Spot]
     
     /// Get spots by water type
-    func getSpots(ofType waterType: WaterType) async throws -> [Spot]
+    func getSpots(ofType waterType: WaterbodyType) async throws -> [Spot]
     
     /// Create a new spot
     func createSpot(_ spot: Spot) async throws -> Spot
@@ -52,6 +55,15 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
             .from(AppConstants.Supabase.Tables.spots)
             .select()
             .eq("territory_id", value: territoryId)
+            .execute()
+            .value
+    }
+    
+    func getSpots(forWaterbody waterbodyId: String) async throws -> [Spot] {
+        try await supabase.database
+            .from(AppConstants.Supabase.Tables.spots)
+            .select()
+            .eq("waterbody_id", value: waterbodyId)
             .execute()
             .value
     }
@@ -92,7 +104,7 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
         return filteredSpots
     }
     
-    func getSpots(ofType waterType: WaterType) async throws -> [Spot] {
+    func getSpots(ofType waterType: WaterbodyType) async throws -> [Spot] {
         try await supabase.database
             .from(AppConstants.Supabase.Tables.spots)
             .select()
@@ -111,6 +123,8 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
             let description: String?
             let latitude: Double
             let longitude: Double
+            let radius: Double
+            let waterbody_id: String?
             let water_type: String?
             let territory_id: String?
             let current_king_user_id: String?
@@ -127,6 +141,8 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
             description: spot.description,
             latitude: spot.latitude,
             longitude: spot.longitude,
+            radius: spot.radius,
+            waterbody_id: spot.waterbodyId,
             water_type: spot.waterType?.rawValue,
             territory_id: spot.territoryId,
             current_king_user_id: spot.currentKingUserId,
@@ -164,4 +180,3 @@ final class SupabaseSpotRepository: SpotRepositoryProtocol {
             .value
     }
 }
-

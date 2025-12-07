@@ -95,6 +95,8 @@ struct CatchLogRow: View {
                 id: "1",
                 userId: "1",
                 spotId: "1",
+                latitude: 0,
+                longitude: 0,
                 species: "Largemouth Bass",
                 sizeValue: 52.5,
                 sizeUnit: "cm"
@@ -110,6 +112,8 @@ struct CatchLogRow: View {
                 id: "2",
                 userId: "1",
                 spotId: "2",
+                latitude: 0,
+                longitude: 0,
                 species: "Rainbow Trout",
                 sizeValue: 38.0,
                 sizeUnit: "cm",

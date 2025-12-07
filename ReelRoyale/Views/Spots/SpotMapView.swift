@@ -6,21 +6,69 @@ struct SpotMapView: View {
     @Binding var selectedSpot: Spot?
     @Binding var region: MKCoordinateRegion
     
+    @State private var cameraPosition: MapCameraPosition = .automatic
+    @State private var selection: String?
+    
     var body: some View {
-        Map(coordinateRegion: $region, annotationItems: spots) { spotDetails in
-            MapAnnotation(coordinate: spotDetails.spot.coordinate) {
-                SpotMapPin(
-                    spotDetails: spotDetails,
-                    isSelected: selectedSpot?.id == spotDetails.spot.id
-                )
-                .onTapGesture {
-                    withAnimation(.spring()) {
-                        selectedSpot = spotDetails.spot
-                    }
+        Map(position: $cameraPosition, selection: $selection) {
+            ForEach(spots) { spotDetails in
+                let radius = max(spotDetails.spot.radius, 200) // fallback so circles stay visible
+                
+                // Spot area circle
+                MapCircle(center: spotDetails.spot.coordinate, radius: radius)
+                    .foregroundStyle(fillColor(for: spotDetails).opacity(0.25))
+                    .stroke(strokeColor(for: spotDetails), lineWidth: 2)
+                    .tag(spotDetails.spot.id)
+                
+                // Pin
+                Annotation(spotDetails.spot.name, coordinate: spotDetails.spot.coordinate) {
+                    SpotMapPin(
+                        spotDetails: spotDetails,
+                        isSelected: selection == spotDetails.spot.id
+                    )
                 }
+                .tag(spotDetails.spot.id)
             }
         }
-        .ignoresSafeArea(edges: .bottom)
+        .mapStyle(.standard(elevation: .realistic))
+        .mapControls {
+            MapUserLocationButton()
+            MapCompass()
+            MapScaleView()
+        }
+        .onChange(of: selection) { _, newSelection in
+            if let id = newSelection, let spot = spots.first(where: { $0.id == id })?.spot {
+                selectedSpot = spot
+            } else {
+                selectedSpot = nil
+            }
+        }
+        .onChange(of: selectedSpot) { _, newSpot in
+            if let spot = newSpot {
+                selection = spot.id
+                withAnimation {
+                    let updatedRegion = MKCoordinateRegion(
+                        center: spot.coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                    )
+                    region = updatedRegion
+                    cameraPosition = .region(updatedRegion)
+                }
+            } else {
+                selection = nil
+            }
+        }
+        .onAppear {
+            cameraPosition = .region(region)
+        }
+    }
+    
+    private func fillColor(for spotDetails: SpotWithDetails) -> Color {
+        spotDetails.spot.hasKing ? Color.crown : Color.oceanBlue
+    }
+    
+    private func strokeColor(for spotDetails: SpotWithDetails) -> Color {
+        spotDetails.spot.hasKing ? Color.crown : Color.oceanBlue
     }
 }
 
@@ -90,7 +138,6 @@ struct Triangle: Shape {
         return path
     }
 }
-
 #Preview {
     SpotMapView(
         spots: [],
@@ -101,4 +148,5 @@ struct Triangle: Shape {
         ))
     )
 }
+
 

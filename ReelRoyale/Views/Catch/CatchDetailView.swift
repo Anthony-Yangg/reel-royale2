@@ -261,7 +261,11 @@ struct CatchDetailView: View {
             
             if let fishCatch = fishCatch {
                 user = try await AppState.shared.userRepository.getUser(byId: fishCatch.userId)
-                spot = try await AppState.shared.spotRepository.getSpot(byId: fishCatch.spotId)
+                if let spotId = fishCatch.spotId {
+                    spot = try await AppState.shared.spotRepository.getSpot(byId: spotId)
+                } else {
+                    spot = nil
+                }
             }
         } catch {
             errorMessage = error.localizedDescription

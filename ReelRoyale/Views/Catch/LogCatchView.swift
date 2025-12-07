@@ -1,9 +1,11 @@
 import SwiftUI
 import PhotosUI
+import CoreLocation
 
 struct LogCatchView: View {
     let preselectedSpotId: String?
     @StateObject private var viewModel: LogCatchViewModel
+    @StateObject private var locationManager = LocationManager() // Use local location manager
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var appState: AppState
     
@@ -14,86 +16,100 @@ struct LogCatchView: View {
     
     var body: some View {
         NavigationStack {
-            Form {
-                // Spot selection
-                spotSection
-                
-                // Photo
-                photoSection
-                
-                // Fish details
-                fishDetailsSection
-                
-                // Size
-                sizeSection
-                
-                // Privacy
-                privacySection
-                
-                // Notes
-                notesSection
-            }
-            .navigationTitle("Log Catch")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
-                        Task {
-                            await viewModel.submitCatch()
-                        }
-                    }
-                    .disabled(!viewModel.isValid || viewModel.isSubmitting)
-                }
-            }
-            .overlay {
-                LoadingOverlay(isLoading: viewModel.isSubmitting, message: "Saving catch...")
-            }
-            .task {
-                await viewModel.loadInitialData()
-            }
-            .sheet(isPresented: $viewModel.showSpotPicker) {
-                SpotPickerView(spots: viewModel.spots) { spot in
-                    viewModel.selectSpot(spot)
-                }
-            }
-            .sheet(isPresented: $viewModel.showMeasurement) {
-                NavigationStack {
-                    MeasurementView { length in
-                        viewModel.applyMeasurement(length)
-                    }
-                }
-            }
-            .sheet(isPresented: $viewModel.showFishID) {
-                NavigationStack {
-                    FishIDView(
-                        initialImage: viewModel.catchPhoto,
-                        onSpeciesSelected: { species in
-                            viewModel.species = species
-                            viewModel.showFishID = false
-                        }
-                    )
-                }
-            }
-            .alert("Error", isPresented: $viewModel.showError) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(viewModel.errorMessage ?? "")
-            }
-            .onChange(of: viewModel.showSuccess) { _, success in
-                if success {
-                    // Show success and dismiss
-                    if let result = viewModel.catchResult, result.isNewKing {
-                        // Could show a celebration here
-                    }
+            formContent
+        }
+        .navigationTitle("Log Catch")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Cancel") {
                     dismiss()
                 }
             }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Save") {
+                    Task {
+                        await viewModel.submitCatch()
+                    }
+                }
+                .disabled(!viewModel.isValid || viewModel.isSubmitting)
+            }
+        }
+        .overlay {
+            LoadingOverlay(isLoading: viewModel.isSubmitting, message: "Saving catch...")
+        }
+        .task {
+            await viewModel.loadInitialData()
+        }
+        .onChange(of: locationManager.location) { _, newLocation in
+            if let location = newLocation {
+                Task {
+                    await viewModel.updateLocation(location)
+                }
+            }
+        }
+        .sheet(isPresented: $viewModel.showSpotPicker) {
+            spotPickerSheet
+        }
+        .sheet(isPresented: $viewModel.showMeasurement) {
+            NavigationStack {
+                MeasurementView { length in
+                    viewModel.applyMeasurement(length)
+                }
+            }
+        }
+        .sheet(isPresented: $viewModel.showFishID) {
+            NavigationStack {
+                FishIDView(
+                    initialImage: viewModel.catchPhoto,
+                    onSpeciesSelected: { species in
+                        viewModel.species = species
+                        viewModel.showFishID = false
+                    }
+                )
+            }
+        }
+        .alert("Error", isPresented: $viewModel.showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+        .onChange(of: viewModel.showSuccess) { _, success in
+            if success {
+                dismiss()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var formContent: some View {
+        Form {
+            // Spot selection
+            spotSection
+            
+            // Photo
+            photoSection
+            
+            // Fish details
+            fishDetailsSection
+            
+            // Size
+            sizeSection
+            
+            // Privacy
+            privacySection
+            
+            // Notes
+            notesSection
+        }
+    }
+    
+    @ViewBuilder
+    private var spotPickerSheet: some View {
+        let spotsToShow: [Spot] = !viewModel.nearbySpots.isEmpty ? viewModel.nearbySpots : []
+        SpotPickerView(spots: spotsToShow) { spot in
+            viewModel.selectSpot(spot)
         }
     }
     
@@ -104,7 +120,7 @@ struct LogCatchView: View {
         Section {
             if let spot = viewModel.selectedSpot {
                 HStack {
-                    Image(systemName: spot.waterType?.icon ?? "mappin")
+                    Image(systemName: spot.waterType?.icon ?? "mappin") // Fixed: use WaterbodyType icon logic or fallback
                         .foregroundColor(.oceanBlue)
                     
                     VStack(alignment: .leading) {
@@ -113,6 +129,11 @@ struct LogCatchView: View {
                         if let region = spot.regionName {
                             Text(region)
                                 .font(.caption)
+                            .foregroundColor(.secondary)
+                        }
+                        if let wb = spot.waterbodyId { // Show waterbody info if available
+                            Text("Waterbody ID: \(wb)") // Placeholder, ideally fetch name
+                                .font(.caption2)
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -133,15 +154,29 @@ struct LogCatchView: View {
                     HStack {
                         Image(systemName: "mappin.circle")
                             .foregroundColor(.oceanBlue)
-                        Text("Select Fishing Spot")
+                        Text(viewModel.isLoading ? "Locating..." : "Select Fishing Spot")
                             .foregroundColor(.primary)
                         Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        if viewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
             }
+            
+            // Show location status
+            if viewModel.selectedSpot == nil {
+                if locationManager.location == nil {
+                    Text("Waiting for location...")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
         } header: {
             Text("Location")
         }
@@ -224,28 +259,6 @@ struct LogCatchView: View {
                     }
                 }
             }
-            
-            // Species picker suggestions
-            if viewModel.species.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(CommonFishSpecies.allCases.prefix(8), id: \.self) { species in
-                            Button {
-                                viewModel.species = species.rawValue
-                            } label: {
-                                Text(species.rawValue)
-                                    .font(.caption)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(Color.oceanBlue.opacity(0.1))
-                                    .foregroundColor(.oceanBlue)
-                                    .cornerRadius(16)
-                            }
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
-            }
         } header: {
             Text("Fish Details")
         }
@@ -281,7 +294,7 @@ struct LogCatchView: View {
                     Spacer()
                     if viewModel.measuredWithAR {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.green)
+                        .foregroundColor(.green)
                     }
                 }
             }
@@ -326,9 +339,3 @@ struct LogCatchView: View {
         }
     }
 }
-
-#Preview {
-    LogCatchView(preselectedSpotId: nil)
-        .environmentObject(AppState.shared)
-}
-

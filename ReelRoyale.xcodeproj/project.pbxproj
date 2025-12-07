@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		123449902EE5364F00E14C0A /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = E80000002D4APKGD00000001 /* Supabase */; };
 		E80000012D4A000000000001 /* ReelRoyaleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000001 /* ReelRoyaleApp.swift */; };
 		E80000012D4A000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000002 /* ContentView.swift */; };
 		E80000012D4A000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000003 /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 		E80000012D4A000000000105 /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000105 /* Like.swift */; };
 		E80000012D4A000000000106 /* WeatherConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000106 /* WeatherConditions.swift */; };
 		E80000012D4A000000000107 /* RegulationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000107 /* RegulationInfo.swift */; };
+		E80000012D4A000000000108 /* Waterbody.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000108 /* Waterbody.swift */; };
 		E80000012D4A000000000201 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000201 /* SupabaseService.swift */; };
 		E80000012D4A000000000202 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000202 /* AuthService.swift */; };
 		E80000012D4A000000000203 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000203 /* WeatherService.swift */; };
@@ -25,6 +27,8 @@
 		E80000012D4A000000000206 /* MeasurementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000206 /* MeasurementService.swift */; };
 		E80000012D4A000000000207 /* GameService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000207 /* GameService.swift */; };
 		E80000012D4A000000000208 /* ImageUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000208 /* ImageUploadService.swift */; };
+		E80000012D4A000000000209 /* SpotServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000209 /* SpotServices.swift */; };
+		E80000012D4A00000000020A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A00000000020A /* LocationManager.swift */; };
 		E80000012D4A000000000301 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000301 /* UserRepository.swift */; };
 		E80000012D4A000000000302 /* SpotRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000302 /* SpotRepository.swift */; };
 		E80000012D4A000000000303 /* CatchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000303 /* CatchRepository.swift */; };
@@ -84,6 +88,7 @@
 		E80000002D4A000000000105 /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000106 /* WeatherConditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherConditions.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000107 /* RegulationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegulationInfo.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000108 /* Waterbody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Waterbody.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000201 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000202 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000203 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
@@ -92,6 +97,8 @@
 		E80000002D4A000000000206 /* MeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000207 /* GameService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000208 /* ImageUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000209 /* SpotServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotServices.swift; sourceTree = "<group>"; };
+		E80000002D4A00000000020A /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000301 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000302 /* SpotRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotRepository.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000303 /* CatchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatchRepository.swift; sourceTree = "<group>"; };
@@ -144,26 +151,55 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				123449902EE5364F00E14C0A /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E80000002D4AROOT00000000 = {
+		E80000002D4AAUTH00000000 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4AMAIN00000000 /* ReelRoyale */,
-				E80000002D4APROD00000000 /* Products */,
+				E80000002D4A000000000502 /* AuthView.swift */,
+				E80000002D4A000000000503 /* LoginView.swift */,
+				E80000002D4A000000000504 /* SignUpView.swift */,
+				E80000002D4A000000000505 /* ProfileSetupView.swift */,
 			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
-		E80000002D4APROD00000000 /* Products */ = {
+		E80000002D4ACMPS00000000 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4A000000000000 /* ReelRoyale.app */,
+				E80000002D4A000000000521 /* CrownBadge.swift */,
+				E80000002D4A000000000522 /* UserAvatarView.swift */,
+				E80000002D4A000000000523 /* CatchThumbnail.swift */,
+				E80000002D4A000000000524 /* LoadingView.swift */,
 			);
-			name = Products;
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E80000002D4ACOMM00000000 /* Community */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000511 /* CommunityView.swift */,
+				E80000002D4A000000000512 /* FeedItemView.swift */,
+			);
+			path = Community;
+			sourceTree = "<group>";
+		};
+		E80000002D4ACTCH00000000 /* Catch */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000515 /* LogCatchView.swift */,
+				E80000002D4A000000000516 /* CatchDetailView.swift */,
+				E80000002D4A000000000517 /* MeasurementView.swift */,
+				E80000002D4A000000000606 /* SpotPickerView.swift */,
+				E80000002D4A000000000607 /* ImagePicker.swift */,
+				E80000002D4A000000000608 /* ARMeasurementView.swift */,
+			);
+			path = Catch;
 			sourceTree = "<group>";
 		};
 		E80000002D4AMAIN00000000 /* ReelRoyale */ = {
@@ -192,23 +228,36 @@
 				E80000002D4A000000000105 /* Like.swift */,
 				E80000002D4A000000000106 /* WeatherConditions.swift */,
 				E80000002D4A000000000107 /* RegulationInfo.swift */,
+				E80000002D4A000000000108 /* Waterbody.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		E80000002D4ASRVC00000000 /* Services */ = {
+		E80000002D4AMORE00000000 /* More */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4A000000000201 /* SupabaseService.swift */,
-				E80000002D4A000000000202 /* AuthService.swift */,
-				E80000002D4A000000000203 /* WeatherService.swift */,
-				E80000002D4A000000000204 /* RegulationsService.swift */,
-				E80000002D4A000000000205 /* FishIDService.swift */,
-				E80000002D4A000000000206 /* MeasurementService.swift */,
-				E80000002D4A000000000207 /* GameService.swift */,
-				E80000002D4A000000000208 /* ImageUploadService.swift */,
+				E80000002D4A000000000518 /* MoreView.swift */,
+				E80000002D4A000000000519 /* FishIDView.swift */,
+				E80000002D4A000000000520 /* RegulationsView.swift */,
 			);
-			path = Services;
+			path = More;
+			sourceTree = "<group>";
+		};
+		E80000002D4APROD00000000 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000000 /* ReelRoyale.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E80000002D4APROF00000000 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000513 /* ProfileView.swift */,
+				E80000002D4A000000000514 /* CatchLogView.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		E80000002D4AREPO00000000 /* Repositories */ = {
@@ -223,19 +272,53 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
-		E80000002D4AVMDL00000000 /* ViewModels */ = {
+		E80000002D4AROOT00000000 = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4A000000000401 /* AuthViewModel.swift */,
-				E80000002D4A000000000402 /* SpotsViewModel.swift */,
-				E80000002D4A000000000403 /* SpotDetailViewModel.swift */,
-				E80000002D4A000000000404 /* LogCatchViewModel.swift */,
-				E80000002D4A000000000405 /* CommunityViewModel.swift */,
-				E80000002D4A000000000406 /* ProfileViewModel.swift */,
-				E80000002D4A000000000407 /* FishIDViewModel.swift */,
-				E80000002D4A000000000408 /* MeasurementViewModel.swift */,
+				E80000002D4AMAIN00000000 /* ReelRoyale */,
+				E80000002D4APROD00000000 /* Products */,
 			);
-			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E80000002D4ASPTS00000000 /* Spots */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000506 /* SpotsView.swift */,
+				E80000002D4A000000000507 /* SpotMapView.swift */,
+				E80000002D4A000000000508 /* SpotListView.swift */,
+				E80000002D4A000000000509 /* SpotRowView.swift */,
+				E80000002D4A000000000510 /* SpotDetailView.swift */,
+				E80000002D4A000000000604 /* LeaderboardView.swift */,
+				E80000002D4A000000000605 /* TerritoryView.swift */,
+			);
+			path = Spots;
+			sourceTree = "<group>";
+		};
+		E80000002D4ASRVC00000000 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000201 /* SupabaseService.swift */,
+				E80000002D4A000000000202 /* AuthService.swift */,
+				E80000002D4A000000000203 /* WeatherService.swift */,
+				E80000002D4A000000000204 /* RegulationsService.swift */,
+				E80000002D4A000000000205 /* FishIDService.swift */,
+				E80000002D4A000000000206 /* MeasurementService.swift */,
+				E80000002D4A000000000207 /* GameService.swift */,
+				E80000002D4A000000000208 /* ImageUploadService.swift */,
+				E80000002D4A000000000209 /* SpotServices.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E80000002D4AUTLS00000000 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4A000000000601 /* Extensions.swift */,
+				E80000002D4A000000000602 /* Constants.swift */,
+				E80000002D4A000000000603 /* AppState.swift */,
+				E80000002D4A00000000020A /* LocationManager.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		E80000002D4AVIWS00000000 /* Views */ = {
@@ -253,91 +336,19 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		E80000002D4AAUTH00000000 /* Auth */ = {
+		E80000002D4AVMDL00000000 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				E80000002D4A000000000502 /* AuthView.swift */,
-				E80000002D4A000000000503 /* LoginView.swift */,
-				E80000002D4A000000000504 /* SignUpView.swift */,
-				E80000002D4A000000000505 /* ProfileSetupView.swift */,
+				E80000002D4A000000000401 /* AuthViewModel.swift */,
+				E80000002D4A000000000402 /* SpotsViewModel.swift */,
+				E80000002D4A000000000403 /* SpotDetailViewModel.swift */,
+				E80000002D4A000000000404 /* LogCatchViewModel.swift */,
+				E80000002D4A000000000405 /* CommunityViewModel.swift */,
+				E80000002D4A000000000406 /* ProfileViewModel.swift */,
+				E80000002D4A000000000407 /* FishIDViewModel.swift */,
+				E80000002D4A000000000408 /* MeasurementViewModel.swift */,
 			);
-			path = Auth;
-			sourceTree = "<group>";
-		};
-		E80000002D4ASPTS00000000 /* Spots */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000506 /* SpotsView.swift */,
-				E80000002D4A000000000507 /* SpotMapView.swift */,
-				E80000002D4A000000000508 /* SpotListView.swift */,
-				E80000002D4A000000000509 /* SpotRowView.swift */,
-				E80000002D4A000000000510 /* SpotDetailView.swift */,
-				E80000002D4A000000000604 /* LeaderboardView.swift */,
-				E80000002D4A000000000605 /* TerritoryView.swift */,
-			);
-			path = Spots;
-			sourceTree = "<group>";
-		};
-		E80000002D4ACOMM00000000 /* Community */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000511 /* CommunityView.swift */,
-				E80000002D4A000000000512 /* FeedItemView.swift */,
-			);
-			path = Community;
-			sourceTree = "<group>";
-		};
-		E80000002D4APROF00000000 /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000513 /* ProfileView.swift */,
-				E80000002D4A000000000514 /* CatchLogView.swift */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
-		E80000002D4ACTCH00000000 /* Catch */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000515 /* LogCatchView.swift */,
-				E80000002D4A000000000516 /* CatchDetailView.swift */,
-				E80000002D4A000000000517 /* MeasurementView.swift */,
-				E80000002D4A000000000606 /* SpotPickerView.swift */,
-				E80000002D4A000000000607 /* ImagePicker.swift */,
-				E80000002D4A000000000608 /* ARMeasurementView.swift */,
-			);
-			path = Catch;
-			sourceTree = "<group>";
-		};
-		E80000002D4AMORE00000000 /* More */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000518 /* MoreView.swift */,
-				E80000002D4A000000000519 /* FishIDView.swift */,
-				E80000002D4A000000000520 /* RegulationsView.swift */,
-			);
-			path = More;
-			sourceTree = "<group>";
-		};
-		E80000002D4ACMPS00000000 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000521 /* CrownBadge.swift */,
-				E80000002D4A000000000522 /* UserAvatarView.swift */,
-				E80000002D4A000000000523 /* CatchThumbnail.swift */,
-				E80000002D4A000000000524 /* LoadingView.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		E80000002D4AUTLS00000000 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				E80000002D4A000000000601 /* Extensions.swift */,
-				E80000002D4A000000000602 /* Constants.swift */,
-				E80000002D4A000000000603 /* AppState.swift */,
-			);
-			path = Utilities;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -424,6 +435,7 @@
 				E80000012D4A000000000105 /* Like.swift in Sources */,
 				E80000012D4A000000000106 /* WeatherConditions.swift in Sources */,
 				E80000012D4A000000000107 /* RegulationInfo.swift in Sources */,
+				E80000012D4A000000000108 /* Waterbody.swift in Sources */,
 				E80000012D4A000000000201 /* SupabaseService.swift in Sources */,
 				E80000012D4A000000000202 /* AuthService.swift in Sources */,
 				E80000012D4A000000000203 /* WeatherService.swift in Sources */,
@@ -432,6 +444,7 @@
 				E80000012D4A000000000206 /* MeasurementService.swift in Sources */,
 				E80000012D4A000000000207 /* GameService.swift in Sources */,
 				E80000012D4A000000000208 /* ImageUploadService.swift in Sources */,
+				E80000012D4A000000000209 /* SpotServices.swift in Sources */,
 				E80000012D4A000000000301 /* UserRepository.swift in Sources */,
 				E80000012D4A000000000302 /* SpotRepository.swift in Sources */,
 				E80000012D4A000000000303 /* CatchRepository.swift in Sources */,
@@ -477,6 +490,7 @@
 				E80000012D4A000000000606 /* SpotPickerView.swift in Sources */,
 				E80000012D4A000000000607 /* ImagePicker.swift in Sources */,
 				E80000012D4A000000000608 /* ARMeasurementView.swift in Sources */,
+				E80000012D4A00000000020A /* LocationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,15 +624,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = M79HDU35N6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReelRoyale/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length using AR.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ReelRoyale needs your location to show nearby fishing spots and log catch locations.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "ReelRoyale needs photo library access to select photos of your catches.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -626,7 +640,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.reelroyale.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reelroyale.app1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -642,15 +656,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = M79HDU35N6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReelRoyale/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ReelRoyale needs camera access to take photos of your catches and measure fish length using AR.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ReelRoyale needs your location to show nearby fishing spots and log catch locations.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "ReelRoyale needs photo library access to select photos of your catches.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -658,7 +672,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.reelroyale.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reelroyale.app1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -710,4 +724,3 @@
 	};
 	rootObject = E80000002D4APROJ00000001 /* Project object */;
 }
-

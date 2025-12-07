@@ -98,7 +98,7 @@ struct SpotsView: View {
                     Button("All Types") {
                         viewModel.selectedWaterType = nil
                     }
-                    ForEach(WaterType.allCases) { type in
+                    ForEach(WaterbodyType.allCases) { type in
                         Button {
                             viewModel.selectedWaterType = type
                         } label: {

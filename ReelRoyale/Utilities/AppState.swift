@@ -45,6 +45,7 @@ final class AppState: ObservableObject {
     private(set) var spotRepository: SpotRepositoryProtocol!
     private(set) var catchRepository: CatchRepositoryProtocol!
     private(set) var territoryRepository: TerritoryRepositoryProtocol!
+    private(set) var waterbodyRepository: WaterbodyRepositoryProtocol! // Added
     private(set) var likeRepository: LikeRepositoryProtocol!
     private(set) var weatherService: WeatherServiceProtocol!
     private(set) var regulationsService: RegulationsServiceProtocol!
@@ -52,6 +53,9 @@ final class AppState: ObservableObject {
     private(set) var measurementService: MeasurementServiceProtocol!
     private(set) var gameService: GameServiceProtocol!
     private(set) var imageUploadService: ImageUploadServiceProtocol!
+    private(set) var spotGenerationService: SpotGenerationServiceProtocol! // Added
+    private(set) var spotAssignmentService: SpotAssignmentServiceProtocol! // Added
+    private(set) var spotCreationService: SpotCreationServiceProtocol! // Added
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -67,6 +71,7 @@ final class AppState: ObservableObject {
         spotRepository = SupabaseSpotRepository(supabase: supabaseService)
         catchRepository = SupabaseCatchRepository(supabase: supabaseService)
         territoryRepository = SupabaseTerritoryRepository(supabase: supabaseService)
+        waterbodyRepository = MockWaterbodyRepository() // Mock implementation
         likeRepository = SupabaseLikeRepository(supabase: supabaseService)
         
         // Initialize services
@@ -76,6 +81,10 @@ final class AppState: ObservableObject {
         fishIDService = CoreMLFishIDService()
         measurementService = ARMeasurementService()
         imageUploadService = SupabaseImageUploadService(supabase: supabaseService)
+        spotGenerationService = SpotGenerationService()
+        spotAssignmentService = SpotAssignmentService(spotRepository: spotRepository)
+        spotCreationService = SpotCreationService(spotRepository: spotRepository)
+        
         gameService = GameService(
             spotRepository: spotRepository,
             catchRepository: catchRepository,
@@ -194,4 +203,3 @@ enum NavigationDestination: Hashable {
     case leaderboard
     case settings
 }
-

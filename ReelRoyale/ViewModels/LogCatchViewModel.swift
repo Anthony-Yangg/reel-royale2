@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import CoreLocation
 
 /// ViewModel for Log Catch flow
 @MainActor
@@ -18,6 +19,7 @@ final class LogCatchViewModel: ObservableObject {
     @Published var hideExactLocation: Bool = false
     @Published var notes: String = ""
     @Published var measuredWithAR: Bool = false
+    @Published var catchLocation: CLLocationCoordinate2D?
     
     // UI State
     @Published var isLoading = false
@@ -33,8 +35,8 @@ final class LogCatchViewModel: ObservableObject {
     // Result
     @Published var catchResult: CatchResult?
     
-    // Available spots
-    @Published var spots: [Spot] = []
+    // Available spots for ambiguous selection
+    @Published var nearbySpots: [Spot] = []
     
     // MARK: - Private Properties
     
@@ -46,6 +48,7 @@ final class LogCatchViewModel: ObservableObject {
     private let measurementService: MeasurementServiceProtocol
     private let fishIDService: FishIDServiceProtocol
     private let weatherService: WeatherServiceProtocol
+    private let spotAssignmentService: SpotAssignmentServiceProtocol
     
     // MARK: - Computed Properties
     
@@ -73,7 +76,8 @@ final class LogCatchViewModel: ObservableObject {
         imageUploadService: ImageUploadServiceProtocol? = nil,
         measurementService: MeasurementServiceProtocol? = nil,
         fishIDService: FishIDServiceProtocol? = nil,
-        weatherService: WeatherServiceProtocol? = nil
+        weatherService: WeatherServiceProtocol? = nil,
+        spotAssignmentService: SpotAssignmentServiceProtocol? = nil
     ) {
         self.preselectedSpotId = preselectedSpotId
         self.spotRepository = spotRepository ?? AppState.shared.spotRepository
@@ -83,6 +87,7 @@ final class LogCatchViewModel: ObservableObject {
         self.measurementService = measurementService ?? AppState.shared.measurementService
         self.fishIDService = fishIDService ?? AppState.shared.fishIDService
         self.weatherService = weatherService ?? AppState.shared.weatherService
+        self.spotAssignmentService = spotAssignmentService ?? AppState.shared.spotAssignmentService
         
         if let spotId = preselectedSpotId {
             selectedSpotId = spotId
@@ -95,18 +100,47 @@ final class LogCatchViewModel: ObservableObject {
         isLoading = true
         
         do {
-            // Load all spots for picker
-            spots = try await spotRepository.getAllSpots()
-            
-            // Load preselected spot details
+            // Load preselected spot details if exists
             if let spotId = preselectedSpotId {
                 selectedSpot = try await spotRepository.getSpot(byId: spotId)
+            } else {
+                // Try to auto-assign spot based on location if we have one
+                // Assuming view will update catchLocation or we request it here
+                // For now, let the view trigger updateLocation()
             }
         } catch {
-            showError(message: "Failed to load spots: \(error.localizedDescription)")
+            showError(message: "Failed to load spot: \(error.localizedDescription)")
         }
         
         isLoading = false
+    }
+    
+    func updateLocation(_ location: CLLocationCoordinate2D) async {
+        guard catchLocation == nil else { return } // Update only once or on demand
+        catchLocation = location
+        
+        // If spot is locked or already selected, don't auto-assign
+        guard !isSpotLocked && selectedSpotId.isEmpty else { return }
+        
+        let result = await spotAssignmentService.assignSpot(for: location, waterbodyId: nil)
+        
+        switch result {
+        case .assigned(let spot):
+            selectedSpot = spot
+            selectedSpotId = spot.id
+        case .ambiguous(let spots):
+            nearbySpots = spots
+            showSpotPicker = true
+        case .none:
+            // No spot found nearby
+            // Could prompt user to create one or select manually from wider list
+            errorMessage = "No fishing spot detected nearby. Please select one manually."
+            showSpotPicker = true // Show all spots or map picker
+            // We need to fetch all spots if we want to show a general picker
+            if nearbySpots.isEmpty {
+                 nearbySpots = (try? await spotRepository.getAllSpots()) ?? []
+            }
+        }
     }
     
     // MARK: - Spot Selection
@@ -211,11 +245,17 @@ final class LogCatchViewModel: ObservableObject {
                 }
             }
             
+            // Default location if missing (use spot center)
+            let lat = catchLocation?.latitude ?? spot.latitude
+            let lon = catchLocation?.longitude ?? spot.longitude
+            
             // Create catch
             let fishCatch = FishCatch(
                 id: catchId,
                 userId: userId,
                 spotId: selectedSpotId,
+                latitude: lat,
+                longitude: lon,
                 photoURL: photoURL,
                 species: species,
                 sizeValue: sizeValueDouble,
@@ -238,7 +278,7 @@ final class LogCatchViewModel: ObservableObject {
             NotificationCenter.default.post(
                 name: .catchCreated,
                 object: nil,
-                userInfo: ["catchId": savedCatch.id, "spotId": savedCatch.spotId]
+                userInfo: ["catchId": savedCatch.id, "spotId": savedCatch.spotId ?? ""]
             )
             
             showSuccess = true
@@ -271,6 +311,6 @@ final class LogCatchViewModel: ObservableObject {
         notes = ""
         measuredWithAR = false
         catchResult = nil
+        catchLocation = nil
     }
 }
-

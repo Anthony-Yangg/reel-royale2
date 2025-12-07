@@ -120,8 +120,8 @@ final class CommunityViewModel: ObservableObject {
         let users = try await userRepository.getUsers(byIds: userIds)
         let usersDict = Dictionary(uniqueKeysWithValues: users.map { ($0.id, $0) })
         
-        // Get unique spot IDs
-        let spotIds = Array(Set(catches.map { $0.spotId }))
+        // Get unique spot IDs (skip nil)
+        let spotIds = Array(Set(catches.compactMap { $0.spotId }))
         var spotsDict: [String: Spot] = [:]
         for spotId in spotIds {
             if let spot = try await spotRepository.getSpot(byId: spotId) {
@@ -135,7 +135,7 @@ final class CommunityViewModel: ObservableObject {
         
         // Build enriched items
         return catches.map { fishCatch in
-            let spot = spotsDict[fishCatch.spotId]
+            let spot = fishCatch.spotId.flatMap { spotsDict[$0] }
             let like = likeInfo[fishCatch.id] ?? LikeInfo.empty(for: fishCatch.id)
             
             return CatchWithDetails(

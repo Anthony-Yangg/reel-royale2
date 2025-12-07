@@ -19,7 +19,7 @@ final class SpotsViewModel: ObservableObject {
     
     // Filters
     @Published var searchQuery = ""
-    @Published var selectedWaterType: WaterType?
+    @Published var selectedWaterType: WaterbodyType?
     @Published var distanceFilter: DistanceFilter = .all
     
     // Map region
@@ -37,6 +37,9 @@ final class SpotsViewModel: ObservableObject {
     private let userRepository: UserRepositoryProtocol
     private let catchRepository: CatchRepositoryProtocol
     private let territoryRepository: TerritoryRepositoryProtocol
+    private let waterbodyRepository: WaterbodyRepositoryProtocol
+    private let spotGenerationService: SpotGenerationServiceProtocol
+    
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Enums
@@ -77,12 +80,16 @@ final class SpotsViewModel: ObservableObject {
         spotRepository: SpotRepositoryProtocol? = nil,
         userRepository: UserRepositoryProtocol? = nil,
         catchRepository: CatchRepositoryProtocol? = nil,
-        territoryRepository: TerritoryRepositoryProtocol? = nil
+        territoryRepository: TerritoryRepositoryProtocol? = nil,
+        waterbodyRepository: WaterbodyRepositoryProtocol? = nil,
+        spotGenerationService: SpotGenerationServiceProtocol? = nil
     ) {
         self.spotRepository = spotRepository ?? AppState.shared.spotRepository
         self.userRepository = userRepository ?? AppState.shared.userRepository
         self.catchRepository = catchRepository ?? AppState.shared.catchRepository
         self.territoryRepository = territoryRepository ?? AppState.shared.territoryRepository
+        self.waterbodyRepository = waterbodyRepository ?? AppState.shared.waterbodyRepository
+        self.spotGenerationService = spotGenerationService ?? AppState.shared.spotGenerationService
         
         setupBindings()
     }
@@ -114,16 +121,40 @@ final class SpotsViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            let rawSpots = try await spotRepository.getAllSpots()
+            // 1. Fetch nearby waterbodies
+            let location = userLocation ?? CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194)
+            let waterbodies = await waterbodyRepository.getWaterbodies(near: location, radiusMeters: 50_000)
+            
+            // 2. Generate spots for waterbodies if needed (Mock logic: always generate/merge)
+            var allSpots: [Spot] = []
+            
+            // First fetch existing spots from repo
+            let existingSpots = try await spotRepository.getAllSpots()
+            var spotsMap = Dictionary(uniqueKeysWithValues: existingSpots.map { ($0.id, $0) })
+            
+            for wb in waterbodies {
+                let generated = spotGenerationService.generateSpots(for: wb)
+                for spot in generated {
+                    // Check if spot already exists in DB (simulate check)
+                    // In real app, generation runs once or on demand, then saves to DB.
+                    // Here we'll pretend generated spots are "real" unless overridden by DB state.
+                    if spotsMap[spot.id] == nil {
+                        spotsMap[spot.id] = spot
+                        // In a real scenario, we might want to save these generated spots to the DB if they don't exist
+                    }
+                }
+            }
+            
+            allSpots = Array(spotsMap.values)
             
             // Fetch additional data for each spot
             var spotsWithDetails: [SpotWithDetails] = []
             
-            for spot in rawSpots {
+            for spot in allSpots {
                 var kingUser: User?
                 var bestCatch: FishCatch?
-                var territory: Territory?
                 var distance: Double?
+                var waterbody: Waterbody?
                 
                 // Get king user
                 if let kingId = spot.currentKingUserId {
@@ -135,9 +166,9 @@ final class SpotsViewModel: ObservableObject {
                     bestCatch = try? await catchRepository.getCatch(byId: bestCatchId)
                 }
                 
-                // Get territory
-                if let territoryId = spot.territoryId {
-                    territory = try? await territoryRepository.getTerritory(byId: territoryId)
+                // Get waterbody
+                if let wbId = spot.waterbodyId {
+                    waterbody = await waterbodyRepository.getWaterbody(byId: wbId)
                 }
                 
                 // Calculate distance from user
@@ -153,9 +184,9 @@ final class SpotsViewModel: ObservableObject {
                     spot: spot,
                     kingUser: kingUser,
                     bestCatch: bestCatch,
-                    territory: territory,
                     distance: distance,
-                    catchCount: catchCount
+                    catchCount: catchCount,
+                    waterbody: waterbody
                 ))
             }
             
@@ -175,7 +206,7 @@ final class SpotsViewModel: ObservableObject {
     
     // MARK: - Filtering
     
-    private func applyFilters(query: String, waterType: WaterType?, distance: DistanceFilter) {
+    private func applyFilters(query: String, waterType: WaterbodyType?, distance: DistanceFilter) {
         var filtered = spots
         
         // Search filter
@@ -232,9 +263,9 @@ final class SpotsViewModel: ObservableObject {
                 spot: spots[i].spot,
                 kingUser: spots[i].kingUser,
                 bestCatch: spots[i].bestCatch,
-                territory: spots[i].territory,
                 distance: distance,
-                catchCount: spots[i].catchCount
+                catchCount: spots[i].catchCount,
+                waterbody: spots[i].waterbody
             )
         }
         
@@ -245,4 +276,3 @@ final class SpotsViewModel: ObservableObject {
         selectedSpot = spot
     }
 }
-

@@ -112,9 +112,9 @@ struct SpotRowView: View {
             ),
             kingUser: User(id: "1", username: "FishKing"),
             bestCatch: nil,
-            territory: nil,
             distance: 5000,
-            catchCount: 42
+            catchCount: 42,
+            waterbody: nil
         ))
     }
     .listStyle(.plain)
