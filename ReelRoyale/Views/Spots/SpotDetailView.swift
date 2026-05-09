@@ -57,7 +57,7 @@ struct SpotDetailView: View {
     private func stickyCTA(_ spot: Spot) -> some View {
         let title: String = {
             if !spot.hasKing { return "Be the first king" }
-            if spot.currentKingUserId == appState.currentUser?.id { return "Add another catch" }
+            if spot.currentKingUserId == appState.currentUser?.id { return "Defend" }
             return "Take the crown"
         }()
         let gradient = LinearGradient(
@@ -454,4 +454,3 @@ struct LeaderboardRowView: View {
             .environmentObject(AppState.shared)
     }
 }
-

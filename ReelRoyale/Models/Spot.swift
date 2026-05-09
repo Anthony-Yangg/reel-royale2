@@ -161,6 +161,11 @@ struct Spot: Identifiable, Codable, Equatable, Hashable {
         guard let size = currentBestSize, let unit = currentBestUnit else { return nil }
         return "\(String(format: "%.1f", size)) \(unit)"
     }
+
+    var currentBestSizeInCm: Double? {
+        guard let size = currentBestSize, let unit = currentBestUnit else { return nil }
+        return FishCatch.normalizedSizeInCm(sizeValue: size, sizeUnit: unit)
+    }
 }
 
 /// Spot with additional computed info for display
@@ -174,4 +179,3 @@ struct SpotWithDetails: Identifiable, Equatable {
     
     var id: String { spot.id }
 }
-

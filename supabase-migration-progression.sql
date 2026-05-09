@@ -21,6 +21,17 @@ ALTER TABLE profiles
 CREATE INDEX IF NOT EXISTS profiles_xp_idx ON profiles(xp DESC);
 CREATE INDEX IF NOT EXISTS profiles_season_score_idx ON profiles(season_score DESC);
 
+-- Competitive integrity: clients may edit profile text, but progression,
+-- coins, season score, and equipped cosmetics are written by triggers/RPCs.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+        REVOKE UPDATE ON TABLE profiles FROM authenticated;
+        GRANT UPDATE (username, avatar_url, home_location, bio, push_token, updated_at)
+            ON TABLE profiles TO authenticated;
+    END IF;
+END $$;
+
 -- ============================================
 -- CATCHES: Add progression metadata
 -- ============================================
@@ -31,6 +42,17 @@ ALTER TABLE catches
     ADD COLUMN IF NOT EXISTS species_id UUID,
     ADD COLUMN IF NOT EXISTS dethroned_user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
     ADD COLUMN IF NOT EXISTS season_id UUID;
+
+-- Catch sizes/species drive crowns and XP. After insert, users can only edit
+-- presentation/privacy fields unless a server function performs the mutation.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+        REVOKE UPDATE ON TABLE catches FROM authenticated;
+        GRANT UPDATE (photo_url, visibility, hide_exact_location, notes, updated_at)
+            ON TABLE catches TO authenticated;
+    END IF;
+END $$;
 
 -- ============================================
 -- SPOTS: Add streak tracking
@@ -60,6 +82,7 @@ CREATE TABLE IF NOT EXISTS species (
 
 ALTER TABLE species ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Species are viewable by everyone" ON species;
 CREATE POLICY "Species are viewable by everyone"
     ON species FOR SELECT USING (true);
 
@@ -122,11 +145,11 @@ CREATE INDEX IF NOT EXISTS user_species_species_id_idx ON user_species(species_i
 
 ALTER TABLE user_species ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "User species rows are publicly viewable" ON user_species;
 CREATE POLICY "User species rows are publicly viewable"
     ON user_species FOR SELECT USING (true);
 
-CREATE POLICY "Users can write their own user_species"
-    ON user_species FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can write their own user_species" ON user_species;
 
 -- ============================================
 -- SEASONS
@@ -144,6 +167,7 @@ CREATE INDEX IF NOT EXISTS seasons_active_idx ON seasons(is_active);
 
 ALTER TABLE seasons ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Seasons are viewable by everyone" ON seasons;
 CREATE POLICY "Seasons are viewable by everyone"
     ON seasons FOR SELECT USING (true);
 
@@ -173,6 +197,7 @@ CREATE INDEX IF NOT EXISTS season_champions_season_id_idx ON season_champions(se
 
 ALTER TABLE season_champions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Season champions are viewable by everyone" ON season_champions;
 CREATE POLICY "Season champions are viewable by everyone"
     ON season_champions FOR SELECT USING (true);
 
@@ -197,6 +222,7 @@ CREATE TABLE IF NOT EXISTS shop_items (
 
 ALTER TABLE shop_items ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Shop items are viewable by everyone" ON shop_items;
 CREATE POLICY "Shop items are viewable by everyone"
     ON shop_items FOR SELECT USING (true);
 
@@ -240,14 +266,18 @@ CREATE INDEX IF NOT EXISTS user_inventory_item_id_idx ON user_inventory(item_id)
 
 ALTER TABLE user_inventory ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view their own inventory" ON user_inventory;
 CREATE POLICY "Users can view their own inventory"
     ON user_inventory FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Anyone can view equipped items (for display)" ON user_inventory;
 CREATE POLICY "Anyone can view equipped items (for display)"
     ON user_inventory FOR SELECT USING (is_equipped = true);
 
-CREATE POLICY "Users can write their own inventory"
-    ON user_inventory FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can write their own inventory" ON user_inventory;
+DROP POLICY IF EXISTS "Users can update their own inventory" ON user_inventory;
+CREATE POLICY "Users can update their own inventory"
+    ON user_inventory FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
 -- CHALLENGES (definitions)
@@ -278,6 +308,7 @@ CREATE TABLE IF NOT EXISTS challenges (
 
 ALTER TABLE challenges ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Challenges are viewable by everyone" ON challenges;
 CREATE POLICY "Challenges are viewable by everyone"
     ON challenges FOR SELECT USING (true);
 
@@ -320,11 +351,14 @@ CREATE INDEX IF NOT EXISTS user_challenges_assigned_date_idx ON user_challenges(
 
 ALTER TABLE user_challenges ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view their own challenges" ON user_challenges;
 CREATE POLICY "Users can view their own challenges"
     ON user_challenges FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can write their own challenges"
-    ON user_challenges FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can write their own challenges" ON user_challenges;
+DROP POLICY IF EXISTS "Users can update their own challenge progress" ON user_challenges;
+CREATE POLICY "Users can update their own challenge progress"
+    ON user_challenges FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
 -- NOTIFICATIONS
@@ -354,14 +388,18 @@ CREATE INDEX IF NOT EXISTS notifications_unread_idx ON notifications(user_id) WH
 
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view their own notifications" ON notifications;
 CREATE POLICY "Users can view their own notifications"
     ON notifications FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own notifications" ON notifications;
 CREATE POLICY "Users can update their own notifications"
     ON notifications FOR UPDATE USING (auth.uid() = user_id);
 
-CREATE POLICY "Service role inserts notifications"
-    ON notifications FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Service role inserts notifications" ON notifications;
+DROP POLICY IF EXISTS "Users can insert their own notifications" ON notifications;
+CREATE POLICY "Users can insert their own notifications"
+    ON notifications FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
 -- Helper: compute rank tier from XP total (mirror of Swift RankTier)
@@ -379,6 +417,74 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+-- Normalize length units for king comparisons. Current best size is stored in
+-- the unit the winner logged, so all crown logic must compare centimeters.
+CREATE OR REPLACE FUNCTION normalize_fish_size_cm(size_value DOUBLE PRECISION, size_unit TEXT)
+RETURNS DOUBLE PRECISION AS $$
+BEGIN
+    IF size_value IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    CASE LOWER(COALESCE(size_unit, 'cm'))
+        WHEN 'in' THEN RETURN size_value * 2.54;
+        WHEN 'inches' THEN RETURN size_value * 2.54;
+        ELSE RETURN size_value;
+    END CASE;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+-- Grant challenge rewards exactly once, when a user_challenges row flips to
+-- completed. The app may evaluate progress, but the database owns the actual
+-- XP/coin mutation so rewards persist across sessions.
+CREATE OR REPLACE FUNCTION grant_challenge_completion_rewards()
+RETURNS TRIGGER AS $$
+DECLARE
+    challenge_row challenges%ROWTYPE;
+BEGIN
+    IF NEW.completed = TRUE
+       AND COALESCE(OLD.completed, FALSE) = FALSE
+       AND COALESCE(OLD.rewarded, FALSE) = FALSE
+    THEN
+        SELECT * INTO challenge_row FROM challenges WHERE id = NEW.challenge_id;
+
+        IF FOUND THEN
+            NEW.rewarded := TRUE;
+            NEW.completed_at := COALESCE(NEW.completed_at, NOW());
+
+            UPDATE profiles SET
+                xp = xp + challenge_row.xp_reward,
+                lure_coins = lure_coins + challenge_row.coin_reward,
+                season_score = season_score + challenge_row.xp_reward,
+                rank_tier = compute_rank_tier(xp + challenge_row.xp_reward),
+                updated_at = NOW()
+            WHERE id = NEW.user_id;
+
+            INSERT INTO notifications (user_id, type, title, body, payload)
+            VALUES (
+                NEW.user_id,
+                'challenge_complete',
+                'Challenge complete!',
+                challenge_row.title || ' +' || challenge_row.xp_reward || ' XP',
+                jsonb_build_object(
+                    'challenge_id', NEW.challenge_id,
+                    'user_challenge_id', NEW.id,
+                    'xp', challenge_row.xp_reward,
+                    'coins', challenge_row.coin_reward
+                )
+            );
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_user_challenge_completed ON user_challenges;
+CREATE TRIGGER on_user_challenge_completed
+    BEFORE UPDATE ON user_challenges
+    FOR EACH ROW EXECUTE FUNCTION grant_challenge_completion_rewards();
+
 -- ============================================
 -- BEFORE INSERT trigger: compute reward fields, mutate NEW.
 -- This must NOT touch FK-related rows (spots.current_best_catch_id,
@@ -390,6 +496,9 @@ CREATE OR REPLACE FUNCTION catch_before_insert_compute()
 RETURNS TRIGGER AS $$
 DECLARE
     current_best DOUBLE PRECISION;
+    current_best_unit TEXT;
+    current_best_cm DOUBLE PRECISION;
+    new_size_cm DOUBLE PRECISION;
     previous_king UUID;
     species_row species%ROWTYPE;
     base_xp INTEGER;
@@ -438,11 +547,14 @@ BEGIN
     END IF;
 
     -- King status (read-only here; AFTER trigger applies the UPDATE)
-    SELECT current_best_size, current_king_user_id, territory_id
-        INTO current_best, previous_king, spot_territory
+    SELECT current_best_size, current_best_unit, current_king_user_id, territory_id
+        INTO current_best, current_best_unit, previous_king, spot_territory
     FROM spots WHERE id = NEW.spot_id;
 
-    IF (current_best IS NULL OR NEW.size_value > current_best)
+    new_size_cm := normalize_fish_size_cm(NEW.size_value, NEW.size_unit);
+    current_best_cm := normalize_fish_size_cm(current_best, current_best_unit);
+
+    IF (current_best_cm IS NULL OR new_size_cm > current_best_cm + 0.1)
        AND previous_king IS NOT NULL
        AND previous_king <> NEW.user_id
     THEN
@@ -507,6 +619,9 @@ CREATE OR REPLACE FUNCTION catch_after_insert_apply()
 RETURNS TRIGGER AS $$
 DECLARE
     current_best DOUBLE PRECISION;
+    current_best_unit TEXT;
+    current_best_cm DOUBLE PRECISION;
+    new_size_cm DOUBLE PRECISION;
     previous_king UUID;
     crown_taken BOOLEAN := FALSE;
 BEGIN
@@ -514,10 +629,14 @@ BEGIN
         RETURN NEW;
     END IF;
 
-    SELECT current_best_size, current_king_user_id INTO current_best, previous_king
+    SELECT current_best_size, current_best_unit, current_king_user_id
+        INTO current_best, current_best_unit, previous_king
     FROM spots WHERE id = NEW.spot_id;
 
-    IF (current_best IS NULL OR NEW.size_value > current_best) THEN
+    new_size_cm := normalize_fish_size_cm(NEW.size_value, NEW.size_unit);
+    current_best_cm := normalize_fish_size_cm(current_best, current_best_unit);
+
+    IF (current_best_cm IS NULL OR new_size_cm > current_best_cm + 0.1) THEN
         IF previous_king IS NOT NULL AND previous_king <> NEW.user_id THEN
             crown_taken := TRUE;
         END IF;
@@ -530,12 +649,24 @@ BEGIN
             king_since = NOW(),
             last_catch_at = NOW(),
             total_catches = total_catches + 1,
+            unique_anglers = (
+                SELECT COUNT(DISTINCT user_id)
+                FROM catches
+                WHERE spot_id = NEW.spot_id
+                  AND visibility IN ('public', 'friends_only')
+            ),
             updated_at = NOW()
         WHERE id = NEW.spot_id;
     ELSE
         UPDATE spots SET
             last_catch_at = NOW(),
             total_catches = total_catches + 1,
+            unique_anglers = (
+                SELECT COUNT(DISTINCT user_id)
+                FROM catches
+                WHERE spot_id = NEW.spot_id
+                  AND visibility IN ('public', 'friends_only')
+            ),
             updated_at = NOW()
         WHERE id = NEW.spot_id;
 
@@ -773,6 +904,8 @@ DECLARE
     item shop_items%ROWTYPE;
     user_coins INTEGER;
     user_rank TEXT;
+    release_count INTEGER;
+    trophy_count INTEGER;
     rank_order JSONB := '{"Minnow":0,"Angler":1,"Veteran":2,"Elite":3,"Master":4,"Legend":5}';
 BEGIN
     SELECT * INTO item FROM shop_items WHERE id = p_item_id AND is_active = true;
@@ -792,6 +925,28 @@ BEGIN
     IF item.rank_required IS NOT NULL THEN
         IF (rank_order->>user_rank)::INT < (rank_order->>item.rank_required)::INT THEN
             RETURN jsonb_build_object('ok', false, 'error', 'rank_too_low');
+        END IF;
+    END IF;
+
+    IF item.requires_release_count IS NOT NULL THEN
+        SELECT COUNT(*) INTO release_count
+        FROM catches
+        WHERE user_id = p_user_id AND released = TRUE;
+
+        IF release_count < item.requires_release_count THEN
+            RETURN jsonb_build_object('ok', false, 'error', 'release_count_too_low');
+        END IF;
+    END IF;
+
+    IF item.requires_trophy_count IS NOT NULL THEN
+        SELECT COALESCE(SUM(us.total_caught), 0) INTO trophy_count
+        FROM user_species us
+        JOIN species s ON s.id = us.species_id
+        WHERE us.user_id = p_user_id
+          AND s.rarity_tier = 'trophy';
+
+        IF trophy_count < item.requires_trophy_count THEN
+            RETURN jsonb_build_object('ok', false, 'error', 'trophy_count_too_low');
         END IF;
     END IF;
 

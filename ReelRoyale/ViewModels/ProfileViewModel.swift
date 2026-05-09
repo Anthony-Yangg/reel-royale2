@@ -180,7 +180,9 @@ final class ProfileViewModel: ObservableObject {
 
     /// Count catches whose species is `trophy`-tier in the catalog.
     private func countTrophies(in catches: [FishCatch]) async -> Int {
-        let codex = AppState.shared.codexService
+        guard let codex = AppState.shared.codexService else {
+            return 0
+        }
         var count = 0
         var cache: [String: FishRarity] = [:]
         for c in catches {
@@ -247,4 +249,3 @@ final class ProfileViewModel: ObservableObject {
         await loadProfile()
     }
 }
-

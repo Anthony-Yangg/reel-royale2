@@ -7,6 +7,8 @@ enum ShopError: LocalizedError, Equatable {
     case userNotFound
     case insufficientCoins
     case rankTooLow
+    case releaseCountTooLow
+    case trophyCountTooLow
     case alreadyOwned
     case notOwned
     case unknown(String)
@@ -17,6 +19,8 @@ enum ShopError: LocalizedError, Equatable {
         case "user_not_found":     self = .userNotFound
         case "insufficient_coins": self = .insufficientCoins
         case "rank_too_low":       self = .rankTooLow
+        case "release_count_too_low": self = .releaseCountTooLow
+        case "trophy_count_too_low":  self = .trophyCountTooLow
         case "already_owned":      self = .alreadyOwned
         case "not_owned":          self = .notOwned
         default:                   self = .unknown(rpcError)
@@ -29,6 +33,8 @@ enum ShopError: LocalizedError, Equatable {
         case .userNotFound:     return "Account error - try signing out and back in."
         case .insufficientCoins:return "Not enough Lure Coins."
         case .rankTooLow:       return "Your rank is too low to equip this."
+        case .releaseCountTooLow:return "Catch-and-release requirement not met yet."
+        case .trophyCountTooLow: return "Trophy fish requirement not met yet."
         case .alreadyOwned:     return "You already own this item."
         case .notOwned:         return "You don't own this item yet."
         case .unknown(let m):   return "Shop error: \(m)"

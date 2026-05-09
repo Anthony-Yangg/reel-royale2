@@ -177,6 +177,10 @@ struct FishCatch: Identifiable, Codable, Equatable, Hashable {
     
     /// Convert size to centimeters for comparison
     var normalizedSizeInCm: Double {
+        FishCatch.normalizedSizeInCm(sizeValue: sizeValue, sizeUnit: sizeUnit)
+    }
+
+    static func normalizedSizeInCm(sizeValue: Double, sizeUnit: String) -> Double {
         switch sizeUnit.lowercased() {
         case "in", "inches":
             return sizeValue * 2.54
@@ -244,4 +248,3 @@ struct CreateCatchInput {
         !spotId.isEmpty && !species.isEmpty && sizeValue > 0
     }
 }
-
