@@ -1,5 +1,5 @@
 import SwiftUI
-import PhotosUI
+@preconcurrency import PhotosUI
 
 struct ProfileSetupView: View {
     @StateObject private var viewModel = AuthViewModel()
@@ -32,8 +32,9 @@ struct ProfileSetupView: View {
                     
                     // Avatar picker
                     VStack(spacing: 16) {
+                        let avatarImage = viewModel.avatarImage
                         PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                            if let image = viewModel.avatarImage {
+                            if let image = avatarImage {
                                 Image(uiImage: image)
                                     .resizable()
                                     .scaledToFill()
@@ -210,4 +211,3 @@ struct ProfileSetupView: View {
 #Preview {
     ProfileSetupView()
 }
-

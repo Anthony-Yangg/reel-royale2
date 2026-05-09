@@ -22,6 +22,12 @@ protocol UserRepositoryProtocol {
     
     /// Search users by username
     func searchUsers(query: String, limit: Int) async throws -> [User]
+
+    /// Fetch top users by lifetime XP.
+    func getTopUsersByXP(limit: Int) async throws -> [User]
+
+    /// Fetch top users by current season score.
+    func getTopUsersBySeasonScore(limit: Int) async throws -> [User]
 }
 
 /// Supabase implementation of UserRepository
@@ -128,4 +134,3 @@ final class SupabaseUserRepository: UserRepositoryProtocol {
             .value
     }
 }
-

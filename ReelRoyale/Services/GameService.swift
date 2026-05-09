@@ -155,7 +155,8 @@ final class GameService: GameServiceProtocol {
             default: return input.sizeValue
             }
         }()
-        let isNewKingPredicted = (preSpot?.currentBestSize ?? 0) + AppConstants.Game.minimumSizeDifferenceToWin < normalizedNewSize
+        let currentBestSizeInCm = preSpot?.currentBestSizeInCm
+        let isNewKingPredicted = (currentBestSizeInCm ?? 0) + AppConstants.Game.minimumSizeDifferenceToWin < normalizedNewSize
         let dethroningPrediction = isNewKingPredicted
             && (preSpot?.currentKingUserId != nil)
             && (preSpot?.currentKingUserId != currentUser.id)
@@ -185,13 +186,14 @@ final class GameService: GameServiceProtocol {
         // INSERT triggers update_spot_king() server-side. Returning row carries
         // xp_awarded, coins_awarded, dethroned_user_id, season_id.
         let inserted = try await catchRepository.createCatch(row)
-        let isNewKing = (inserted.dethronedUserId != nil) || ((preSpot?.currentBestSize ?? 0) < inserted.sizeValue)
-        let previousKingId = inserted.dethronedUserId ?? preSpot?.currentKingUserId
 
         // Refresh spot + user state.
         async let updatedSpotTask = spotRepository.getSpot(byId: input.spotId)
         async let updatedUserTask = userRepository.getUser(byId: currentUser.id)
-        let (updatedSpot, refreshedUser) = try await (updatedSpotTask, updatedUserTask)
+        let (updatedSpot, refreshedUserAfterCatch) = try await (updatedSpotTask, updatedUserTask)
+
+        let isNewKing = inserted.isPublic && updatedSpot?.currentBestCatchId == inserted.id
+        let previousKingId = isNewKing ? (inserted.dethronedUserId ?? preSpot?.currentKingUserId) : nil
 
         // Territory ruler change?
         var territoryControlChanged = false
@@ -205,6 +207,10 @@ final class GameService: GameServiceProtocol {
         }
 
         // Client-side breakdown for celebration UI.
+        let firstCatchInTerritoryPrediction = await isFirstCatchInTerritory(
+            territoryId: updatedSpot?.territoryId,
+            in: userCatches
+        )
         let breakdown = XPCalculator.compute(input: XPInput(
             weightKg: XPCalculator.weightKg(sizeValue: inserted.sizeValue, sizeUnit: inserted.sizeUnit),
             sizeUnit: inserted.sizeUnit,
@@ -214,20 +220,19 @@ final class GameService: GameServiceProtocol {
             previouslyHeldKing: preSpot?.currentKingUserId == currentUser.id,
             firstSpeciesForUser: firstSpeciesPrediction,
             firstCatchOfDay: isFirstCatchOfDay(in: userCatches, on: now),
-            firstCatchInTerritory: isFirstCatchInTerritory(territoryId: updatedSpot?.territoryId, in: userCatches),
+            firstCatchInTerritory: firstCatchInTerritoryPrediction,
             isPublic: inserted.isPublic
         ))
-
-        // Rank delta
-        let oldRank = currentUser.rankTier
-        let newRank = refreshedUser?.rankTier ?? RankTier.from(xp: currentUser.xp + inserted.xpAwarded)
-        let leveledUp = newRank > oldRank
-        let xpToNext = newRank.xpToNext(currentXP: refreshedUser?.xp ?? (currentUser.xp + inserted.xpAwarded))
 
         // Run challenges (best-effort).
         var completedChallenges: [Challenge] = []
         if let challengeService, inserted.isPublic, let updatedSpot {
             do {
+                let territoriesThisWeek = await distinctTerritories(
+                    in: userCatches,
+                    currentSpot: updatedSpot,
+                    days: 7
+                )
                 let context = ChallengeContext(
                     userId: currentUser.id,
                     now: now,
@@ -235,7 +240,7 @@ final class GameService: GameServiceProtocol {
                     spot: updatedSpot,
                     isNewKing: isNewKing,
                     distinctSpotsToday: distinctSpots(in: userCatches, on: now) + 1,
-                    distinctTerritoriesThisWeek: distinctTerritories(in: userCatches, currentTerritory: updatedSpot.territoryId, in: 7),
+                    distinctTerritoriesThisWeek: territoriesThisWeek,
                     catchesInLast7Days: catchesInLast(days: 7, in: userCatches) + 1,
                     longestActiveKingStreakDays: 0,
                     isFirstSpecies: firstSpeciesPrediction
@@ -249,11 +254,33 @@ final class GameService: GameServiceProtocol {
             }
         }
 
+        // Challenge-completion rewards are granted by the database trigger.
+        // Refresh once more so the celebration/profile reflect the saved total.
+        var refreshedUser = refreshedUserAfterCatch
+        if !completedChallenges.isEmpty {
+            refreshedUser = try? await userRepository.getUser(byId: currentUser.id)
+        }
+
+        // Rank delta
+        let oldRank = currentUser.rankTier
+        let newRank = refreshedUser?.rankTier ?? RankTier.from(xp: currentUser.xp + inserted.xpAwarded)
+        let leveledUp = newRank > oldRank
+        let xpToNext = newRank.xpToNext(currentXP: refreshedUser?.xp ?? (currentUser.xp + inserted.xpAwarded))
+
         // Local broadcast for in-app listeners (profile, feed, etc.)
         NotificationCenter.default.post(
             name: .catchCreated,
             object: nil,
-            userInfo: ["userId": currentUser.id, "catchId": inserted.id]
+            userInfo: [
+                "userId": currentUser.id,
+                "catchId": inserted.id,
+                "spotId": inserted.spotId
+            ]
+        )
+        NotificationCenter.default.post(
+            name: .spotUpdated,
+            object: nil,
+            userInfo: ["spotId": inserted.spotId]
         )
         if isNewKing, let prev = previousKingId, prev != currentUser.id {
             NotificationCenter.default.post(
@@ -415,11 +442,21 @@ final class GameService: GameServiceProtocol {
         return !catches.contains { cal.isDate($0.createdAt, inSameDayAs: day) }
     }
 
-    private func isFirstCatchInTerritory(territoryId: String?, in catches: [FishCatch]) -> Bool {
+    private func isFirstCatchInTerritory(territoryId: String?, in catches: [FishCatch]) async -> Bool {
         guard let territoryId, !territoryId.isEmpty else { return false }
-        // Without catches.territory_id we cannot answer this exactly client-side;
-        // server-side trigger is authoritative. Conservative answer: false.
-        return false
+
+        var spotCache: [String: Spot] = [:]
+        for fishCatch in catches where fishCatch.isPublic {
+            if spotCache[fishCatch.spotId] == nil,
+               let spot = try? await spotRepository.getSpot(byId: fishCatch.spotId) {
+                spotCache[fishCatch.spotId] = spot
+            }
+            if spotCache[fishCatch.spotId]?.territoryId == territoryId {
+                return false
+            }
+        }
+
+        return true
     }
 
     private func distinctSpots(in catches: [FishCatch], on day: Date) -> Int {
@@ -428,12 +465,28 @@ final class GameService: GameServiceProtocol {
         return Set(today.map { $0.spotId }).count
     }
 
-    private func distinctTerritories(in catches: [FishCatch], currentTerritory: String?, in days: Int) -> Int {
+    private func distinctTerritories(in catches: [FishCatch], currentSpot: Spot, days: Int) async -> Int {
         let cutoff = Date().addingTimeInterval(-Double(days) * 86400)
         let recent = catches.filter { $0.createdAt >= cutoff }
-        let baseline = Set(recent.map { $0.spotId }).count
-        if let currentTerritory, !currentTerritory.isEmpty { return max(1, baseline) }
-        return baseline
+
+        var territoryIds = Set<String>()
+        if let territoryId = currentSpot.territoryId, !territoryId.isEmpty {
+            territoryIds.insert(territoryId)
+        }
+
+        var spotCache: [String: Spot] = [currentSpot.id: currentSpot]
+        for fishCatch in recent {
+            if spotCache[fishCatch.spotId] == nil {
+                if let spot = try? await spotRepository.getSpot(byId: fishCatch.spotId) {
+                    spotCache[fishCatch.spotId] = spot
+                }
+            }
+            if let territoryId = spotCache[fishCatch.spotId]?.territoryId, !territoryId.isEmpty {
+                territoryIds.insert(territoryId)
+            }
+        }
+
+        return territoryIds.count
     }
 
     private func catchesInLast(days: Int, in catches: [FishCatch]) -> Int {

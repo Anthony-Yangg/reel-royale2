@@ -215,10 +215,55 @@ final class ShopViewModel: ObservableObject {
     func load() async {
         guard let user = AppState.shared.currentUser else { return }
         isLoading = true
-        let stats = UserStats.empty // shop block math primarily uses coins+rank, stats minor
+        let stats = await unlockStats(for: user.id)
         let items = (try? await AppState.shared.shopService.getCatalog(for: user, stats: stats)) ?? []
         byCategory = Dictionary(grouping: items) { $0.item.category }
         isLoading = false
+    }
+
+    private func unlockStats(for userId: String) async -> UserStats {
+        let catches = (try? await AppState.shared.catchRepository.getCatches(forUser: userId)) ?? []
+        let releaseCount = catches.filter { $0.released }.count
+        let trophyCount = await trophyCatchCount(in: catches)
+
+        return UserStats(
+            totalCatches: catches.count,
+            publicCatches: catches.filter { $0.isPublic }.count,
+            crownedSpots: 0,
+            ruledTerritories: 0,
+            largestCatch: nil,
+            largestCatchUnit: nil,
+            favoriteSpecies: nil,
+            speciesDiscovered: 0,
+            releaseCount: releaseCount,
+            trophyCount: trophyCount
+        )
+    }
+
+    private func trophyCatchCount(in catches: [FishCatch]) async -> Int {
+        var count = 0
+        var cache: [String: FishRarity] = [:]
+
+        for fishCatch in catches {
+            let key = fishCatch.species.lowercased()
+            let rarity: FishRarity
+
+            if let cached = cache[key] {
+                rarity = cached
+            } else if let species = try? await AppState.shared.codexService.resolveSpecies(named: fishCatch.species) {
+                rarity = species.rarityTier
+                cache[key] = rarity
+            } else {
+                rarity = .common
+                cache[key] = rarity
+            }
+
+            if rarity == .trophy {
+                count += 1
+            }
+        }
+
+        return count
     }
 
     func purchase(_ itemId: String) async {

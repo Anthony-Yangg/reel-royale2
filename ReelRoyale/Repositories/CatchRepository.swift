@@ -121,24 +121,21 @@ final class SupabaseCatchRepository: CatchRepositoryProtocol {
             .select()
             .eq("spot_id", value: spotId)
             .or("visibility.eq.public,visibility.eq.friends_only")
-            .order("size_value", ascending: false)
-            .limit(1)
             .execute()
             .value
-        
-        return catches.first
+
+        return catches.max { $0.normalizedSizeInCm < $1.normalizedSizeInCm }
     }
     
     func getPublicCatches(forSpot spotId: String, limit: Int = 20) async throws -> [FishCatch] {
-        try await supabase.database
+        let catches: [FishCatch] = try await supabase.database
             .from(AppConstants.Supabase.Tables.catches)
             .select()
             .eq("spot_id", value: spotId)
             .or("visibility.eq.public,visibility.eq.friends_only")
-            .order("size_value", ascending: false)
-            .limit(limit)
             .execute()
             .value
+
+        return Array(catches.sorted { $0.normalizedSizeInCm > $1.normalizedSizeInCm }.prefix(limit))
     }
 }
-

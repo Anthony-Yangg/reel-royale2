@@ -117,11 +117,13 @@ final class SpotDetailViewModel: ObservableObject {
             spot = loadedSpot
             
             // Load king user
+            kingUser = nil
             if let kingId = loadedSpot.currentKingUserId {
                 kingUser = try await userRepository.getUser(byId: kingId)
             }
             
             // Load best catch
+            bestCatch = nil
             if let catchId = loadedSpot.currentBestCatchId {
                 bestCatch = try await catchRepository.getCatch(byId: catchId)
             }
@@ -132,6 +134,8 @@ final class SpotDetailViewModel: ObservableObject {
             // Load territory info
             if let territoryId = loadedSpot.territoryId {
                 territory = try await gameService.getTerritoryControl(territoryId: territoryId)
+            } else {
+                territory = nil
             }
             
         } catch {
@@ -163,4 +167,3 @@ final class SpotDetailViewModel: ObservableObject {
         await loadSpotDetails()
     }
 }
-

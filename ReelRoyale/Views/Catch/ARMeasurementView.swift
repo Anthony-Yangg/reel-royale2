@@ -32,8 +32,9 @@ class ARMeasurementHelper {
         lineGeometry.firstMaterial?.diffuse.contents = UIColor.systemGreen
         lineGeometry.firstMaterial?.lightingModel = .constant
         
-        lineNode = SCNNode(geometry: lineGeometry)
-        scene.rootNode.addChildNode(lineNode!)
+        let node = SCNNode(geometry: lineGeometry)
+        lineNode = node
+        scene.rootNode.addChildNode(node)
     }
     
     func reset(in scene: SCNScene) {
@@ -48,14 +49,16 @@ class ARMeasurementHelper {
     
     func setStartPoint(_ position: SCNVector3, in scene: SCNScene) {
         startNode?.removeFromParentNode()
-        startNode = createSphereNode(at: position, color: .systemBlue)
-        scene.rootNode.addChildNode(startNode!)
+        let node = createSphereNode(at: position, color: .systemBlue)
+        startNode = node
+        scene.rootNode.addChildNode(node)
     }
     
     func setEndPoint(_ position: SCNVector3, in scene: SCNScene) {
         endNode?.removeFromParentNode()
-        endNode = createSphereNode(at: position, color: .systemGreen)
-        scene.rootNode.addChildNode(endNode!)
+        let node = createSphereNode(at: position, color: .systemGreen)
+        endNode = node
+        scene.rootNode.addChildNode(node)
         
         if let startPos = startNode?.position {
             updateLine(from: startPos, to: position, in: scene)
@@ -67,11 +70,11 @@ class ARMeasurementHelper {
 extension ARMeasurementCoordinator {
     private static var measurementHelper = ARMeasurementHelper()
     
-    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+    nonisolated func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         // Could add real-time measurement updates here
     }
     
-    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+    nonisolated func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         // Handle anchor additions
     }
 }
@@ -136,4 +139,3 @@ struct ARMeasurementGuidelines: View {
         ARMeasurementGuidelines(state: .scanning)
     }
 }
-
