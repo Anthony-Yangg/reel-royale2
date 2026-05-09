@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @EnvironmentObject var appState: AppState
-    
+
     var body: some View {
         TabView(selection: $appState.selectedTab) {
             // Spots Tab
@@ -16,7 +16,7 @@ struct MainTabView: View {
                 Label(AppTab.spots.rawValue, systemImage: AppTab.spots.icon)
             }
             .tag(AppTab.spots)
-            
+
             // Community Tab
             NavigationStack(path: $appState.communityNavigationPath) {
                 CommunityView()
@@ -28,8 +28,8 @@ struct MainTabView: View {
                 Label(AppTab.community.rawValue, systemImage: AppTab.community.icon)
             }
             .tag(AppTab.community)
-            
-            // Profile Tab
+
+            // Profile Tab — badge shows unread notifications
             NavigationStack(path: $appState.profileNavigationPath) {
                 ProfileView()
                     .navigationDestination(for: NavigationDestination.self) { destination in
@@ -39,8 +39,9 @@ struct MainTabView: View {
             .tabItem {
                 Label(AppTab.profile.rawValue, systemImage: AppTab.profile.icon)
             }
+            .badge(appState.unreadNotifications > 0 ? appState.unreadNotifications : 0)
             .tag(AppTab.profile)
-            
+
             // More Tab
             NavigationStack {
                 MoreView()
@@ -55,71 +56,60 @@ struct MainTabView: View {
         }
         .tint(Color.seafoam)
     }
-    
+
     @ViewBuilder
     private func destinationView(for destination: NavigationDestination) -> some View {
         switch destination {
         case .spotDetail(let spotId):
             SpotDetailView(spotId: spotId)
-            
         case .catchDetail(let catchId):
             CatchDetailView(catchId: catchId)
-            
         case .logCatch(let spotId):
             LogCatchView(preselectedSpotId: spotId)
-            
         case .userProfile(let userId):
             ProfileView(userId: userId)
-            
         case .territory(let territoryId):
             TerritoryView(territoryId: territoryId)
-            
         case .regulations(let spotId):
             RegulationsView(spotId: spotId)
-            
         case .fishID:
             FishIDView()
-            
         case .measureFish:
             MeasurementView(onCapture: { _ in })
-            
         case .leaderboard:
             LeaderboardView()
-            
         case .settings:
             SettingsView()
+        case .codex:
+            CodexView()
+        case .shop:
+            ShopView()
+        case .challenges:
+            ChallengesView()
+        case .notifications:
+            NotificationsView()
+        case .season:
+            SeasonView()
         }
     }
 }
 
-// Settings placeholder
+// Settings placeholder - kept here so MoreView keeps working.
 struct SettingsView: View {
     var body: some View {
         List {
             Section("Account") {
-                NavigationLink("Edit Profile") {
-                    Text("Edit Profile")
-                }
-                NavigationLink("Privacy Settings") {
-                    Text("Privacy Settings")
-                }
+                NavigationLink("Edit Profile") { Text("Edit Profile") }
+                NavigationLink("Privacy Settings") { Text("Privacy Settings") }
             }
-            
             Section("App") {
-                NavigationLink("Notifications") {
-                    Text("Notifications")
-                }
-                NavigationLink("Units & Measurements") {
-                    Text("Units & Measurements")
-                }
+                NavigationLink("Notifications") { Text("Notifications") }
+                NavigationLink("Units & Measurements") { Text("Units & Measurements") }
             }
-            
             Section("About") {
                 HStack {
-                    Text("Version")
-                    Spacer()
-                    Text("1.0.0")
-                        .foregroundColor(.secondary)
+                    Text("Version"); Spacer()
+                    Text("1.0.0").foregroundColor(.secondary)
                 }
             }
         }
@@ -131,4 +121,3 @@ struct SettingsView: View {
     MainTabView()
         .environmentObject(AppState.shared)
 }
-

@@ -5,6 +5,44 @@ struct MoreView: View {
     
     var body: some View {
         List {
+            // Game section - progression, collection, shop
+            Section {
+                NavigationLink(value: NavigationDestination.challenges) {
+                    MoreRowView(
+                        icon: "checkmark.seal.fill",
+                        iconColor: .kelp,
+                        title: "Challenges",
+                        subtitle: "Daily and weekly goals"
+                    )
+                }
+                NavigationLink(value: NavigationDestination.codex) {
+                    MoreRowView(
+                        icon: "books.vertical.fill",
+                        iconColor: .seafoam,
+                        title: "Codex",
+                        subtitle: "Species you've discovered"
+                    )
+                }
+                NavigationLink(value: NavigationDestination.shop) {
+                    MoreRowView(
+                        icon: "tag.fill",
+                        iconColor: .crown,
+                        title: "Tackle Shop",
+                        subtitle: "Spend Lure Coins on cosmetics"
+                    )
+                }
+                NavigationLink(value: NavigationDestination.season) {
+                    MoreRowView(
+                        icon: "flag.checkered",
+                        iconColor: .oceanBlue,
+                        title: "Season",
+                        subtitle: "Leaderboard and history"
+                    )
+                }
+            } header: {
+                Text("Game")
+            }
+
             // Tools section
             Section {
                 NavigationLink(value: NavigationDestination.fishID) {
@@ -15,7 +53,7 @@ struct MoreView: View {
                         subtitle: "Identify species using AI"
                     )
                 }
-                
+
                 NavigationLink(value: NavigationDestination.measureFish) {
                     MoreRowView(
                         icon: "ruler",

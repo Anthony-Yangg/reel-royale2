@@ -58,14 +58,25 @@ struct SpotsView: View {
     
     private var headerView: some View {
         VStack(spacing: 12) {
+            // Season banner (always visible if a season is active)
+            if let season = appState.activeSeason {
+                SeasonBanner(
+                    season: season,
+                    userScore: appState.currentUser?.seasonScore ?? 0,
+                    userRank: nil
+                ) {
+                    appState.spotsNavigationPath.append(NavigationDestination.season)
+                }
+            }
+
             // Search bar
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
-                
+
                 TextField("Search spots...", text: $viewModel.searchQuery)
                     .textFieldStyle(.plain)
-                
+
                 if !viewModel.searchQuery.isEmpty {
                     Button {
                         viewModel.searchQuery = ""

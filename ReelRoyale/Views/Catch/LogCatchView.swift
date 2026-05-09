@@ -85,12 +85,9 @@ struct LogCatchView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
-            .onChange(of: viewModel.showSuccess) { _, success in
-                if success {
-                    // Show success and dismiss
-                    if let result = viewModel.catchResult, result.isNewKing {
-                        // Could show a celebration here
-                    }
+            .fullScreenCover(item: $viewModel.celebrationResult) { result in
+                CatchCelebrationView(result: result) {
+                    viewModel.celebrationResult = nil
                     dismiss()
                 }
             }
@@ -301,12 +298,25 @@ struct LogCatchView: View {
                         .tag(visibility)
                 }
             }
-            
+
             Toggle(isOn: $viewModel.hideExactLocation) {
                 HStack {
                     Image(systemName: "location.slash")
                         .foregroundColor(.secondary)
                     Text("Hide Exact Location")
+                }
+            }
+
+            Toggle(isOn: $viewModel.releaseFish) {
+                HStack {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundColor(.kelp)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Catch & Release")
+                        Text("+50 XP conservation bonus")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
         } header: {
