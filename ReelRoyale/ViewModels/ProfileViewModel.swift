@@ -158,7 +158,12 @@ final class ProfileViewModel: ObservableObject {
         
         // Count ruled territories
         let territoriesRuled = (try? await gameService.getRuledTerritoriesCount(for: userId)) ?? 0
-        
+
+        // Progression-derived stats
+        let releaseCount = allCatches.filter { $0.released }.count
+        let speciesDiscovered = (try? await AppState.shared.codexService.discoveryCount(for: userId)) ?? 0
+        let trophyCount = await countTrophies(in: allCatches)
+
         stats = UserStats(
             totalCatches: allCatches.count,
             publicCatches: publicCatches.count,
@@ -166,8 +171,30 @@ final class ProfileViewModel: ObservableObject {
             ruledTerritories: territoriesRuled,
             largestCatch: largestCatch?.sizeValue,
             largestCatchUnit: largestCatch?.sizeUnit,
-            favoriteSpecies: favoriteSpecies
+            favoriteSpecies: favoriteSpecies,
+            speciesDiscovered: speciesDiscovered,
+            releaseCount: releaseCount,
+            trophyCount: trophyCount
         )
+    }
+
+    /// Count catches whose species is `trophy`-tier in the catalog.
+    private func countTrophies(in catches: [FishCatch]) async -> Int {
+        let codex = AppState.shared.codexService
+        var count = 0
+        var cache: [String: FishRarity] = [:]
+        for c in catches {
+            let key = c.species.lowercased()
+            if let r = cache[key] {
+                if r == .trophy { count += 1 }
+                continue
+            }
+            let species = try? await codex.resolveSpecies(named: c.species)
+            let rarity = species?.rarityTier ?? .common
+            cache[key] = rarity
+            if rarity == .trophy { count += 1 }
+        }
+        return count
     }
     
     // MARK: - Editing

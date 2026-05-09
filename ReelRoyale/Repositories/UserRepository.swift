@@ -53,28 +53,54 @@ final class SupabaseUserRepository: UserRepositoryProtocol {
     }
     
     func updateUser(_ user: User) async throws {
-        // Create update payload without id and createdAt
+        // Update only the editable profile fields. XP/coins/season_score are
+        // server-managed via the `update_spot_king` trigger, so we never
+        // overwrite them from the client.
         struct UserUpdate: Encodable {
             let username: String
             let avatar_url: String?
             let home_location: String?
             let bio: String?
+            let push_token: String?
             let updated_at: Date
         }
-        
+
         let update = UserUpdate(
             username: user.username,
             avatar_url: user.avatarURL,
             home_location: user.homeLocation,
             bio: user.bio,
+            push_token: user.pushToken,
             updated_at: Date()
         )
-        
+
         try await supabase.database
             .from(AppConstants.Supabase.Tables.profiles)
             .update(update)
             .eq("id", value: user.id)
             .execute()
+    }
+
+    /// Fetch top users by lifetime XP. Used by global leaderboard.
+    func getTopUsersByXP(limit: Int = 50) async throws -> [User] {
+        try await supabase.database
+            .from(AppConstants.Supabase.Tables.profiles)
+            .select()
+            .order("xp", ascending: false)
+            .limit(limit)
+            .execute()
+            .value
+    }
+
+    /// Fetch top users by current season score. Used by season leaderboard.
+    func getTopUsersBySeasonScore(limit: Int = 50) async throws -> [User] {
+        try await supabase.database
+            .from(AppConstants.Supabase.Tables.profiles)
+            .select()
+            .order("season_score", ascending: false)
+            .limit(limit)
+            .execute()
+            .value
     }
     
     func getAllUsers() async throws -> [User] {

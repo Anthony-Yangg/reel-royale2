@@ -27,19 +27,24 @@ final class OpenWeatherService: WeatherServiceProtocol {
     
     func getWeather(latitude: Double, longitude: Double) async throws -> WeatherConditions {
         let cacheKey = "\(latitude),\(longitude)"
-        
+
         // Check cache
         if let cached = cache[cacheKey],
            Date().timeIntervalSince(cached.fetchedAt) < cacheTimeout {
             return cached.weather
         }
-        
-        // Build URL
-        var components = URLComponents(string: "\(AppConstants.Weather.baseURL)/weather")!
+
+        // No key configured: fail soft. Callers (LogCatchViewModel) treat this as optional.
+        guard SecretsConfig.hasOpenWeatherKey else {
+            throw AppError.networkError("OpenWeather API key not configured")
+        }
+
+        // Build URL using SecretsConfig (env / Info.plist / fallback)
+        var components = URLComponents(string: "\(SecretsConfig.openWeatherBaseURL)/weather")!
         components.queryItems = [
             URLQueryItem(name: "lat", value: String(latitude)),
             URLQueryItem(name: "lon", value: String(longitude)),
-            URLQueryItem(name: "appid", value: AppConstants.Weather.apiKey),
+            URLQueryItem(name: "appid", value: SecretsConfig.openWeatherAPIKey ?? ""),
             URLQueryItem(name: "units", value: "metric")
         ]
         
