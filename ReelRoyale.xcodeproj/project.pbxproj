@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		03E3F0A2C4AC215403A57B71 /* ReelThemeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221DD970EE3B2A3EA30705F /* ReelThemeShadow.swift */; };
+		1CA28FCF15155DAEFCCE39CB /* SoundService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64252B70A9728B51E43022C8 /* SoundService.swift */; };
 		1D07C88D108F20EAD24645B7 /* ReelThemeMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287273BDEE3813F3DCEB3DC8 /* ReelThemeMotion.swift */; };
 		28C6BE23694C7B6FEEB2E4F0 /* ReelTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE5713A395D888E28F52510 /* ReelTheme.swift */; };
 		566A9D36905D9A2FC46A4102 /* ReelThemeRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EE8DC5FAC6D4BEC0C8DAC9 /* ReelThemeRadius.swift */; };
+		56BBB612D2B71CB2870A1D40 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E65698B7177216E9CC87B5 /* HapticsService.swift */; };
 		CC308A6E57730796E052F329 /* ReelThemeTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E6C2A807D88BF89EDC2761 /* ReelThemeTypography.swift */; };
 		DE8302ED2F1C4DE8D4A50E39 /* ReelThemeSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F3A5B0DD075B883DDA7C55 /* ReelThemeSpacing.swift */; };
 		E80000012D4A000000000001 /* ReelRoyaleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000001 /* ReelRoyaleApp.swift */; };
@@ -80,10 +82,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04E65698B7177216E9CC87B5 /* HapticsService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
 		18452E73E53B22D1303444DF /* ReelThemeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeColors.swift; sourceTree = "<group>"; };
 		2221DD970EE3B2A3EA30705F /* ReelThemeShadow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeShadow.swift; sourceTree = "<group>"; };
 		287273BDEE3813F3DCEB3DC8 /* ReelThemeMotion.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeMotion.swift; sourceTree = "<group>"; };
 		48EE8DC5FAC6D4BEC0C8DAC9 /* ReelThemeRadius.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeRadius.swift; sourceTree = "<group>"; };
+		64252B70A9728B51E43022C8 /* SoundService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SoundService.swift; sourceTree = "<group>"; };
 		71E6C2A807D88BF89EDC2761 /* ReelThemeTypography.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeTypography.swift; sourceTree = "<group>"; };
 		A9F3A5B0DD075B883DDA7C55 /* ReelThemeSpacing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeSpacing.swift; sourceTree = "<group>"; };
 		DFE5713A395D888E28F52510 /* ReelTheme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelTheme.swift; sourceTree = "<group>"; };
@@ -326,6 +330,8 @@
 				E80000002D4A000000000206 /* MeasurementService.swift */,
 				E80000002D4A000000000207 /* GameService.swift */,
 				E80000002D4A000000000208 /* ImageUploadService.swift */,
+				04E65698B7177216E9CC87B5 /* HapticsService.swift */,
+				64252B70A9728B51E43022C8 /* SoundService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -514,6 +520,8 @@
 				03E3F0A2C4AC215403A57B71 /* ReelThemeShadow.swift in Sources */,
 				1D07C88D108F20EAD24645B7 /* ReelThemeMotion.swift in Sources */,
 				28C6BE23694C7B6FEEB2E4F0 /* ReelTheme.swift in Sources */,
+				56BBB612D2B71CB2870A1D40 /* HapticsService.swift in Sources */,
+				1CA28FCF15155DAEFCCE39CB /* SoundService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

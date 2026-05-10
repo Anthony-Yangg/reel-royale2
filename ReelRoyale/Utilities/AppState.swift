@@ -52,7 +52,9 @@ final class AppState: ObservableObject {
     private(set) var measurementService: MeasurementServiceProtocol!
     private(set) var gameService: GameServiceProtocol!
     private(set) var imageUploadService: ImageUploadServiceProtocol!
-    
+    private(set) var haptics: HapticsServiceProtocol!
+    private(set) var sounds: SoundServiceProtocol!
+
     private var cancellables = Set<AnyCancellable>()
     
     private init() {}
@@ -81,7 +83,9 @@ final class AppState: ObservableObject {
             catchRepository: catchRepository,
             territoryRepository: territoryRepository
         )
-        
+        haptics = HapticsService()
+        sounds = SoundService()
+
         // Set up auth state listener
         setupAuthStateListener()
     }
