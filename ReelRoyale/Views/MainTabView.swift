@@ -23,8 +23,7 @@ struct MainTabView: View {
     private func tabContent(for tab: AppTab) -> some View {
         switch tab {
         case .home:
-            // Wave 2 implements HomeView. Wave 1 fallback: show Spots.
-            spotsTab
+            homeTab
         case .spots:
             spotsTab
         case .community:
@@ -33,6 +32,19 @@ struct MainTabView: View {
             profileTab
         case .more:
             moreTab
+        }
+    }
+
+    private var homeTab: some View {
+        NavigationStack(path: $appState.homeNavigationPath) {
+            VStack(spacing: 0) {
+                IdentityHeader()
+                HomeView()
+            }
+            .navigationDestination(for: NavigationDestination.self) { destination in
+                destinationView(for: destination)
+            }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 

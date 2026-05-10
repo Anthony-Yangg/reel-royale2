@@ -26,8 +26,8 @@ final class AppState: ObservableObject {
     /// Show error alert
     @Published var showError = false
     
-    /// Selected tab
-    @Published var selectedTab: AppTab = .spots
+    /// Selected tab. Defaults to Home (Wave 2+).
+    @Published var selectedTab: AppTab = .home
     
     /// Navigation path for spots tab
     @Published var spotsNavigationPath = NavigationPath()
@@ -54,6 +54,9 @@ final class AppState: ObservableObject {
     private(set) var imageUploadService: ImageUploadServiceProtocol!
     private(set) var haptics: HapticsServiceProtocol!
     private(set) var sounds: SoundServiceProtocol!
+    private(set) var bountyService: BountyServiceProtocol!
+    private(set) var dethroneEventService: DethroneEventServiceProtocol!
+    private(set) var leaderboardService: LeaderboardServiceProtocol!
 
     private var cancellables = Set<AnyCancellable>()
     
@@ -85,6 +88,9 @@ final class AppState: ObservableObject {
         )
         haptics = HapticsService()
         sounds = SoundService()
+        bountyService = MockBountyService()
+        dethroneEventService = MockDethroneEventService()
+        leaderboardService = MockLeaderboardService()
 
         // Set up auth state listener
         setupAuthStateListener()
@@ -143,8 +149,11 @@ final class AppState: ObservableObject {
         spotsNavigationPath = NavigationPath()
         communityNavigationPath = NavigationPath()
         profileNavigationPath = NavigationPath()
-        selectedTab = .spots
+        selectedTab = .home
     }
+
+    /// Navigation path for home tab (Wave 2+).
+    @Published var homeNavigationPath = NavigationPath()
     
     func showError(_ message: String) {
         errorMessage = message

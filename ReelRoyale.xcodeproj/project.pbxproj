@@ -7,20 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02A400E07177BC9868797610 /* DethroneEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D07A8DDA02E4061F6E32A7 /* DethroneEvent.swift */; };
 		03E3F0A2C4AC215403A57B71 /* ReelThemeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221DD970EE3B2A3EA30705F /* ReelThemeShadow.swift */; };
 		1CA28FCF15155DAEFCCE39CB /* SoundService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64252B70A9728B51E43022C8 /* SoundService.swift */; };
 		1D07C88D108F20EAD24645B7 /* ReelThemeMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287273BDEE3813F3DCEB3DC8 /* ReelThemeMotion.swift */; };
 		2172FDED881372D2CB743AB2 /* TierEmblem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5EDE258AB68E6CF6363ED43 /* TierEmblem.swift */; };
+		278C47865446B41E4052DDE4 /* PodiumHeroSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D4F2BDC956E42CE3610EB1 /* PodiumHeroSection.swift */; };
 		28C6BE23694C7B6FEEB2E4F0 /* ReelTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE5713A395D888E28F52510 /* ReelTheme.swift */; };
+		3C1D02D8B11173052BB7DA7F /* MapPreviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04A7CBDC874CFC9A3D2DDEE /* MapPreviewCard.swift */; };
 		566A9D36905D9A2FC46A4102 /* ReelThemeRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EE8DC5FAC6D4BEC0C8DAC9 /* ReelThemeRadius.swift */; };
 		56BBB612D2B71CB2870A1D40 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E65698B7177216E9CC87B5 /* HapticsService.swift */; };
+		58698F9B1B110FEE6B2EC2E1 /* DethroneTickerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C049D6D01397125FBE10CDC /* DethroneTickerSection.swift */; };
 		6130308C5DDDA9C1FEFDB1A9 /* IdentityHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFA9B0276A511E8C5F2BB74 /* IdentityHeader.swift */; };
+		6D43081AE6015C2A8E65BE9B /* LeaderboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA4624AC4F8BAF591DCDD3 /* LeaderboardService.swift */; };
+		6FC89755E3EF470A253C5EE4 /* LeaderboardEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E77AA35E641EEA25B1912F /* LeaderboardEntry.swift */; };
+		7B9D87FFF40A990503AA698B /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365CC4BCCFAED854E99BC364 /* SectionHeader.swift */; };
 		7BAB86367D1AE648E3BFAC2A /* ShipAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E1754D278BF1E6DADF982E /* ShipAvatar.swift */; };
+		7D6C92B7B1890872A21EBF30 /* FeatureCTAGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F8FF68F4E131CA47FCD0F6 /* FeatureCTAGrid.swift */; };
+		7DBCC4230234F501FE89CE9B /* PodiumCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD26DCF9DEC57D8F9E5E693 /* PodiumCard.swift */; };
+		81A071859E7D8033E4493E82 /* CatchPathStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF8D5394B17B562501CD7C0 /* CatchPathStrip.swift */; };
+		8729693B32CB9B0AD6D434F7 /* DethroneEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9DB28B5EC3CC777B83C92 /* DethroneEventService.swift */; };
 		87D96A82EF8F5074EEFA0BFA /* PirateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D1F0E73FF4132113F5BD82 /* PirateButton.swift */; };
+		88FDFB0E1CD5770E380F89A3 /* BountyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBB6B6E8049AB4D6EB1D0DA /* BountyService.swift */; };
 		9CA6C27B1CBA582B6923A107 /* TabBarShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DD33DBB2DB3301BC9FCB27 /* TabBarShell.swift */; };
 		ACE2EE27E4208F06C786C787 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FFE8DE975CD4E5CB2D665D /* IconButton.swift */; };
+		B2B52C4D57F692980C222A70 /* BountyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78967EB03B7E97AC5B6D41 /* BountyCard.swift */; };
+		BE63E05A284601B0B8F8D4A8 /* DethroneTickerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F312671D10AADFBC83978561 /* DethroneTickerItem.swift */; };
+		C7228579AD11231A7B72DCCC /* Bounty.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3F7DEA2A7FB52D2563C729 /* Bounty.swift */; };
 		CC308A6E57730796E052F329 /* ReelThemeTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E6C2A807D88BF89EDC2761 /* ReelThemeTypography.swift */; };
+		CC3CC3FF6DAE768C2CCF287D /* YourCrownsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BAA2254751F0B11D13FC6C /* YourCrownsSection.swift */; };
 		CEFF4A28A6B2EC6EC774E95E /* CenterFAB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC6BE7B8EDA16447CA54ABE /* CenterFAB.swift */; };
+		D2FB7625851E73D70284CF36 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A17D04535DD6D0A442B2C4F /* HomeViewModel.swift */; };
+		DBE5D8C52E7CD2D1BFFFEC3E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E707CDF54D3B279A0EA24D /* HomeView.swift */; };
 		DE8302ED2F1C4DE8D4A50E39 /* ReelThemeSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F3A5B0DD075B883DDA7C55 /* ReelThemeSpacing.swift */; };
 		DF27C279AEAFB714371C7E7E /* GhostButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C895A69941AF58A51234E748 /* GhostButton.swift */; };
 		E80000012D4A000000000001 /* ReelRoyaleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000001 /* ReelRoyaleApp.swift */; };
@@ -87,27 +105,44 @@
 		E80000012D4A000000000607 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000607 /* ImagePicker.swift */; };
 		E80000012D4A000000000608 /* ARMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000608 /* ARMeasurementView.swift */; };
 		EA03E871A779E28EBDA771A3 /* DoubloonChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F447813F99A9C900BCD1BE5 /* DoubloonChip.swift */; };
+		EAB1DFE9F343AEDF5B1E32D7 /* TodaysBountySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3AF490E1BA6A741C52A775 /* TodaysBountySection.swift */; };
 		F3A61126642828BD2E14EBB0 /* ReelThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18452E73E53B22D1303444DF /* ReelThemeColors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		02D07A8DDA02E4061F6E32A7 /* DethroneEvent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneEvent.swift; sourceTree = "<group>"; };
 		04E65698B7177216E9CC87B5 /* HapticsService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
+		08D4F2BDC956E42CE3610EB1 /* PodiumHeroSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PodiumHeroSection.swift; sourceTree = "<group>"; };
+		0A17D04535DD6D0A442B2C4F /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		0D78967EB03B7E97AC5B6D41 /* BountyCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BountyCard.swift; sourceTree = "<group>"; };
+		0DF8D5394B17B562501CD7C0 /* CatchPathStrip.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CatchPathStrip.swift; sourceTree = "<group>"; };
 		0F447813F99A9C900BCD1BE5 /* DoubloonChip.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DoubloonChip.swift; sourceTree = "<group>"; };
+		16E707CDF54D3B279A0EA24D /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		18452E73E53B22D1303444DF /* ReelThemeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeColors.swift; sourceTree = "<group>"; };
+		1C049D6D01397125FBE10CDC /* DethroneTickerSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneTickerSection.swift; sourceTree = "<group>"; };
 		2221DD970EE3B2A3EA30705F /* ReelThemeShadow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeShadow.swift; sourceTree = "<group>"; };
 		287273BDEE3813F3DCEB3DC8 /* ReelThemeMotion.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeMotion.swift; sourceTree = "<group>"; };
 		34E1754D278BF1E6DADF982E /* ShipAvatar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShipAvatar.swift; sourceTree = "<group>"; };
+		365CC4BCCFAED854E99BC364 /* SectionHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		48EE8DC5FAC6D4BEC0C8DAC9 /* ReelThemeRadius.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeRadius.swift; sourceTree = "<group>"; };
+		4AD26DCF9DEC57D8F9E5E693 /* PodiumCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PodiumCard.swift; sourceTree = "<group>"; };
+		50F8FF68F4E131CA47FCD0F6 /* FeatureCTAGrid.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FeatureCTAGrid.swift; sourceTree = "<group>"; };
 		5DFA9B0276A511E8C5F2BB74 /* IdentityHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IdentityHeader.swift; sourceTree = "<group>"; };
+		5F3AF490E1BA6A741C52A775 /* TodaysBountySection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodaysBountySection.swift; sourceTree = "<group>"; };
 		64252B70A9728B51E43022C8 /* SoundService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SoundService.swift; sourceTree = "<group>"; };
 		6CC6BE7B8EDA16447CA54ABE /* CenterFAB.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CenterFAB.swift; sourceTree = "<group>"; };
 		71E6C2A807D88BF89EDC2761 /* ReelThemeTypography.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeTypography.swift; sourceTree = "<group>"; };
+		A04A7CBDC874CFC9A3D2DDEE /* MapPreviewCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MapPreviewCard.swift; sourceTree = "<group>"; };
 		A9F3A5B0DD075B883DDA7C55 /* ReelThemeSpacing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeSpacing.swift; sourceTree = "<group>"; };
+		ABCA4624AC4F8BAF591DCDD3 /* LeaderboardService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LeaderboardService.swift; sourceTree = "<group>"; };
+		C5C9DB28B5EC3CC777B83C92 /* DethroneEventService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneEventService.swift; sourceTree = "<group>"; };
 		C5EDE258AB68E6CF6363ED43 /* TierEmblem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TierEmblem.swift; sourceTree = "<group>"; };
 		C895A69941AF58A51234E748 /* GhostButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GhostButton.swift; sourceTree = "<group>"; };
+		D0BAA2254751F0B11D13FC6C /* YourCrownsSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = YourCrownsSection.swift; sourceTree = "<group>"; };
 		DFE5713A395D888E28F52510 /* ReelTheme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelTheme.swift; sourceTree = "<group>"; };
 		E1FFE8DE975CD4E5CB2D665D /* IconButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 		E4DD33DBB2DB3301BC9FCB27 /* TabBarShell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TabBarShell.swift; sourceTree = "<group>"; };
+		E7E77AA35E641EEA25B1912F /* LeaderboardEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LeaderboardEntry.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000000 /* ReelRoyale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReelRoyale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E80000002D4A000000000001 /* ReelRoyaleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReelRoyaleApp.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -172,7 +207,10 @@
 		E80000002D4A000000000606 /* SpotPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotPickerView.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000607 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000608 /* ARMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMeasurementView.swift; sourceTree = "<group>"; };
+		EB3F7DEA2A7FB52D2563C729 /* Bounty.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Bounty.swift; sourceTree = "<group>"; };
+		F312671D10AADFBC83978561 /* DethroneTickerItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneTickerItem.swift; sourceTree = "<group>"; };
 		F8D1F0E73FF4132113F5BD82 /* PirateButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PirateButton.swift; sourceTree = "<group>"; };
+		FFBB6B6E8049AB4D6EB1D0DA /* BountyService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BountyService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +249,22 @@
 			path = Shell;
 			sourceTree = "<group>";
 		};
+		CFBFD96622B0A2D4B7F8268A /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				16E707CDF54D3B279A0EA24D /* HomeView.swift */,
+				08D4F2BDC956E42CE3610EB1 /* PodiumHeroSection.swift */,
+				5F3AF490E1BA6A741C52A775 /* TodaysBountySection.swift */,
+				0DF8D5394B17B562501CD7C0 /* CatchPathStrip.swift */,
+				A04A7CBDC874CFC9A3D2DDEE /* MapPreviewCard.swift */,
+				D0BAA2254751F0B11D13FC6C /* YourCrownsSection.swift */,
+				1C049D6D01397125FBE10CDC /* DethroneTickerSection.swift */,
+				50F8FF68F4E131CA47FCD0F6 /* FeatureCTAGrid.swift */,
+			);
+			name = Home;
+			path = Home;
+			sourceTree = "<group>";
+		};
 		E80000002D4AAUTH00000000 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
@@ -236,6 +290,10 @@
 				0F447813F99A9C900BCD1BE5 /* DoubloonChip.swift */,
 				34E1754D278BF1E6DADF982E /* ShipAvatar.swift */,
 				5DFA9B0276A511E8C5F2BB74 /* IdentityHeader.swift */,
+				365CC4BCCFAED854E99BC364 /* SectionHeader.swift */,
+				4AD26DCF9DEC57D8F9E5E693 /* PodiumCard.swift */,
+				0D78967EB03B7E97AC5B6D41 /* BountyCard.swift */,
+				F312671D10AADFBC83978561 /* DethroneTickerItem.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -289,6 +347,9 @@
 				E80000002D4A000000000105 /* Like.swift */,
 				E80000002D4A000000000106 /* WeatherConditions.swift */,
 				E80000002D4A000000000107 /* RegulationInfo.swift */,
+				EB3F7DEA2A7FB52D2563C729 /* Bounty.swift */,
+				02D07A8DDA02E4061F6E32A7 /* DethroneEvent.swift */,
+				E7E77AA35E641EEA25B1912F /* LeaderboardEntry.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -367,6 +428,9 @@
 				E80000002D4A000000000208 /* ImageUploadService.swift */,
 				04E65698B7177216E9CC87B5 /* HapticsService.swift */,
 				64252B70A9728B51E43022C8 /* SoundService.swift */,
+				FFBB6B6E8049AB4D6EB1D0DA /* BountyService.swift */,
+				C5C9DB28B5EC3CC777B83C92 /* DethroneEventService.swift */,
+				ABCA4624AC4F8BAF591DCDD3 /* LeaderboardService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -393,6 +457,7 @@
 				E80000002D4AMORE00000000 /* More */,
 				E80000002D4ACMPS00000000 /* Components */,
 				CE038E3C15B5FE478402AF74 /* Shell */,
+				CFBFD96622B0A2D4B7F8268A /* Home */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -408,6 +473,7 @@
 				E80000002D4A000000000406 /* ProfileViewModel.swift */,
 				E80000002D4A000000000407 /* FishIDViewModel.swift */,
 				E80000002D4A000000000408 /* MeasurementViewModel.swift */,
+				0A17D04535DD6D0A442B2C4F /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -567,6 +633,25 @@
 				6130308C5DDDA9C1FEFDB1A9 /* IdentityHeader.swift in Sources */,
 				CEFF4A28A6B2EC6EC774E95E /* CenterFAB.swift in Sources */,
 				9CA6C27B1CBA582B6923A107 /* TabBarShell.swift in Sources */,
+				C7228579AD11231A7B72DCCC /* Bounty.swift in Sources */,
+				02A400E07177BC9868797610 /* DethroneEvent.swift in Sources */,
+				6FC89755E3EF470A253C5EE4 /* LeaderboardEntry.swift in Sources */,
+				88FDFB0E1CD5770E380F89A3 /* BountyService.swift in Sources */,
+				8729693B32CB9B0AD6D434F7 /* DethroneEventService.swift in Sources */,
+				6D43081AE6015C2A8E65BE9B /* LeaderboardService.swift in Sources */,
+				D2FB7625851E73D70284CF36 /* HomeViewModel.swift in Sources */,
+				7B9D87FFF40A990503AA698B /* SectionHeader.swift in Sources */,
+				7DBCC4230234F501FE89CE9B /* PodiumCard.swift in Sources */,
+				B2B52C4D57F692980C222A70 /* BountyCard.swift in Sources */,
+				BE63E05A284601B0B8F8D4A8 /* DethroneTickerItem.swift in Sources */,
+				DBE5D8C52E7CD2D1BFFFEC3E /* HomeView.swift in Sources */,
+				278C47865446B41E4052DDE4 /* PodiumHeroSection.swift in Sources */,
+				EAB1DFE9F343AEDF5B1E32D7 /* TodaysBountySection.swift in Sources */,
+				81A071859E7D8033E4493E82 /* CatchPathStrip.swift in Sources */,
+				3C1D02D8B11173052BB7DA7F /* MapPreviewCard.swift in Sources */,
+				CC3CC3FF6DAE768C2CCF287D /* YourCrownsSection.swift in Sources */,
+				58698F9B1B110FEE6B2EC2E1 /* DethroneTickerSection.swift in Sources */,
+				7D6C92B7B1890872A21EBF30 /* FeatureCTAGrid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
