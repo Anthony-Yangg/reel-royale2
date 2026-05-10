@@ -166,22 +166,32 @@ final class AppState: ObservableObject {
     }
 }
 
-/// App tabs
+/// App tabs (4 primary + center FAB action).
+/// Wave 1 keeps existing screens — `.home` is declared but not yet selected by default.
+/// Wave 2 will set `.home` as the default selected tab when HomeView ships.
 enum AppTab: String, CaseIterable, Identifiable {
-    case spots = "Spots"
+    case home      = "Home"
+    case spots     = "Map"        // renamed display label; Wave 1 still uses SpotsView
     case community = "Community"
-    case profile = "Profile"
-    case more = "More"
-    
+    case profile   = "Profile"
+    case more      = "More"
+
     var id: String { rawValue }
-    
+
     var icon: String {
         switch self {
-        case .spots: return "map.fill"
+        case .home:      return "house.fill"
+        case .spots:     return "map.fill"
         case .community: return "person.3.fill"
-        case .profile: return "person.circle.fill"
-        case .more: return "ellipsis.circle.fill"
+        case .profile:   return "person.crop.circle.fill"
+        case .more:      return "ellipsis.circle.fill"
         }
+    }
+
+    /// Tabs that appear in the visible custom tab bar in Wave 1.
+    /// (Home is declared but not rendered yet — comes in Wave 2.)
+    static var visibleInWave1: [AppTab] {
+        [.spots, .community, .profile, .more]
     }
 }
 
