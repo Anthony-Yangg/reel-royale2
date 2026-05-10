@@ -4,46 +4,37 @@ import MapKit
 struct SpotsView: View {
     @StateObject private var viewModel = SpotsViewModel()
     @EnvironmentObject var appState: AppState
-    
+    @Environment(\.reelTheme) private var theme
+    @State private var cameraPosition: MapCameraPosition = .automatic
+
     var body: some View {
-        ZStack {
-            // Main content
+        ZStack(alignment: .top) {
+            // Background
+            theme.colors.surface.canvas.ignoresSafeArea()
+
             VStack(spacing: 0) {
-                // View mode toggle and filters
                 headerView
-                
-                // Map or List view
                 if viewModel.viewMode == .map {
-                    SpotMapView(
+                    PirateMapView(
                         spots: viewModel.filteredSpots,
                         selectedSpot: $viewModel.selectedSpot,
-                        region: $viewModel.mapRegion
+                        cameraPosition: $cameraPosition,
+                        currentUserId: appState.currentUser?.id
                     )
                 } else {
                     SpotListView(spots: viewModel.filteredSpots)
                 }
             }
-            
-            // Loading overlay
+
             if viewModel.isLoading {
-                LoadingView(message: "Loading spots...")
-            }
-        }
-        .navigationTitle("Fishing Spots")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    appState.spotsNavigationPath.append(NavigationDestination.logCatch(spotId: nil))
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(.seafoam)
-                }
+                LoadingView(message: "Charting nearby waters...")
+                    .background(theme.colors.surface.scrim)
             }
         }
         .task {
             await viewModel.loadSpots()
+            // Set initial camera to map region
+            cameraPosition = .region(viewModel.mapRegion)
         }
         .refreshable {
             await viewModel.loadSpots()
@@ -55,91 +46,88 @@ struct SpotsView: View {
             }
         }
     }
-    
+
     private var headerView: some View {
-        VStack(spacing: 12) {
-            // Search bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.secondary)
-                
-                TextField("Search spots...", text: $viewModel.searchQuery)
-                    .textFieldStyle(.plain)
-                
-                if !viewModel.searchQuery.isEmpty {
-                    Button {
-                        viewModel.searchQuery = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.secondary)
-                    }
+        VStack(spacing: theme.spacing.s) {
+            HStack(spacing: theme.spacing.xs) {
+                PirateSearchBar(text: $viewModel.searchQuery, placeholder: "Search waters...")
+                IconButton(systemName: "plus", size: 44, fillStyle: .brass) {
+                    appState.spotsNavigationPath.append(NavigationDestination.logCatch(spotId: nil))
                 }
             }
-            .padding(12)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            
-            // View mode and filters
-            HStack {
-                // View mode picker
-                Picker("View", selection: $viewModel.viewMode) {
+
+            HStack(spacing: theme.spacing.xs) {
+                // Map / List segmented
+                HStack(spacing: 0) {
                     ForEach(SpotsViewModel.ViewMode.allCases, id: \.self) { mode in
-                        Label(mode.rawValue, systemImage: mode.icon)
-                            .tag(mode)
+                        Button {
+                            appState.haptics?.tap()
+                            withAnimation(theme.motion.fast) { viewModel.viewMode = mode }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: mode.icon)
+                                    .font(.system(size: 12, weight: .heavy))
+                                Text(mode.rawValue)
+                                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                            }
+                            .foregroundStyle(viewModel.viewMode == mode ? theme.colors.text.onLight : theme.colors.text.primary)
+                            .padding(.horizontal, theme.spacing.s)
+                            .padding(.vertical, 7)
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                Capsule(style: .continuous)
+                                    .fill(viewModel.viewMode == mode ? theme.colors.brand.brassGold : Color.clear)
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
-                .pickerStyle(.segmented)
-                .frame(width: 150)
-                
+                .padding(3)
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(theme.colors.surface.elevatedAlt)
+                )
+
                 Spacer()
-                
-                // Water type filter
+
                 Menu {
-                    Button("All Types") {
-                        viewModel.selectedWaterType = nil
-                    }
+                    Button("All Types") { viewModel.selectedWaterType = nil }
                     ForEach(WaterType.allCases) { type in
-                        Button {
-                            viewModel.selectedWaterType = type
-                        } label: {
+                        Button { viewModel.selectedWaterType = type } label: {
                             Label(type.displayName, systemImage: type.icon)
                         }
                     }
                 } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: viewModel.selectedWaterType?.icon ?? "drop.fill")
-                        Text(viewModel.selectedWaterType?.displayName ?? "Type")
-                            .font(.subheadline)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
+                    FilterChip(
+                        label: viewModel.selectedWaterType?.displayName ?? "Type",
+                        icon: viewModel.selectedWaterType?.icon ?? "drop.fill",
+                        isSelected: viewModel.selectedWaterType != nil
+                    ) {}
+                        .allowsHitTesting(false)
                 }
-                
-                // Distance filter
                 Menu {
                     ForEach(SpotsViewModel.DistanceFilter.allCases) { filter in
-                        Button(filter.rawValue) {
-                            viewModel.distanceFilter = filter
-                        }
+                        Button(filter.rawValue) { viewModel.distanceFilter = filter }
                     }
                 } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "location.circle")
-                        Text(viewModel.distanceFilter.rawValue)
-                            .font(.subheadline)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
+                    FilterChip(
+                        label: viewModel.distanceFilter.rawValue,
+                        icon: "location.circle.fill",
+                        isSelected: viewModel.distanceFilter != .all
+                    ) {}
+                        .allowsHitTesting(false)
                 }
             }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 12)
-        .background(Color(.systemBackground))
+        .padding(.horizontal, theme.spacing.m)
+        .padding(.top, theme.spacing.s)
+        .padding(.bottom, theme.spacing.s)
+        .background(theme.colors.surface.canvas)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(theme.colors.brand.brassGold.opacity(0.18))
+                .frame(height: 0.75)
+        }
     }
 }
 
@@ -147,6 +135,7 @@ struct SpotsView: View {
     NavigationStack {
         SpotsView()
             .environmentObject(AppState.shared)
+            .environment(\.reelTheme, .default)
+            .preferredColorScheme(.dark)
     }
 }
-

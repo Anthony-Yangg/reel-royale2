@@ -32,6 +32,8 @@
 		9CA6C27B1CBA582B6923A107 /* TabBarShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DD33DBB2DB3301BC9FCB27 /* TabBarShell.swift */; };
 		ACE2EE27E4208F06C786C787 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FFE8DE975CD4E5CB2D665D /* IconButton.swift */; };
 		B2B52C4D57F692980C222A70 /* BountyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78967EB03B7E97AC5B6D41 /* BountyCard.swift */; };
+		B36D93A01AC8FF1FEFC9628C /* TreasureChestPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7619F7869B982F141B61C /* TreasureChestPin.swift */; };
+		BCF5ACD9D38D828D9EF2AD4F /* PirateMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A73C532B611FE27A589717 /* PirateMapView.swift */; };
 		BE63E05A284601B0B8F8D4A8 /* DethroneTickerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F312671D10AADFBC83978561 /* DethroneTickerItem.swift */; };
 		C7228579AD11231A7B72DCCC /* Bounty.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3F7DEA2A7FB52D2563C729 /* Bounty.swift */; };
 		CC308A6E57730796E052F329 /* ReelThemeTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E6C2A807D88BF89EDC2761 /* ReelThemeTypography.swift */; };
@@ -107,6 +109,7 @@
 		EA03E871A779E28EBDA771A3 /* DoubloonChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F447813F99A9C900BCD1BE5 /* DoubloonChip.swift */; };
 		EAB1DFE9F343AEDF5B1E32D7 /* TodaysBountySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3AF490E1BA6A741C52A775 /* TodaysBountySection.swift */; };
 		F3A61126642828BD2E14EBB0 /* ReelThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18452E73E53B22D1303444DF /* ReelThemeColors.swift */; };
+		F41CB650166B5E375AC528BC /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71ED611F3F90E843A3F5527E /* SearchBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -120,6 +123,7 @@
 		16E707CDF54D3B279A0EA24D /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		18452E73E53B22D1303444DF /* ReelThemeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeColors.swift; sourceTree = "<group>"; };
 		1C049D6D01397125FBE10CDC /* DethroneTickerSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneTickerSection.swift; sourceTree = "<group>"; };
+		21C7619F7869B982F141B61C /* TreasureChestPin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TreasureChestPin.swift; sourceTree = "<group>"; };
 		2221DD970EE3B2A3EA30705F /* ReelThemeShadow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeShadow.swift; sourceTree = "<group>"; };
 		287273BDEE3813F3DCEB3DC8 /* ReelThemeMotion.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeMotion.swift; sourceTree = "<group>"; };
 		34E1754D278BF1E6DADF982E /* ShipAvatar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShipAvatar.swift; sourceTree = "<group>"; };
@@ -132,6 +136,8 @@
 		64252B70A9728B51E43022C8 /* SoundService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SoundService.swift; sourceTree = "<group>"; };
 		6CC6BE7B8EDA16447CA54ABE /* CenterFAB.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CenterFAB.swift; sourceTree = "<group>"; };
 		71E6C2A807D88BF89EDC2761 /* ReelThemeTypography.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeTypography.swift; sourceTree = "<group>"; };
+		71ED611F3F90E843A3F5527E /* SearchBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		99A73C532B611FE27A589717 /* PirateMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PirateMapView.swift; sourceTree = "<group>"; };
 		A04A7CBDC874CFC9A3D2DDEE /* MapPreviewCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MapPreviewCard.swift; sourceTree = "<group>"; };
 		A9F3A5B0DD075B883DDA7C55 /* ReelThemeSpacing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeSpacing.swift; sourceTree = "<group>"; };
 		ABCA4624AC4F8BAF591DCDD3 /* LeaderboardService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LeaderboardService.swift; sourceTree = "<group>"; };
@@ -294,6 +300,8 @@
 				4AD26DCF9DEC57D8F9E5E693 /* PodiumCard.swift */,
 				0D78967EB03B7E97AC5B6D41 /* BountyCard.swift */,
 				F312671D10AADFBC83978561 /* DethroneTickerItem.swift */,
+				21C7619F7869B982F141B61C /* TreasureChestPin.swift */,
+				71ED611F3F90E843A3F5527E /* SearchBar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -411,6 +419,7 @@
 				E80000002D4A000000000510 /* SpotDetailView.swift */,
 				E80000002D4A000000000604 /* LeaderboardView.swift */,
 				E80000002D4A000000000605 /* TerritoryView.swift */,
+				99A73C532B611FE27A589717 /* PirateMapView.swift */,
 			);
 			path = Spots;
 			sourceTree = "<group>";
@@ -652,6 +661,9 @@
 				CC3CC3FF6DAE768C2CCF287D /* YourCrownsSection.swift in Sources */,
 				58698F9B1B110FEE6B2EC2E1 /* DethroneTickerSection.swift in Sources */,
 				7D6C92B7B1890872A21EBF30 /* FeatureCTAGrid.swift in Sources */,
+				B36D93A01AC8FF1FEFC9628C /* TreasureChestPin.swift in Sources */,
+				F41CB650166B5E375AC528BC /* SearchBar.swift in Sources */,
+				BCF5ACD9D38D828D9EF2AD4F /* PirateMapView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

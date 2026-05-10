@@ -57,6 +57,7 @@ struct MainTabView: View {
             .navigationDestination(for: NavigationDestination.self) { destination in
                 destinationView(for: destination)
             }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
