@@ -194,6 +194,9 @@ final class AppState: ObservableObject {
                 currentUser = user
                 isAuthenticated = true
                 needsProfileSetup = user.username.isEmpty
+                // Always land on Home after login.
+                selectedTab = .home
+                homeNavigationPath = NavigationPath()
 
                 // Bootstrap progression-side state.
                 await bootstrapProgressionState(for: user.id)

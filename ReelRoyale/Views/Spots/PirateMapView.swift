@@ -29,19 +29,35 @@ struct PirateMapView: View {
                 .tag(sd.spot.id)
             }
         }
-        .mapStyle(.standard(elevation: .realistic))
+        .mapStyle(.standard(emphasis: .muted, pointsOfInterest: .excludingAll))
         .mapControls {
             MapUserLocationButton()
             MapCompass()
         }
-        .overlay(alignment: .bottom) {
-            // Subtle teal scrim near bottom — gives water a hint of pirate teal
+        .overlay(
+            // Full pirate-map tint — heavy stylized treatment over the whole map.
             LinearGradient(
-                colors: [theme.colors.brand.deepSea.opacity(0.0), theme.colors.brand.deepSea.opacity(0.25)],
+                colors: [
+                    theme.colors.brand.deepSea.opacity(0.55),
+                    theme.colors.brand.tideTeal.opacity(0.35),
+                    theme.colors.brand.deepSea.opacity(0.55)
+                ],
                 startPoint: .top, endPoint: .bottom
             )
-            .frame(height: 100)
+            .blendMode(.multiply)
             .allowsHitTesting(false)
+        )
+        .overlay(alignment: .top) {
+            WaveStrip(amplitude: 6, frequency: 0.02)
+                .frame(height: 22)
+                .opacity(0.55)
+                .allowsHitTesting(false)
+        }
+        .overlay(alignment: .bottom) {
+            WaveStrip(amplitude: 8, frequency: 0.025)
+                .frame(height: 28)
+                .opacity(0.65)
+                .allowsHitTesting(false)
         }
     }
 

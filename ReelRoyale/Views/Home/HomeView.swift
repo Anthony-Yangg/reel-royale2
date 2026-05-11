@@ -60,7 +60,7 @@ struct HomeView: View {
                 .padding(.top, theme.spacing.m)
                 .padding(.bottom, 120)
             }
-            .background(theme.colors.surface.canvas)
+            .background(animatedBackdrop.ignoresSafeArea())
             .task {
                 guard !didLoad else { return }
                 didLoad = true
@@ -77,6 +77,32 @@ struct HomeView: View {
             .refreshable {
                 await vm.load(currentUserId: appState.currentUser?.id)
             }
+        }
+    }
+
+    /// Layered animated backdrop: deep sea radial + drifting wave bands + sparkles.
+    private var animatedBackdrop: some View {
+        ZStack {
+            RadialGradient(
+                colors: [theme.colors.brand.deepSea, theme.colors.surface.canvas],
+                center: .topLeading, startRadius: 40, endRadius: 700
+            )
+            // Top-band shimmer
+            VStack {
+                WaveStrip(amplitude: 14, frequency: 0.012, color: theme.colors.brand.tideTeal.opacity(0.55))
+                    .frame(height: 90)
+                    .opacity(0.4)
+                Spacer()
+            }
+            // Bottom-band shimmer
+            VStack {
+                Spacer()
+                WaveStrip(amplitude: 18, frequency: 0.015, color: theme.colors.brand.deepSea)
+                    .frame(height: 120)
+                    .opacity(0.55)
+            }
+            FloatingSparkles()
+                .opacity(0.55)
         }
     }
 
