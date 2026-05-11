@@ -36,11 +36,11 @@ struct TabBarShell<Content: View>: View {
                 .padding(.horizontal, theme.spacing.s)
 
             HStack(spacing: 0) {
+                tabButton(.home)
                 tabButton(.spots)
-                tabButton(.community)
                 Spacer(minLength: 64)  // reserved space for FAB
+                tabButton(.community)
                 tabButton(.profile)
-                tabButton(.more)
             }
             .frame(height: 68)
             .padding(.horizontal, theme.spacing.lg)
@@ -50,7 +50,7 @@ struct TabBarShell<Content: View>: View {
                 .offset(y: -22)
         }
         .frame(height: 92, alignment: .top)
-        .padding(.bottom, 0)
+        .padding(.bottom, 14)   // lift higher above home indicator
         .ignoresSafeArea(.keyboard)
     }
 

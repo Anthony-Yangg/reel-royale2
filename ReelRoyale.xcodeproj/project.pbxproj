@@ -23,6 +23,7 @@
 		1A38B725A80F732D0F2215A7 /* AppNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD6095922B5A2E487062F41 /* AppNotification.swift */; };
 		23AA8795B1F9BB9573CFFE1F /* SpeciesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AB0BD2E89A2C63A0D81751 /* SpeciesRepository.swift */; };
 		25ABB78A0E3A313F3EA7CC53 /* ReelThemeRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5926FB13AA938DFFE2C6A2 /* ReelThemeRadius.swift */; };
+		2AEB7B4B9495A2B99EE160AA /* FloatingSparkles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6027FCBCAB4DE18F82F20D7 /* FloatingSparkles.swift */; };
 		2C84DDE109E560B23C976C9D /* PirateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F685EECC117663D61A8DF6A2 /* PirateButton.swift */; };
 		2E05111E0A6F1010D9031AD2 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C61AE8466272B8EC1134C4 /* NotificationService.swift */; };
 		2F50F4315845EC54549116F6 /* SoundService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FCAE9AD7B8CCC05A512971 /* SoundService.swift */; };
@@ -211,6 +212,7 @@
 		CDCA3F05606E2B841755BB09 /* SeasonView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; };
 		D20D1F0A8C497A3F3F76A65C /* TierEmblem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TierEmblem.swift; sourceTree = "<group>"; };
 		DFDE56393960B1ED6DA07A31 /* PodiumHeroSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PodiumHeroSection.swift; sourceTree = "<group>"; };
+		E6027FCBCAB4DE18F82F20D7 /* FloatingSparkles.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FloatingSparkles.swift; sourceTree = "<group>"; };
 		E752E7E643C0E1CC060A3986 /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000000 /* ReelRoyale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReelRoyale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E80000002D4A000000000001 /* ReelRoyaleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReelRoyaleApp.swift; sourceTree = "<group>"; };
@@ -380,6 +382,7 @@
 				540891DDDC2AB56A45E9B26E /* TreasureChestPin.swift */,
 				69E193445CD3D011650A8696 /* StepperRail.swift */,
 				20D68A29550B313404533221 /* WaveStrip.swift */,
+				E6027FCBCAB4DE18F82F20D7 /* FloatingSparkles.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -801,6 +804,7 @@
 				6CAF3337FBFC6BF7B0E60CB0 /* CatchFlowView.swift in Sources */,
 				FF9A5CF2AAD8B5B345F5231C /* DethroneCinematicView.swift in Sources */,
 				C50F526C118248EA44C40305 /* IntroCinematicView.swift in Sources */,
+				2AEB7B4B9495A2B99EE160AA /* FloatingSparkles.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
