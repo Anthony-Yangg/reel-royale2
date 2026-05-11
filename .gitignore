@@ -51,3 +51,9 @@ swiftformat.*.cache
 .agents/
 skills-lock.json
 .claude/skills/
+
+# Local tooling output
+graphify-out/
+
+# App secrets (override file - committed config is in xcconfig template)
+ReelRoyale/Secrets.xcconfig

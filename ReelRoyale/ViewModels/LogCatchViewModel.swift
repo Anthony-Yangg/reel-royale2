@@ -12,12 +12,14 @@ final class LogCatchViewModel: ObservableObject {
     @Published var selectedSpot: Spot?
     @Published var catchPhoto: UIImage?
     @Published var species: String = ""
+    @Published var speciesId: String?
     @Published var sizeValue: String = ""
     @Published var sizeUnit: SizeUnit = .cm
     @Published var visibility: CatchVisibility = .public
     @Published var hideExactLocation: Bool = false
     @Published var notes: String = ""
     @Published var measuredWithAR: Bool = false
+    @Published var releaseFish: Bool = false
     
     // UI State
     @Published var isLoading = false
@@ -32,6 +34,8 @@ final class LogCatchViewModel: ObservableObject {
     
     // Result
     @Published var catchResult: CatchResult?
+    /// Drives the post-catch celebration `fullScreenCover` (`Identifiable`).
+    @Published var celebrationResult: CatchResult?
     
     // Available spots
     @Published var spots: [Spot] = []
@@ -161,12 +165,12 @@ final class LogCatchViewModel: ObservableObject {
             }
             return
         }
-        
-        guard let userId = AppState.shared.currentUser?.id else {
+
+        guard let currentUser = AppState.shared.currentUser else {
             showError(message: "You must be logged in to log a catch")
             return
         }
-        
+
         // Resolve spot (either already selected or fetched)
         let spot: Spot
         if let currentSpot = selectedSpot {
@@ -184,19 +188,19 @@ final class LogCatchViewModel: ObservableObject {
                 return
             }
         }
-        
+
         isSubmitting = true
-        
+
         do {
-            // Upload photo if present
+            // Upload photo if present (use temp ID; trigger sets server id on insert)
             var photoURL: String?
-            let catchId = UUID().uuidString
-            
+            let photoStubId = UUID().uuidString
+
             if let photo = catchPhoto {
-                photoURL = try await imageUploadService.uploadCatchPhoto(photo, for: catchId)
+                photoURL = try await imageUploadService.uploadCatchPhoto(photo, for: photoStubId)
             }
-            
-            // Get weather snapshot
+
+            // Snapshot weather at the spot
             var weatherSnapshot: String?
             if let weather = try? await weatherService.getWeather(for: spot) {
                 let encoder = JSONEncoder()
@@ -204,43 +208,78 @@ final class LogCatchViewModel: ObservableObject {
                     weatherSnapshot = String(data: data, encoding: .utf8)
                 }
             }
-            
-            // Create catch
-            let fishCatch = FishCatch(
-                id: catchId,
-                userId: userId,
+
+            // GameService is now the canonical entry point. It inserts the catch,
+            // the SQL trigger awards XP/coins, and the result carries everything
+            // the celebration screen needs.
+            let input = CreateCatchInput(
                 spotId: selectedSpotId,
-                photoURL: photoURL,
+                photoData: nil,
                 species: species,
+                speciesId: speciesId,
                 sizeValue: sizeValueDouble,
                 sizeUnit: sizeUnit.rawValue,
                 visibility: visibility,
                 hideExactLocation: hideExactLocation,
                 notes: notes.isEmpty ? nil : notes,
+                measuredWithAR: measuredWithAR,
+                released: releaseFish
+            )
+
+            let result = try await gameService.processCatch(
+                input: input,
+                photoURL: photoURL,
                 weatherSnapshot: weatherSnapshot,
-                measuredWithAR: measuredWithAR
+                currentUser: currentUser
             )
-            
-            // Save catch
-            let savedCatch = try await catchRepository.createCatch(fishCatch)
-            
-            // Process game logic (king updates)
-            let result = try await gameService.processCatch(savedCatch, at: spot)
             catchResult = result
-            
-            // Notify
-            NotificationCenter.default.post(
-                name: .catchCreated,
-                object: nil,
-                userInfo: ["catchId": savedCatch.id, "spotId": savedCatch.spotId]
-            )
-            
+            celebrationResult = result
+
+            // Refresh AppState user so XP/coin badges update everywhere.
+            await AppState.shared.refreshCurrentUser()
+            await AppState.shared.refreshUnreadCount()
+
+            // Surface progression deltas to UI listeners (e.g. coin/XP popovers).
+            if result.xpAwarded > 0 {
+                NotificationCenter.default.post(
+                    name: .xpAwarded,
+                    object: nil,
+                    userInfo: ["amount": result.xpAwarded]
+                )
+            }
+            if result.coinsAwarded > 0 {
+                NotificationCenter.default.post(
+                    name: .coinsAwarded,
+                    object: nil,
+                    userInfo: ["amount": result.coinsAwarded]
+                )
+            }
+            if result.leveledUp {
+                NotificationCenter.default.post(
+                    name: .rankedUp,
+                    object: nil,
+                    userInfo: ["from": result.oldRank.rawValue, "to": result.newRank.rawValue]
+                )
+            }
+            for completed in result.completedChallenges {
+                NotificationCenter.default.post(
+                    name: .challengeCompleted,
+                    object: nil,
+                    userInfo: [
+                        "challengeId": completed.id,
+                        "title": completed.title,
+                        "xp": completed.xpReward,
+                        "coins": completed.coinReward
+                    ]
+                )
+            }
+
             showSuccess = true
-            
+
         } catch {
             showError(message: "Failed to save catch: \(error.localizedDescription)")
         }
-        
+
         isSubmitting = false
     }
     
@@ -258,12 +297,14 @@ final class LogCatchViewModel: ObservableObject {
         }
         catchPhoto = nil
         species = ""
+        speciesId = nil
         sizeValue = ""
         sizeUnit = .cm
         visibility = .public
         hideExactLocation = false
         notes = ""
         measuredWithAR = false
+        releaseFish = false
         catchResult = nil
     }
 }

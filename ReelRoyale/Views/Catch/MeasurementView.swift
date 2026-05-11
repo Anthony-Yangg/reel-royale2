@@ -54,7 +54,7 @@ struct MeasurementView: View {
                 // Instructions and measurement display
                 VStack(spacing: 16) {
                     // Measurement display
-                    if let length = viewModel.currentLength {
+                    if viewModel.currentLength != nil {
                         VStack(spacing: 4) {
                             Text(viewModel.formattedLength)
                                 .font(.system(size: 48, weight: .bold, design: .rounded))
@@ -248,4 +248,3 @@ extension ARMeasurementCoordinator: ARSCNViewDelegate {
         print("Captured: \(length) cm")
     }
 }
-

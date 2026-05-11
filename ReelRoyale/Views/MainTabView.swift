@@ -145,6 +145,11 @@ struct MainTabView: View {
         case .measureFish:               MeasurementView(onCapture: { _ in })
         case .leaderboard:               LeaderboardView()
         case .settings:                  SettingsView()
+        case .codex:                     CodexView()
+        case .shop:                      ShopView()
+        case .challenges:                ChallengesView()
+        case .notifications:             NotificationsView()
+        case .season:                    SeasonView()
         }
     }
 }

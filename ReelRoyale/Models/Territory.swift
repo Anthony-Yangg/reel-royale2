@@ -94,7 +94,7 @@ struct TerritoryWithControl: Identifiable, Equatable {
                 crownCounts[kingId, default: 0] += 1
                 
                 // Sum up total catch sizes for tiebreaker
-                if let bestSize = spot.currentBestSize {
+                if let bestSize = spot.currentBestSizeInCm {
                     totalSizes[kingId, default: 0] += bestSize
                 }
             }
@@ -124,4 +124,3 @@ struct TerritoryLeaderboardEntry: Identifiable, Equatable {
     
     var id: String { "\(userId)-\(rank)" }
 }
-

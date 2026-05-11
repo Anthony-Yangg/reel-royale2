@@ -13,36 +13,30 @@ struct SpotDetailView: View {
     }
     
     var body: some View {
-        ScrollView {
+        ZStack(alignment: .bottom) {
+            ScrollView {
+                if let spot = viewModel.spot {
+                    VStack(spacing: 24) {
+                        spotHeader(spot)
+                        kingSection
+                        activityStrip(spot)
+                        weatherSection
+                        territorySection
+                        leaderboardSection
+                        Spacer(minLength: 120) // room for sticky CTA
+                    }
+                } else if viewModel.isLoading {
+                    LoadingView(message: "Loading spot details...")
+                        .frame(height: 400)
+                } else if let error = viewModel.errorMessage {
+                    ErrorStateView(message: error) {
+                        Task { await viewModel.loadSpotDetails() }
+                    }
+                }
+            }
+
             if let spot = viewModel.spot {
-                VStack(spacing: 24) {
-                    // Header with map
-                    spotHeader(spot)
-                    
-                    // King section
-                    kingSection
-                    
-                    // Weather section
-                    weatherSection
-                    
-                    // Territory section
-                    territorySection
-                    
-                    // Leaderboard
-                    leaderboardSection
-                    
-                    // Actions
-                    actionButtons(spot)
-                    
-                    Spacer(minLength: 32)
-                }
-            } else if viewModel.isLoading {
-                LoadingView(message: "Loading spot details...")
-                    .frame(height: 400)
-            } else if let error = viewModel.errorMessage {
-                ErrorStateView(message: error) {
-                    Task { await viewModel.loadSpotDetails() }
-                }
+                stickyCTA(spot)
             }
         }
         .navigationTitle(viewModel.spot?.name ?? "Spot Details")
@@ -53,6 +47,67 @@ struct SpotDetailView: View {
         .refreshable {
             await viewModel.refreshData()
         }
+    }
+
+    /// Always-visible bottom call-to-action. Tone shifts based on king state:
+    /// - No king: "Be the first king" (urgency).
+    /// - I'm king: "Defend your spot" (different verb).
+    /// - Other king: "Take the crown" (challenge).
+    @ViewBuilder
+    private func stickyCTA(_ spot: Spot) -> some View {
+        let title: String = {
+            if !spot.hasKing { return "Be the first king" }
+            if spot.currentKingUserId == appState.currentUser?.id { return "Defend" }
+            return "Take the crown"
+        }()
+        let gradient = LinearGradient(
+            colors: spot.hasKing ? [.coral, .sunset] : [.kelp, .seafoam],
+            startPoint: .leading, endPoint: .trailing
+        )
+
+        Button {
+            appState.spotsNavigationPath.append(NavigationDestination.logCatch(spotId: spot.id))
+        } label: {
+            HStack {
+                Image(systemName: spot.currentKingUserId == appState.currentUser?.id ? "shield.fill" : "crown.fill")
+                Text(title)
+            }
+            .fontWeight(.bold)
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(gradient)
+            .cornerRadius(28)
+            .shadow(color: .black.opacity(0.25), radius: 12, y: 6)
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 24)
+    }
+
+    /// Activity strip: total catches, unique anglers, last fished. Drives FOMO.
+    private func activityStrip(_ spot: Spot) -> some View {
+        HStack(spacing: 12) {
+            activityTile(icon: "fish.fill", value: "\(spot.totalCatches)", label: "Catches")
+            activityTile(icon: "person.2.fill", value: "\(spot.uniqueAnglers)", label: "Anglers")
+            activityTile(
+                icon: "clock.fill",
+                value: spot.lastCatchAt?.relativeTime ?? "Never",
+                label: "Last fish"
+            )
+        }
+        .padding(.horizontal)
+    }
+
+    private func activityTile(icon: String, value: String, label: String) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon).foregroundColor(.oceanBlue)
+            Text(value).font(.subheadline).fontWeight(.semibold)
+            Text(label).font(.caption2).foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
     }
     
     @ViewBuilder
@@ -111,27 +166,35 @@ struct SpotDetailView: View {
             if let king = viewModel.kingUser, let bestCatch = viewModel.bestCatch {
                 HStack(spacing: 16) {
                     UserAvatarView(user: king, size: 60, showCrown: true)
-                    
+
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
                             Text(king.username)
                                 .font(.title3)
                                 .fontWeight(.semibold)
-                            
+
                             CrownBadge(size: .small, isAnimated: viewModel.isCurrentUserKing)
                         }
-                        
+
                         Text("\(bestCatch.species) - \(bestCatch.sizeDisplay)")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
-                        
-                        Text("Caught \(bestCatch.createdAt.relativeTime)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+
+                        // Reign duration is the taunt: "held this for 3 days, can you take it?"
+                        if let kingSince = viewModel.spot?.kingSince {
+                            Label(reignText(since: kingSince), systemImage: "clock.fill")
+                                .font(.caption)
+                                .foregroundColor(.crown)
+                                .fontWeight(.semibold)
+                        } else {
+                            Text("Caught \(bestCatch.createdAt.relativeTime)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
-                    
+
                     Spacer()
-                    
+
                     if let photoURL = bestCatch.photoURL {
                         CatchThumbnail(photoURL: photoURL, size: 60)
                     }
@@ -287,11 +350,12 @@ struct SpotDetailView: View {
                 Text("Leaderboard")
                     .font(.headline)
                 Spacer()
-                
-                NavigationLink(value: NavigationDestination.leaderboard) {
-                    Text("See All")
-                        .font(.caption)
-                        .foregroundColor(.oceanBlue)
+                if let spot = viewModel.spot {
+                    NavigationLink(value: NavigationDestination.regulations(spotId: spot.id)) {
+                        Label("Rules", systemImage: "doc.text")
+                            .font(.caption)
+                            .foregroundColor(.oceanBlue)
+                    }
                 }
             }
             
@@ -318,46 +382,17 @@ struct SpotDetailView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder
-    private func actionButtons(_ spot: Spot) -> some View {
-        VStack(spacing: 12) {
-            Button {
-                appState.spotsNavigationPath.append(NavigationDestination.logCatch(spotId: spot.id))
-            } label: {
-                HStack {
-                    Image(systemName: "plus.circle.fill")
-                    Text("Log a Catch")
-                }
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(
-                    LinearGradient(
-                        colors: [Color.coral, Color.sunset],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
-                .cornerRadius(12)
-            }
-            
-            Button {
-                appState.spotsNavigationPath.append(NavigationDestination.regulations(spotId: spot.id))
-            } label: {
-                HStack {
-                    Image(systemName: "doc.text")
-                    Text("View Regulations")
-                }
-                .fontWeight(.medium)
-                .foregroundColor(.oceanBlue)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(Color.oceanBlue.opacity(0.1))
-                .cornerRadius(12)
-            }
-        }
-        .padding(.horizontal)
+    // Sticky CTA replaces the old primary action. Regulations link kept
+    // as a small secondary item under the leaderboard.
+
+    private func reignText(since: Date) -> String {
+        let interval = Date().timeIntervalSince(since)
+        let days = Int(interval / 86400)
+        if days >= 7 { return "Crowned for \(days) days — long live the king" }
+        if days >= 1 { return "Crowned for \(days) day\(days == 1 ? "" : "s")" }
+        let hours = Int(interval / 3600)
+        if hours >= 1 { return "Crowned for \(hours) hour\(hours == 1 ? "" : "s")" }
+        return "Just crowned"
     }
 }
 
@@ -419,4 +454,3 @@ struct LeaderboardRowView: View {
             .environmentObject(AppState.shared)
     }
 }
-

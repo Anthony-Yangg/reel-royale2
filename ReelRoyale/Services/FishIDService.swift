@@ -100,20 +100,19 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
             throw AppError.validationError("Failed to encode image")
         }
         
-        // Check if API is configured
-        guard AppConstants.FishID.baseURL != "https://your-fish-id-api.com" else {
-            // Return demo result when API is not configured
+        // Check if API is configured (via SecretsConfig)
+        guard SecretsConfig.hasFishIDKey else {
             return createDemoResult(from: image)
         }
-        
-        guard let url = URL(string: "\(AppConstants.FishID.baseURL)/identify") else {
+
+        guard let url = URL(string: "\(SecretsConfig.fishIDBaseURL)/identify") else {
             throw AppError.networkError("Invalid Fish ID API URL")
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(AppConstants.FishID.apiKey, forHTTPHeaderField: "Authorization")
+        request.setValue(SecretsConfig.fishIDAPIKey ?? "", forHTTPHeaderField: "Authorization")
         
         let payload: [String: Any] = [
             "image": imageData.base64EncodedString()

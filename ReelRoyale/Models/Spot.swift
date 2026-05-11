@@ -46,9 +46,13 @@ struct Spot: Identifiable, Codable, Equatable, Hashable {
     var currentBestUnit: String?
     var imageURL: String?
     var regionName: String?
+    var kingSince: Date?
+    var lastCatchAt: Date?
+    var totalCatches: Int
+    var uniqueAnglers: Int
     let createdAt: Date
     var updatedAt: Date?
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case name
@@ -63,10 +67,14 @@ struct Spot: Identifiable, Codable, Equatable, Hashable {
         case currentBestUnit = "current_best_unit"
         case imageURL = "image_url"
         case regionName = "region_name"
+        case kingSince = "king_since"
+        case lastCatchAt = "last_catch_at"
+        case totalCatches = "total_catches"
+        case uniqueAnglers = "unique_anglers"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }
-    
+
     init(
         id: String = UUID().uuidString,
         name: String,
@@ -81,6 +89,10 @@ struct Spot: Identifiable, Codable, Equatable, Hashable {
         currentBestUnit: String? = nil,
         imageURL: String? = nil,
         regionName: String? = nil,
+        kingSince: Date? = nil,
+        lastCatchAt: Date? = nil,
+        totalCatches: Int = 0,
+        uniqueAnglers: Int = 0,
         createdAt: Date = Date(),
         updatedAt: Date? = nil
     ) {
@@ -97,8 +109,36 @@ struct Spot: Identifiable, Codable, Equatable, Hashable {
         self.currentBestUnit = currentBestUnit
         self.imageURL = imageURL
         self.regionName = regionName
+        self.kingSince = kingSince
+        self.lastCatchAt = lastCatchAt
+        self.totalCatches = totalCatches
+        self.uniqueAnglers = uniqueAnglers
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+
+    /// Permissive decoder: old rows missing the new columns still decode.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        description = try c.decodeIfPresent(String.self, forKey: .description)
+        latitude = try c.decode(Double.self, forKey: .latitude)
+        longitude = try c.decode(Double.self, forKey: .longitude)
+        waterType = try c.decodeIfPresent(WaterType.self, forKey: .waterType)
+        territoryId = try c.decodeIfPresent(String.self, forKey: .territoryId)
+        currentKingUserId = try c.decodeIfPresent(String.self, forKey: .currentKingUserId)
+        currentBestCatchId = try c.decodeIfPresent(String.self, forKey: .currentBestCatchId)
+        currentBestSize = try c.decodeIfPresent(Double.self, forKey: .currentBestSize)
+        currentBestUnit = try c.decodeIfPresent(String.self, forKey: .currentBestUnit)
+        imageURL = try c.decodeIfPresent(String.self, forKey: .imageURL)
+        regionName = try c.decodeIfPresent(String.self, forKey: .regionName)
+        kingSince = try c.decodeIfPresent(Date.self, forKey: .kingSince)
+        lastCatchAt = try c.decodeIfPresent(Date.self, forKey: .lastCatchAt)
+        totalCatches = try c.decodeIfPresent(Int.self, forKey: .totalCatches) ?? 0
+        uniqueAnglers = try c.decodeIfPresent(Int.self, forKey: .uniqueAnglers) ?? 0
+        createdAt = try c.decode(Date.self, forKey: .createdAt)
+        updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt)
     }
     
     var coordinate: CLLocationCoordinate2D {
@@ -121,6 +161,11 @@ struct Spot: Identifiable, Codable, Equatable, Hashable {
         guard let size = currentBestSize, let unit = currentBestUnit else { return nil }
         return "\(String(format: "%.1f", size)) \(unit)"
     }
+
+    var currentBestSizeInCm: Double? {
+        guard let size = currentBestSize, let unit = currentBestUnit else { return nil }
+        return FishCatch.normalizedSizeInCm(sizeValue: size, sizeUnit: unit)
+    }
 }
 
 /// Spot with additional computed info for display
@@ -134,4 +179,3 @@ struct SpotWithDetails: Identifiable, Equatable {
     
     var id: String { spot.id }
 }
-

@@ -24,6 +24,25 @@ enum AppConstants {
             static let territories = "territories"
             static let likes = "likes"
             static let regulations = "regulations"
+            static let species = "species"
+            static let userSpecies = "user_species"
+            static let seasons = "seasons"
+            static let seasonChampions = "season_champions"
+            static let shopItems = "shop_items"
+            static let userInventory = "user_inventory"
+            static let challenges = "challenges"
+            static let userChallenges = "user_challenges"
+            static let notifications = "notifications"
+        }
+
+        /// Postgres function names (RPC).
+        enum RPC {
+            static let purchaseShopItem = "purchase_shop_item"
+            static let equipInventoryItem = "equip_inventory_item"
+            static let assignDailyChallenges = "assign_daily_challenges"
+            static let assignWeeklyChallenge = "assign_weekly_challenge"
+            static let startNewSeason = "start_new_season"
+            static let recalcSpotUniqueAnglers = "recalc_spot_unique_anglers"
         }
     }
     

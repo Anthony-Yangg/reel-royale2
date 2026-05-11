@@ -81,7 +81,7 @@ extension Double {
 
 // MARK: - CLLocationCoordinate2D Extensions
 
-extension CLLocationCoordinate2D: Equatable {
+extension CLLocationCoordinate2D: @retroactive Equatable {
     public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
         lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
@@ -194,6 +194,12 @@ extension Notification.Name {
     static let catchCreated = Notification.Name("catchCreated")
     static let spotUpdated = Notification.Name("spotUpdated")
     static let kingDethroned = Notification.Name("kingDethroned")
+    static let challengeCompleted = Notification.Name("challengeCompleted")
+    static let rankedUp = Notification.Name("rankedUp")
+    static let coinsAwarded = Notification.Name("coinsAwarded")
+    static let xpAwarded = Notification.Name("xpAwarded")
+    static let inventoryChanged = Notification.Name("inventoryChanged")
+    static let seasonChanged = Notification.Name("seasonChanged")
 }
 
 // MARK: - Error Handling
@@ -223,4 +229,3 @@ enum AppError: LocalizedError {
         }
     }
 }
-
