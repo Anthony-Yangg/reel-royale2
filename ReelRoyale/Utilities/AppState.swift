@@ -17,10 +17,12 @@ final class AppState: ObservableObject {
     @Published var errorMessage: String?
     @Published var showError = false
 
-    @Published var selectedTab: AppTab = .spots
+    /// Selected tab. Defaults to Home.
+    @Published var selectedTab: AppTab = .home
     @Published var spotsNavigationPath = NavigationPath()
     @Published var communityNavigationPath = NavigationPath()
     @Published var profileNavigationPath = NavigationPath()
+    @Published var homeNavigationPath = NavigationPath()
 
     // MARK: - Progression badges
 
@@ -42,6 +44,12 @@ final class AppState: ObservableObject {
     private(set) var shopService: ShopServiceProtocol!
     private(set) var codexService: CodexServiceProtocol!
     private(set) var notificationService: NotificationServiceProtocol!
+    // UI feedback + mock services from the redesign waves
+    private(set) var haptics: HapticsServiceProtocol!
+    private(set) var sounds: SoundServiceProtocol!
+    private(set) var bountyService: BountyServiceProtocol!
+    private(set) var dethroneEventService: DethroneEventServiceProtocol!
+    private(set) var leaderboardService: LeaderboardServiceProtocol!
 
     // MARK: - Repositories (injected)
 
@@ -59,6 +67,16 @@ final class AppState: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     private init() {}
+
+    /// DEBUG-only preview bypass.
+    /// Setting UserDefaults RR_PREVIEW_AUTH_BYPASS=YES skips Supabase auth
+    /// and injects a mock captain for visual QA.
+    #if DEBUG
+    private var previewBypassEnabled: Bool {
+        UserDefaults.standard.bool(forKey: "RR_PREVIEW_AUTH_BYPASS")
+            || ProcessInfo.processInfo.environment["RR_PREVIEW_AUTH_BYPASS"] == "1"
+    }
+    #endif
 
     /// Initialize services (call from App.init)
     func configure() {
@@ -107,6 +125,13 @@ final class AppState: ObservableObject {
             challengeService: challengeService
         )
 
+        // UI feedback + mock-backed services from the redesign waves
+        haptics = HapticsService()
+        sounds = SoundService()
+        bountyService = MockBountyService()
+        dethroneEventService = MockDethroneEventService()
+        leaderboardService = MockLeaderboardService()
+
         // Auth state listener
         setupAuthStateListener()
     }
@@ -140,6 +165,27 @@ final class AppState: ObservableObject {
     }
 
     private func checkAuthState() async {
+        #if DEBUG
+        if previewBypassEnabled {
+            isLoading = false
+            currentUser = User(
+                id: "preview-captain",
+                username: "Blackbeard",
+                avatarURL: nil,
+                homeLocation: "San Francisco Bay",
+                bio: "Looking for the biggest catch.",
+                createdAt: Date()
+            )
+            isAuthenticated = true
+            needsProfileSetup = false
+            if let tabRaw = UserDefaults.standard.string(forKey: "RR_PREVIEW_TAB"),
+               let tab = AppTab(rawValue: tabRaw) {
+                selectedTab = tab
+            }
+            return
+        }
+        #endif
+
         isLoading = true
         defer { isLoading = false }
 
@@ -164,7 +210,6 @@ final class AppState: ObservableObject {
 
     /// Runs after login. Idempotent. Best-effort - failures don't block the session.
     private func bootstrapProgressionState(for userId: String) async {
-        // Standard `async let` form: bind to the call, then `try? await` at use-site.
         async let assignmentsTask = challengeService.assignedCount(for: userId)
         async let seasonTask = seasonService.getActiveSeason()
         async let unreadTask = notificationService.unreadCount(forUser: userId)
@@ -173,8 +218,6 @@ final class AppState: ObservableObject {
         self.activeSeason = try? await seasonTask
         self.unreadNotifications = (try? await unreadTask) ?? 0
 
-        // Ask for notification permission once. iOS dedups subsequent calls.
-        // Required so dethrone alerts can land via UNUserNotificationCenter.
         _ = await notificationService.requestAuthorization()
     }
 
@@ -202,7 +245,8 @@ final class AppState: ObservableObject {
         spotsNavigationPath = NavigationPath()
         communityNavigationPath = NavigationPath()
         profileNavigationPath = NavigationPath()
-        selectedTab = .spots
+        homeNavigationPath = NavigationPath()
+        selectedTab = .home
     }
 
     func showError(_ message: String) {
@@ -225,22 +269,28 @@ final class AppState: ObservableObject {
     }
 }
 
-/// App tabs
+/// App tabs (4 primary + center FAB action).
 enum AppTab: String, CaseIterable, Identifiable {
-    case spots = "Spots"
+    case home      = "Home"
+    case spots     = "Map"
     case community = "Community"
-    case profile = "Profile"
-    case more = "More"
+    case profile   = "Profile"
+    case more      = "More"
 
     var id: String { rawValue }
 
     var icon: String {
         switch self {
+        case .home:      return "house.fill"
         case .spots:     return "map.fill"
         case .community: return "person.3.fill"
-        case .profile:   return "person.circle.fill"
+        case .profile:   return "person.crop.circle.fill"
         case .more:      return "ellipsis.circle.fill"
         }
+    }
+
+    static var visibleInWave1: [AppTab] {
+        [.spots, .community, .profile, .more]
     }
 }
 

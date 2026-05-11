@@ -1,122 +1,97 @@
 import SwiftUI
 
+/// Themed spot list row.
 struct SpotRowView: View {
     let spotDetails: SpotWithDetails
-    
+
+    @Environment(\.reelTheme) private var theme
+
     var body: some View {
-        HStack(spacing: 16) {
-            // Water type icon
+        HStack(spacing: theme.spacing.s) {
+            // Water type emblem
             ZStack {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [Color.oceanBlue, Color.seafoam],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                            colors: [theme.colors.brand.tideTeal, theme.colors.brand.deepSea],
+                            startPoint: .topLeading, endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 50, height: 50)
-                
+                    .frame(width: 46, height: 46)
                 Image(systemName: spotDetails.spot.waterType?.icon ?? "drop.fill")
-                    .font(.title2)
-                    .foregroundColor(.white)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(theme.colors.brand.parchment)
             }
-            
-            // Spot info
+            .overlay(
+                Circle().strokeBorder(theme.colors.brand.brassGold.opacity(0.3), lineWidth: 1)
+            )
+
             VStack(alignment: .leading, spacing: 4) {
-                HStack {
+                HStack(spacing: 6) {
                     Text(spotDetails.spot.name)
-                        .font(.headline)
-                    
+                        .font(.system(size: 16, weight: .heavy, design: .rounded))
+                        .foregroundStyle(theme.colors.text.primary)
+                        .lineLimit(1)
                     if spotDetails.spot.hasKing {
                         CrownBadge(size: .small)
                     }
                 }
-                
+
                 if let region = spotDetails.spot.regionName {
                     Text(region)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(theme.typography.caption)
+                        .foregroundStyle(theme.colors.text.secondary)
                 } else {
                     Text(spotDetails.spot.formattedCoordinates)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(theme.typography.caption)
+                        .foregroundStyle(theme.colors.text.muted)
                 }
-                
-                HStack(spacing: 12) {
-                    // King info
+
+                HStack(spacing: theme.spacing.s) {
                     if let king = spotDetails.kingUser {
-                        HStack(spacing: 4) {
-                            Image(systemName: "crown.fill")
-                                .font(.caption2)
-                                .foregroundColor(.crown)
-                            Text(king.username)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        chip(icon: "crown.fill", text: king.username, tint: theme.colors.brand.crown)
                     }
-                    
-                    // Best catch size
                     if let bestDisplay = spotDetails.spot.bestCatchDisplay {
-                        HStack(spacing: 4) {
-                            Image(systemName: "ruler")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text(bestDisplay)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        chip(icon: "ruler", text: bestDisplay, tint: theme.colors.brand.seafoam)
                     }
-                    
-                    // Distance
                     if let distance = spotDetails.distance {
-                        HStack(spacing: 4) {
-                            Image(systemName: "location")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text(distance.formattedDistance)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        chip(icon: "location.fill", text: distance.formattedDistance, tint: theme.colors.text.secondary)
                     }
                 }
             }
-            
+
             Spacer()
-            
-            // Catches count
-            VStack(alignment: .trailing, spacing: 4) {
+
+            VStack(alignment: .trailing, spacing: 2) {
                 Text("\(spotDetails.catchCount)")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.oceanBlue)
+                    .font(.system(size: 22, weight: .black, design: .rounded))
+                    .foregroundStyle(theme.colors.brand.crown)
+                    .monospacedDigit()
                 Text("catches")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(theme.colors.text.muted)
             }
         }
-        .padding(.vertical, 8)
+        .padding(theme.spacing.s + 2)
+        .background(
+            RoundedRectangle(cornerRadius: theme.radius.card, style: .continuous)
+                .fill(theme.colors.surface.elevated)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.radius.card, style: .continuous)
+                .strokeBorder(theme.colors.brand.brassGold.opacity(0.18), lineWidth: 1)
+        )
+    }
+
+    private func chip(icon: String, text: String, tint: Color) -> some View {
+        HStack(spacing: 3) {
+            Image(systemName: icon)
+                .font(.system(size: 9, weight: .black))
+                .foregroundStyle(tint)
+            Text(text)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(theme.colors.text.secondary)
+                .lineLimit(1)
+        }
     }
 }
-
-#Preview {
-    List {
-        SpotRowView(spotDetails: SpotWithDetails(
-            spot: Spot(
-                id: "1",
-                name: "Lake Evergreen",
-                latitude: 37.7749,
-                longitude: -122.4194,
-                waterType: .lake,
-                regionName: "Northern California"
-            ),
-            kingUser: User(id: "1", username: "FishKing"),
-            bestCatch: nil,
-            territory: nil,
-            distance: 5000,
-            catchCount: 42
-        ))
-    }
-    .listStyle(.plain)
-}
-

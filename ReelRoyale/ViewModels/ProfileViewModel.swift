@@ -91,14 +91,23 @@ final class ProfileViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            // Load user
-            user = try await userRepository.getUser(byId: targetUserId)
-            
-            // Load crowned spots
-            crownedSpots = try await spotRepository.getSpotsRuledBy(userId: targetUserId)
-            
-            // Load catches
-            let catches = try await catchRepository.getCatches(forUser: targetUserId)
+            // Load user, falling back to AppState's cached user if the repo lookup fails
+            // (resilient to network outages when viewing your own profile).
+            do {
+                user = try await userRepository.getUser(byId: targetUserId)
+            } catch {
+                if isCurrentUser, let cached = AppState.shared.currentUser, cached.id == targetUserId {
+                    user = cached
+                } else {
+                    throw error
+                }
+            }
+
+            // Load crowned spots (tolerate failure)
+            crownedSpots = (try? await spotRepository.getSpotsRuledBy(userId: targetUserId)) ?? []
+
+            // Load catches (tolerate failure)
+            let catches = (try? await catchRepository.getCatches(forUser: targetUserId)) ?? []
             
             // For current user, show all catches; for others, only public
             let visibleCatches = isCurrentUser ? catches : catches.filter { $0.isPublic }

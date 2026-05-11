@@ -6,22 +6,29 @@ struct RegulationsView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var selectedRegion = "General"
-    
+    @Environment(\.reelTheme) private var theme
+
     private let regions = ["General", "California", "Florida", "Texas", "New York", "Washington"]
-    
+
     var body: some View {
-        ScrollView {
-            if isLoading {
-                LoadingView(message: "Loading regulations...")
-                    .frame(height: 300)
-            } else if let regulations = regulations {
-                regulationsContent(regulations)
-            } else {
-                defaultRegulationsView
+        ZStack {
+            theme.colors.surface.canvas.ignoresSafeArea()
+            ScrollView {
+                if isLoading {
+                    LoadingView(message: "Loading regulations...")
+                        .frame(height: 300)
+                } else if let regulations = regulations {
+                    regulationsContent(regulations)
+                } else {
+                    defaultRegulationsView
+                }
             }
         }
         .navigationTitle("Regulations")
         .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(theme.colors.surface.canvas, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task {
             await loadRegulations()
         }

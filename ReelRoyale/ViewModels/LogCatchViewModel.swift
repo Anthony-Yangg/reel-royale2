@@ -97,19 +97,13 @@ final class LogCatchViewModel: ObservableObject {
     
     func loadInitialData() async {
         isLoading = true
-        
-        do {
-            // Load all spots for picker
-            spots = try await spotRepository.getAllSpots()
-            
-            // Load preselected spot details
-            if let spotId = preselectedSpotId {
-                selectedSpot = try await spotRepository.getSpot(byId: spotId)
-            }
-        } catch {
-            showError(message: "Failed to load spots: \(error.localizedDescription)")
+
+        // Silently load — empty spot list shows themed empty state instead of an alert.
+        spots = (try? await spotRepository.getAllSpots()) ?? []
+        if let spotId = preselectedSpotId {
+            selectedSpot = try? await spotRepository.getSpot(byId: spotId)
         }
-        
+
         isLoading = false
     }
     

@@ -1,133 +1,141 @@
 import SwiftUI
 
 struct LeaderboardView: View {
-    @State private var selectedTab = 0
-    @State private var globalLeaderboard: [GlobalLeaderboardEntry] = []
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.reelTheme) private var theme
+
+    @State private var scope: LeaderboardScope = .global
+    @State private var timeframe: LeaderboardTimeframe = .season
+    @State private var entries: [CaptainRankEntry] = []
+    @State private var yourEntry: CaptainRankEntry?
     @State private var isLoading = false
-    
+
     var body: some View {
-        VStack(spacing: 0) {
-            // Tab selector
-            Picker("Leaderboard Type", selection: $selectedTab) {
-                Text("Global").tag(0)
-                Text("Crowns").tag(1)
-                Text("Territories").tag(2)
+        ZStack {
+            theme.colors.surface.canvas.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                header
+                if isLoading && entries.isEmpty {
+                    LoadingView(message: "Reading the roster...")
+                } else if entries.isEmpty {
+                    EmptyStateView(
+                        icon: "trophy",
+                        title: "No rankings yet",
+                        message: "Be the first to claim a spot and appear on the board."
+                    )
+                } else {
+                    ScrollView {
+                        VStack(spacing: theme.spacing.m) {
+                            podiumIfPresent
+                            ranked
+                            if let you = yourEntry, !top3Contains(you) {
+                                VStack(alignment: .leading, spacing: theme.spacing.xs) {
+                                    Text("YOUR POSITION")
+                                        .font(.system(size: 11, weight: .heavy, design: .rounded))
+                                        .foregroundStyle(theme.colors.brand.brassGold)
+                                        .tracking(1.5)
+                                    LeaderboardRow(entry: you, isYou: true) {}
+                                }
+                                .padding(.top, theme.spacing.s)
+                            }
+                        }
+                        .padding(.horizontal, theme.spacing.m)
+                        .padding(.vertical, theme.spacing.m)
+                        .padding(.bottom, 120)
+                    }
+                }
             }
-            .pickerStyle(.segmented)
-            .padding()
-            
-            if isLoading {
-                LoadingView(message: "Loading leaderboard...")
-            } else if globalLeaderboard.isEmpty {
-                EmptyStateView(
-                    icon: "trophy",
-                    title: "No Rankings Yet",
-                    message: "Be the first to claim a spot and appear on the leaderboard!"
+        }
+        .toolbar(.hidden, for: .navigationBar)
+        .task { await load() }
+        .refreshable { await load() }
+    }
+
+    private var top3: [CaptainRankEntry] { entries.filter { $0.rank <= 3 } }
+
+    private func top3Contains(_ entry: CaptainRankEntry) -> Bool {
+        top3.contains(where: { $0.id == entry.id })
+    }
+
+    private var header: some View {
+        VStack(spacing: theme.spacing.s) {
+            HStack {
+                Text("Leaderboard")
+                    .font(theme.typography.title1)
+                    .foregroundStyle(theme.colors.text.primary)
+                Spacer()
+                Image(systemName: "trophy.fill")
+                    .font(.system(size: 28))
+                    .foregroundStyle(
+                        LinearGradient(colors: [theme.colors.brand.crown, theme.colors.brand.brassGold], startPoint: .top, endPoint: .bottom)
+                    )
+            }
+            HStack(spacing: 6) {
+                ForEach(LeaderboardScope.allCases) { s in
+                    FilterChip(label: s.rawValue, icon: nil, isSelected: scope == s) {
+                        appState.haptics?.tap()
+                        scope = s
+                        Task { await load() }
+                    }
+                }
+                Spacer()
+                Menu {
+                    ForEach(LeaderboardTimeframe.allCases) { t in
+                        Button(t.rawValue) { timeframe = t; Task { await load() } }
+                    }
+                } label: {
+                    FilterChip(label: timeframe.rawValue, icon: "clock", isSelected: true) {}
+                        .allowsHitTesting(false)
+                }
+            }
+        }
+        .padding(.horizontal, theme.spacing.m)
+        .padding(.vertical, theme.spacing.m)
+        .background(theme.colors.surface.canvas)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(theme.colors.brand.brassGold.opacity(0.18)).frame(height: 0.75)
+        }
+    }
+
+    @ViewBuilder
+    private var podiumIfPresent: some View {
+        if top3.count >= 1 {
+            PodiumCard(entries: top3, onSelect: { _ in })
+                .padding(.top, theme.spacing.s)
+                .padding(.bottom, theme.spacing.m)
+                .background(
+                    RoundedRectangle(cornerRadius: theme.radius.heroCard)
+                        .fill(
+                            LinearGradient(colors: [theme.colors.brand.deepSea, theme.colors.surface.elevatedAlt], startPoint: .top, endPoint: .bottom)
+                        )
                 )
-            } else {
-                List {
-                    ForEach(globalLeaderboard) { entry in
-                        GlobalLeaderboardRowView(entry: entry)
-                    }
-                }
-                .listStyle(.plain)
-            }
-        }
-        .navigationTitle("Leaderboard")
-        .task {
-            await loadLeaderboard()
+                .overlay(
+                    RoundedRectangle(cornerRadius: theme.radius.heroCard)
+                        .strokeBorder(theme.colors.brand.brassGold.opacity(0.3), lineWidth: 1)
+                )
+                .reelShadow(theme.shadow.heroCard)
         }
     }
-    
-    private func loadLeaderboard() async {
+
+    private var ranked: some View {
+        VStack(spacing: theme.spacing.xs) {
+            ForEach(entries.filter { $0.rank > 3 }) { entry in
+                LeaderboardRow(entry: entry, isYou: entry.id == appState.currentUser?.id) {}
+            }
+        }
+    }
+
+    private func load() async {
         isLoading = true
+        defer { isLoading = false }
         do {
-            globalLeaderboard = try await AppState.shared.gameService.getGlobalLeaderboard(limit: 50)
+            entries = try await appState.leaderboardService.fetchTop(scope: scope, timeframe: timeframe, limit: 50)
+            if let uid = appState.currentUser?.id {
+                yourEntry = try await appState.leaderboardService.fetchUserRank(userId: uid, scope: scope, timeframe: timeframe)
+            }
         } catch {
-            print("Failed to load leaderboard: \(error)")
-        }
-        isLoading = false
-    }
-}
-
-struct GlobalLeaderboardRowView: View {
-    let entry: GlobalLeaderboardEntry
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            // Rank
-            ZStack {
-                if entry.rank <= 3 {
-                    Circle()
-                        .fill(rankColor)
-                        .frame(width: 40, height: 40)
-                    
-                    if entry.rank == 1 {
-                        CrownBadge(size: .small)
-                            .offset(y: -20)
-                    }
-                }
-                
-                Text("\(entry.rank)")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(entry.rank <= 3 ? .white : .secondary)
-            }
-            .frame(width: 50)
-            
-            // User
-            UserAvatarView(user: entry.user, size: 50)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(entry.user?.username ?? "Unknown")
-                    .font(.headline)
-                
-                HStack(spacing: 12) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "crown.fill")
-                            .foregroundColor(.crown)
-                        Text("\(entry.crownCount)")
-                    }
-                    .font(.caption)
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "flag.fill")
-                            .foregroundColor(.kelp)
-                        Text("\(entry.territoriesRuled)")
-                    }
-                    .font(.caption)
-                }
-                .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            VStack(alignment: .trailing, spacing: 4) {
-                Text("\(entry.crownCount)")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.crown)
-                Text("crowns")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-        }
-        .padding(.vertical, 8)
-    }
-    
-    private var rankColor: Color {
-        switch entry.rank {
-        case 1: return .crown
-        case 2: return Color(red: 0.75, green: 0.75, blue: 0.75)
-        case 3: return Color(red: 0.8, green: 0.5, blue: 0.2)
-        default: return .clear
+            // Silently keep mock data on error.
         }
     }
 }
-
-#Preview {
-    NavigationStack {
-        LeaderboardView()
-    }
-}
-

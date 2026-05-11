@@ -4,6 +4,7 @@ struct ProfileView: View {
     let userId: String?
     @StateObject private var viewModel: ProfileViewModel
     @EnvironmentObject var appState: AppState
+    @Environment(\.reelTheme) private var theme
 
     init(userId: String? = nil) {
         self.userId = userId
@@ -11,384 +12,249 @@ struct ProfileView: View {
     }
 
     var body: some View {
-        ScrollView {
-            if viewModel.isLoading && viewModel.user == nil {
-                LoadingView(message: "Loading profile...")
-                    .frame(height: 400)
-            } else if let user = viewModel.user {
-                VStack(spacing: 16) {
-                    // Always-on progression header (XP, rank, coins)
-                    progressionHeader(user)
-                        .padding(.horizontal)
+        ZStack {
+            theme.colors.surface.canvas.ignoresSafeArea()
 
-                    // Quick-access shortcuts (codex/shop/challenges/notifications)
-                    if viewModel.isCurrentUser {
-                        shortcutGrid
-                            .padding(.horizontal)
+            ScrollView {
+                if viewModel.isLoading && viewModel.user == nil {
+                    LoadingView(message: "Loading captain's log...")
+                        .frame(height: 400)
+                } else if let user = viewModel.user {
+                    VStack(spacing: theme.spacing.lg) {
+                        captainHero(user: user)
+                        statsRow
+                        trophyCase
+                        crownedSpotsSection
+                        recentCatchesSection
+                        if viewModel.isCurrentUser {
+                            signOutButton
+                        }
                     }
-
-                    // Rich profile (bio, stats, crowned spots, recent catches)
-                    profileBlock(user)
-                }
-                .padding(.bottom, 32)
-            } else if let error = viewModel.errorMessage {
-                ErrorStateView(message: error) {
-                    Task { await viewModel.loadProfile() }
-                }
-            }
-        }
-        .navigationTitle(viewModel.isCurrentUser ? "Profile" : viewModel.displayName)
-        .navigationBarTitleDisplayMode(viewModel.isCurrentUser ? .large : .inline)
-        .toolbar {
-            if viewModel.isCurrentUser {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { viewModel.startEditing() } label: {
-                        Image(systemName: "pencil.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.seafoam)
+                    .padding(.horizontal, theme.spacing.m)
+                    .padding(.top, theme.spacing.m)
+                    .padding(.bottom, 140)
+                } else if let error = viewModel.errorMessage {
+                    ErrorStateView(message: error) {
+                        Task { await viewModel.loadProfile() }
                     }
                 }
             }
         }
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $viewModel.isEditing) {
             ProfileEditSheet(viewModel: viewModel)
         }
-        .task {
-            await viewModel.loadProfile()
-        }
-        .refreshable {
-            await viewModel.refresh()
-        }
+        .task { await viewModel.loadProfile() }
+        .refreshable { await viewModel.refresh() }
     }
 
-    // MARK: - Progression header
+    // MARK: - Hero
 
-    @ViewBuilder
-    private func progressionHeader(_ user: User) -> some View {
-        VStack(spacing: 16) {
-            HStack(alignment: .center, spacing: 16) {
-                UserAvatarView(user: user, size: 80, showCrown: viewModel.stats.crownedSpots > 0)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(user.username.isEmpty ? "Set username" : user.username)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                    HStack(spacing: 8) {
-                        Image(systemName: user.rankTier.icon)
-                            .foregroundColor(.crown)
-                        Text(user.rankTier.rawValue)
-                            .font(.subheadline)
-                            .foregroundColor(.white)
-                    }
-                    if let location = user.homeLocation {
-                        Label(location, systemImage: "location.fill")
-                            .font(.caption)
-                            .foregroundColor(.white.opacity(0.7))
-                    }
-                }
-                Spacer()
-            }
+    private func captainHero(user: User) -> some View {
+        VStack(spacing: theme.spacing.m) {
+            ZStack {
+                LinearGradient(
+                    colors: [theme.colors.brand.deepSea, theme.colors.surface.elevatedAlt],
+                    startPoint: .top, endPoint: .bottom
+                )
+                .frame(height: 220)
+                .clipShape(RoundedRectangle(cornerRadius: theme.radius.heroCard, style: .continuous))
 
-            // XP progress bar
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("\(user.xp) XP")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                // Animated wave band behind the avatar for depth
+                VStack {
                     Spacer()
-                    if let toNext = user.rankTier.xpToNext(currentXP: user.xp) {
-                        Text("\(toNext) to next rank")
-                            .font(.caption)
-                            .foregroundColor(.white.opacity(0.7))
-                    } else {
-                        Text("Top tier reached")
-                            .font(.caption)
-                            .foregroundColor(.crown)
-                    }
+                    WaveStrip()
+                        .frame(height: 60)
+                        .opacity(0.6)
                 }
-                ProgressView(value: user.rankTier.progress(xp: user.xp))
-                    .tint(.crown)
-            }
+                .frame(height: 220)
+                .allowsHitTesting(false)
 
-            // Coins + season score chips
-            HStack(spacing: 12) {
-                statChip(icon: "circle.hexagongrid.fill", value: "\(user.lureCoins)", label: "Coins", color: .crown)
-                statChip(icon: "flag.checkered", value: "\(user.seasonScore)", label: "Season", color: .seafoam)
-                statChip(icon: "crown.fill", value: "\(viewModel.stats.crownedSpots)", label: "Crowns", color: .crown)
-            }
-        }
-        .padding(20)
-        .background(LinearGradient(colors: [.deepOcean, .oceanBlue], startPoint: .topLeading, endPoint: .bottomTrailing))
-        .cornerRadius(20)
-    }
-
-    private func statChip(icon: String, value: String, label: String, color: Color) -> some View {
-        VStack(spacing: 2) {
-            Image(systemName: icon)
-                .foregroundColor(color)
-            Text(value)
-                .font(.headline)
-                .foregroundColor(.white)
-            Text(label)
-                .font(.caption2)
-                .foregroundColor(.white.opacity(0.7))
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
-        .background(Color.white.opacity(0.08))
-        .cornerRadius(10)
-    }
-
-    // MARK: - Shortcuts grid
-
-    private var shortcutGrid: some View {
-        let badge = appState.unreadNotifications
-        return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-            shortcutTile(title: "Challenges", icon: "checkmark.seal.fill", color: .kelp, destination: .challenges)
-            shortcutTile(title: "Codex", icon: "books.vertical.fill", color: .seafoam, destination: .codex)
-            shortcutTile(title: "Tackle Shop", icon: "tag.fill", color: .crown, destination: .shop)
-            shortcutTile(title: "Notifications", icon: "bell.fill", color: .coral, destination: .notifications, badgeCount: badge)
-        }
-    }
-
-    private func shortcutTile(title: String, icon: String, color: Color, destination: NavigationDestination, badgeCount: Int = 0) -> some View {
-        Button {
-            appState.profileNavigationPath.append(destination)
-        } label: {
-            HStack(spacing: 12) {
-                ZStack(alignment: .topTrailing) {
-                    ZStack {
-                        Circle().fill(color.opacity(0.18)).frame(width: 44, height: 44)
-                        Image(systemName: icon).font(.title3).foregroundColor(color)
-                    }
-                    if badgeCount > 0 {
-                        Text("\(badgeCount)")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.coral)
-                            .clipShape(Capsule())
-                            .offset(x: 4, y: -4)
-                    }
+                VStack(spacing: 8) {
+                    ShipAvatar(
+                        imageURL: user.avatarURL.flatMap(URL.init),
+                        initial: user.username,
+                        tier: .deckhand,
+                        size: .hero,
+                        showCrown: viewModel.stats.crownedSpots > 0,
+                        waveBob: true
+                    )
+                    .shadow(color: theme.colors.brand.crown.opacity(0.3), radius: 18)
+                    Text(user.username)
+                        .font(theme.typography.title1)
+                        .foregroundStyle(theme.colors.text.primary)
+                        .lineLimit(1)
+                        .shadow(color: .black.opacity(0.7), radius: 2)
+                    TierEmblem(tier: .deckhand, division: 1, size: .medium)
                 }
-                Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
             }
-            .padding(12)
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
-        }
-        .buttonStyle(.plain)
-    }
-
-    // MARK: - Below-the-fold profile
-
-    @ViewBuilder
-    private func profileBlock(_ user: User) -> some View {
-        VStack(spacing: 24) {
-            if let bio = user.bio, !bio.isEmpty {
-                Text(bio)
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-            }
-
-            statsRow
-
-            crownedSpotsSection
-            recentCatchesSection
+            .overlay(
+                RoundedRectangle(cornerRadius: theme.radius.heroCard, style: .continuous)
+                    .strokeBorder(theme.colors.brand.brassGold.opacity(0.3), lineWidth: 1)
+            )
+            .reelShadow(theme.shadow.heroCard)
 
             if viewModel.isCurrentUser {
-                signOutButton
+                GhostButton(title: "Edit Captain", icon: "pencil", fullWidth: true) {
+                    viewModel.startEditing()
+                }
             }
         }
     }
 
+    // MARK: - Stats
+
     private var statsRow: some View {
-        HStack(spacing: 16) {
-            statTile(value: "\(viewModel.stats.totalCatches)", label: "Catches", icon: "fish.fill", color: .oceanBlue)
-            statTile(value: "\(viewModel.stats.speciesDiscovered)", label: "Species", icon: "books.vertical.fill", color: .seafoam)
-            statTile(value: "\(viewModel.stats.ruledTerritories)", label: "Territories", icon: "flag.fill", color: .kelp)
+        VStack(alignment: .leading, spacing: theme.spacing.s) {
+            SectionHeader(title: "Captain's Log", subtitle: "Career stats")
+            HStack(spacing: theme.spacing.s) {
+                StatTile(label: "Crowns",      value: "\(viewModel.stats.crownedSpots)",                 icon: "crown.fill", tint: theme.colors.brand.crown)
+                StatTile(label: "Catches",     value: "\(viewModel.stats.totalCatches)",                 icon: "fish.fill",  tint: theme.colors.brand.seafoam)
+                StatTile(label: "Territories", value: "\(viewModel.stats.ruledTerritories)",             icon: "flag.fill",  tint: theme.colors.brand.brassGold)
+                StatTile(label: "Best",        value: bestCatchString,                                   icon: "trophy.fill", tint: theme.colors.brand.crown)
+            }
         }
-        .padding(.horizontal)
     }
 
-    private func statTile(value: String, label: String, icon: String, color: Color) -> some View {
-        VStack(spacing: 6) {
-            Image(systemName: icon).foregroundColor(color)
-            Text(value).font(.title2).fontWeight(.bold)
-            Text(label).font(.caption).foregroundColor(.secondary)
+    private var bestCatchString: String {
+        if let s = viewModel.stats.largestCatch, let u = viewModel.stats.largestCatchUnit {
+            return "\(Int(s))\(u)"
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(color.opacity(0.1))
-        .cornerRadius(12)
+        return "—"
     }
+
+    // MARK: - Trophy Case (Wave 5 mock — real persistence Wave 6)
+
+    private var trophyCase: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.s) {
+            SectionHeader(title: "Trophy Case", subtitle: "Achievements")
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: theme.spacing.s) {
+                AchievementTile(title: "First Catch",   icon: "checkmark.seal.fill", unlocked: viewModel.stats.totalCatches >= 1, rarity: .bronze)
+                AchievementTile(title: "Crown Thief",   icon: "crown.fill",          unlocked: viewModel.stats.crownedSpots >= 1, rarity: .silver)
+                AchievementTile(title: "Cartographer",  icon: "mappin.and.ellipse",  unlocked: viewModel.stats.totalCatches >= 5, rarity: .silver)
+                AchievementTile(title: "10-Crown Pirate", icon: "rosette",           unlocked: viewModel.stats.crownedSpots >= 10, rarity: .gold)
+                AchievementTile(title: "Apex Predator", icon: "trophy.fill",         unlocked: (viewModel.stats.largestCatch ?? 0) >= 60, rarity: .gold)
+                AchievementTile(title: "Species Hunter", icon: "fish.fill",          unlocked: viewModel.stats.totalCatches >= 10, rarity: .silver)
+                AchievementTile(title: "Streak Master", icon: "flame.fill",          unlocked: false, rarity: .gold)
+                AchievementTile(title: "Pirate Lord",   icon: "crown.fill",          unlocked: false, rarity: .legendary)
+            }
+        }
+    }
+
+    // MARK: - Crowned Spots
 
     @ViewBuilder
     private var crownedSpotsSection: some View {
         if !viewModel.crownedSpots.isEmpty {
-            VStack(spacing: 12) {
-                HStack {
-                    Text("Crowned Spots").font(.headline)
-                    CrownBadge(size: .small)
-                    Spacer()
-                    Text("\(viewModel.crownedSpots.count)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
+            VStack(alignment: .leading, spacing: theme.spacing.s) {
+                SectionHeader(title: "Your Crowns", subtitle: "Spots you rule")
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
+                    HStack(spacing: theme.spacing.s) {
                         ForEach(viewModel.crownedSpots) { spot in
-                            CrownedSpotCard(spot: spot)
-                                .onTapGesture {
-                                    appState.profileNavigationPath.append(NavigationDestination.spotDetail(spotId: spot.id))
-                                }
+                            crownedSpotChip(spot)
                         }
                     }
                 }
             }
-            .padding(.horizontal)
         }
     }
+
+    private func crownedSpotChip(_ spot: Spot) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 4) {
+                CrownBadge(size: .small)
+                Text(spot.name)
+                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .foregroundStyle(theme.colors.text.primary)
+                    .lineLimit(1)
+            }
+            if let bestDisplay = spot.bestCatchDisplay {
+                Text(bestDisplay)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(theme.colors.text.secondary)
+            }
+        }
+        .padding(.horizontal, theme.spacing.s)
+        .padding(.vertical, theme.spacing.xs + 2)
+        .background(
+            RoundedRectangle(cornerRadius: theme.radius.button)
+                .fill(theme.colors.surface.elevated)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.radius.button)
+                .strokeBorder(theme.colors.brand.crown.opacity(0.4), lineWidth: 1)
+        )
+        .frame(width: 160)
+    }
+
+    // MARK: - Recent Catches
 
     @ViewBuilder
     private var recentCatchesSection: some View {
-        VStack(spacing: 12) {
-            HStack {
-                Text("Recent Catches").font(.headline)
-                Spacer()
-            }
-            if viewModel.recentCatches.isEmpty {
-                emptyCatchesState
-            } else {
-                CatchLogView(catches: viewModel.recentCatches)
-            }
-        }
-        .padding(.horizontal)
-    }
-
-    private var emptyCatchesState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "fish.fill")
-                .font(.system(size: 32))
-                .foregroundColor(.oceanBlue.opacity(0.5))
-            Text(viewModel.isCurrentUser ? "No catches yet" : "No public catches")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            if viewModel.isCurrentUser {
-                Button {
-                    appState.selectedTab = .spots
-                } label: {
-                    Text("Find your first spot")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(Color.seafoam)
-                        .cornerRadius(10)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 24)
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
-    }
-
-    @ViewBuilder
-    private var signOutButton: some View {
-        Button {
-            Task { await viewModel.signOut() }
-        } label: {
-            Text("Sign Out")
-                .fontWeight(.medium)
-                .foregroundColor(.coral)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.coral.opacity(0.1))
-                .cornerRadius(12)
-        }
-        .padding(.horizontal)
-    }
-}
-
-struct CrownedSpotCard: View {
-    let spot: Spot
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ZStack(alignment: .topTrailing) {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(LinearGradient(
-                        colors: [Color.oceanBlue, Color.seafoam],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ))
-                    .frame(width: 140, height: 100)
-                    .overlay(
-                        Image(systemName: spot.waterType?.icon ?? "drop.fill")
-                            .font(.title)
-                            .foregroundColor(.white.opacity(0.5))
-                    )
-                CrownBadge(size: .small)
-                    .padding(8)
-            }
-            Text(spot.name).font(.subheadline).fontWeight(.medium).lineLimit(1)
-            if let size = spot.bestCatchDisplay {
-                Text(size).font(.caption).foregroundColor(.secondary)
-            }
-        }
-        .frame(width: 140)
-    }
-}
-
-struct ProfileEditSheet: View {
-    @ObservedObject var viewModel: ProfileViewModel
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Profile Info") {
-                    TextField("Username", text: $viewModel.editUsername)
-                    TextField("Home Location", text: $viewModel.editHomeLocation)
-                    VStack(alignment: .leading) {
-                        Text("Bio").font(.caption).foregroundColor(.secondary)
-                        TextEditor(text: $viewModel.editBio).frame(minHeight: 80)
+        if !viewModel.recentCatches.isEmpty {
+            VStack(alignment: .leading, spacing: theme.spacing.s) {
+                SectionHeader(title: "Logbook", subtitle: "Recent catches")
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: theme.spacing.xs), GridItem(.flexible(), spacing: theme.spacing.xs), GridItem(.flexible(), spacing: theme.spacing.xs)], spacing: theme.spacing.xs) {
+                    ForEach(viewModel.recentCatches) { cwd in
+                        Button {
+                            appState.profileNavigationPath.append(NavigationDestination.catchDetail(catchId: cwd.fishCatch.id))
+                        } label: {
+                            CatchThumbnail(photoURL: cwd.fishCatch.photoURL, size: 110, cornerRadius: theme.radius.card)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }
-            .navigationTitle("Edit Profile")
+        }
+    }
+
+    // MARK: - Sign Out
+
+    private var signOutButton: some View {
+        PirateButton(title: "Sign Out", icon: "rectangle.portrait.and.arrow.right", fullWidth: true, isDestructive: true) {
+            Task { await appState.signOut() }
+        }
+        .padding(.top, theme.spacing.s)
+    }
+}
+
+/// Minimal profile edit sheet — Wave 6 expands.
+struct ProfileEditSheet: View {
+    @ObservedObject var viewModel: ProfileViewModel
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.reelTheme) private var theme
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                theme.colors.surface.canvas.ignoresSafeArea()
+                Form {
+                    Section("Captain") {
+                        TextField("Username", text: $viewModel.editUsername)
+                            .textInputAutocapitalization(.never)
+                        TextField("Home Waters", text: $viewModel.editHomeLocation)
+                        TextField("Bio", text: $viewModel.editBio, axis: .vertical)
+                            .lineLimit(3...6)
+                    }
+                }
+                .scrollContentBackground(.hidden)
+            }
+            .navigationTitle("Edit Captain")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { viewModel.cancelEditing() }
+                    Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
-                        Task { await viewModel.saveProfile() }
+                        Task {
+                            await viewModel.saveProfile()
+                            dismiss()
+                        }
                     }
                     .disabled(viewModel.isSaving)
                 }
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        ProfileView()
-            .environmentObject(AppState.shared)
     }
 }

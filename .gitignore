@@ -47,6 +47,11 @@ swiftformat.*.cache
 .idea/
 .vscode/
 
+# Installed agent skills (managed by `npx skills add`)
+.agents/
+skills-lock.json
+.claude/skills/
+
 # Local tooling output
 graphify-out/
 
