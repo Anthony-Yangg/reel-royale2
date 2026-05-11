@@ -29,8 +29,11 @@
 		8729693B32CB9B0AD6D434F7 /* DethroneEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9DB28B5EC3CC777B83C92 /* DethroneEventService.swift */; };
 		87D96A82EF8F5074EEFA0BFA /* PirateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D1F0E73FF4132113F5BD82 /* PirateButton.swift */; };
 		88FDFB0E1CD5770E380F89A3 /* BountyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBB6B6E8049AB4D6EB1D0DA /* BountyService.swift */; };
+		95E6BFC03EBB3A327C8E1FF1 /* CatchFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9596978FBB0DD8C7E9FE92E /* CatchFlowView.swift */; };
 		9CA6C27B1CBA582B6923A107 /* TabBarShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DD33DBB2DB3301BC9FCB27 /* TabBarShell.swift */; };
+		AABA3190C5D53844B233793E /* StepperRail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8901814E84665D90BA204B /* StepperRail.swift */; };
 		ACE2EE27E4208F06C786C787 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FFE8DE975CD4E5CB2D665D /* IconButton.swift */; };
+		AD0077CA826B951B78C87BD0 /* ProgressionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D21D6E454B5E4C63141C72 /* ProgressionService.swift */; };
 		B2B52C4D57F692980C222A70 /* BountyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78967EB03B7E97AC5B6D41 /* BountyCard.swift */; };
 		B36D93A01AC8FF1FEFC9628C /* TreasureChestPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7619F7869B982F141B61C /* TreasureChestPin.swift */; };
 		BCF5ACD9D38D828D9EF2AD4F /* PirateMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A73C532B611FE27A589717 /* PirateMapView.swift */; };
@@ -106,6 +109,7 @@
 		E80000012D4A000000000606 /* SpotPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000606 /* SpotPickerView.swift */; };
 		E80000012D4A000000000607 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000607 /* ImagePicker.swift */; };
 		E80000012D4A000000000608 /* ARMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000608 /* ARMeasurementView.swift */; };
+		E93158918D48E45A521C9499 /* DethroneCinematicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE6082608B80F95E10B4D3F /* DethroneCinematicView.swift */; };
 		EA03E871A779E28EBDA771A3 /* DoubloonChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F447813F99A9C900BCD1BE5 /* DoubloonChip.swift */; };
 		EAB1DFE9F343AEDF5B1E32D7 /* TodaysBountySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3AF490E1BA6A741C52A775 /* TodaysBountySection.swift */; };
 		F3A61126642828BD2E14EBB0 /* ReelThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18452E73E53B22D1303444DF /* ReelThemeColors.swift */; };
@@ -115,6 +119,7 @@
 /* Begin PBXFileReference section */
 		02D07A8DDA02E4061F6E32A7 /* DethroneEvent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneEvent.swift; sourceTree = "<group>"; };
 		04E65698B7177216E9CC87B5 /* HapticsService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
+		07D21D6E454B5E4C63141C72 /* ProgressionService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressionService.swift; sourceTree = "<group>"; };
 		08D4F2BDC956E42CE3610EB1 /* PodiumHeroSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PodiumHeroSection.swift; sourceTree = "<group>"; };
 		0A17D04535DD6D0A442B2C4F /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		0D78967EB03B7E97AC5B6D41 /* BountyCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BountyCard.swift; sourceTree = "<group>"; };
@@ -122,6 +127,7 @@
 		0F447813F99A9C900BCD1BE5 /* DoubloonChip.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DoubloonChip.swift; sourceTree = "<group>"; };
 		16E707CDF54D3B279A0EA24D /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		18452E73E53B22D1303444DF /* ReelThemeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeColors.swift; sourceTree = "<group>"; };
+		1B8901814E84665D90BA204B /* StepperRail.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StepperRail.swift; sourceTree = "<group>"; };
 		1C049D6D01397125FBE10CDC /* DethroneTickerSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneTickerSection.swift; sourceTree = "<group>"; };
 		21C7619F7869B982F141B61C /* TreasureChestPin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TreasureChestPin.swift; sourceTree = "<group>"; };
 		2221DD970EE3B2A3EA30705F /* ReelThemeShadow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeShadow.swift; sourceTree = "<group>"; };
@@ -130,6 +136,7 @@
 		365CC4BCCFAED854E99BC364 /* SectionHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		48EE8DC5FAC6D4BEC0C8DAC9 /* ReelThemeRadius.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelThemeRadius.swift; sourceTree = "<group>"; };
 		4AD26DCF9DEC57D8F9E5E693 /* PodiumCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PodiumCard.swift; sourceTree = "<group>"; };
+		4AE6082608B80F95E10B4D3F /* DethroneCinematicView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneCinematicView.swift; sourceTree = "<group>"; };
 		50F8FF68F4E131CA47FCD0F6 /* FeatureCTAGrid.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FeatureCTAGrid.swift; sourceTree = "<group>"; };
 		5DFA9B0276A511E8C5F2BB74 /* IdentityHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IdentityHeader.swift; sourceTree = "<group>"; };
 		5F3AF490E1BA6A741C52A775 /* TodaysBountySection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodaysBountySection.swift; sourceTree = "<group>"; };
@@ -213,6 +220,7 @@
 		E80000002D4A000000000606 /* SpotPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotPickerView.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000607 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000608 /* ARMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMeasurementView.swift; sourceTree = "<group>"; };
+		E9596978FBB0DD8C7E9FE92E /* CatchFlowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CatchFlowView.swift; sourceTree = "<group>"; };
 		EB3F7DEA2A7FB52D2563C729 /* Bounty.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Bounty.swift; sourceTree = "<group>"; };
 		F312671D10AADFBC83978561 /* DethroneTickerItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DethroneTickerItem.swift; sourceTree = "<group>"; };
 		F8D1F0E73FF4132113F5BD82 /* PirateButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PirateButton.swift; sourceTree = "<group>"; };
@@ -302,6 +310,7 @@
 				F312671D10AADFBC83978561 /* DethroneTickerItem.swift */,
 				21C7619F7869B982F141B61C /* TreasureChestPin.swift */,
 				71ED611F3F90E843A3F5527E /* SearchBar.swift */,
+				1B8901814E84665D90BA204B /* StepperRail.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -324,6 +333,8 @@
 				E80000002D4A000000000606 /* SpotPickerView.swift */,
 				E80000002D4A000000000607 /* ImagePicker.swift */,
 				E80000002D4A000000000608 /* ARMeasurementView.swift */,
+				4AE6082608B80F95E10B4D3F /* DethroneCinematicView.swift */,
+				E9596978FBB0DD8C7E9FE92E /* CatchFlowView.swift */,
 			);
 			path = Catch;
 			sourceTree = "<group>";
@@ -440,6 +451,7 @@
 				FFBB6B6E8049AB4D6EB1D0DA /* BountyService.swift */,
 				C5C9DB28B5EC3CC777B83C92 /* DethroneEventService.swift */,
 				ABCA4624AC4F8BAF591DCDD3 /* LeaderboardService.swift */,
+				07D21D6E454B5E4C63141C72 /* ProgressionService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -664,6 +676,10 @@
 				B36D93A01AC8FF1FEFC9628C /* TreasureChestPin.swift in Sources */,
 				F41CB650166B5E375AC528BC /* SearchBar.swift in Sources */,
 				BCF5ACD9D38D828D9EF2AD4F /* PirateMapView.swift in Sources */,
+				AD0077CA826B951B78C87BD0 /* ProgressionService.swift in Sources */,
+				AABA3190C5D53844B233793E /* StepperRail.swift in Sources */,
+				E93158918D48E45A521C9499 /* DethroneCinematicView.swift in Sources */,
+				95E6BFC03EBB3A327C8E1FF1 /* CatchFlowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

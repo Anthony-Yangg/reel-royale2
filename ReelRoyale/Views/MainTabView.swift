@@ -12,10 +12,8 @@ struct MainTabView: View {
             },
             onFABTap: { showLogCatch = true }
         )
-        .sheet(isPresented: $showLogCatch) {
-            NavigationStack {
-                LogCatchView(preselectedSpotId: nil)
-            }
+        .fullScreenCover(isPresented: $showLogCatch) {
+            CatchFlowView(preselectedSpotId: nil)
         }
     }
 
