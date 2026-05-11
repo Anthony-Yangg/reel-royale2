@@ -7,6 +7,8 @@ struct ShipAvatar: View {
     var tier: CaptainTier = .deckhand
     var size: Size = .medium
     var showCrown: Bool = false
+    /// When true, the avatar gently bobs (anime ship-on-waves feel).
+    var waveBob: Bool = false
 
     enum Size {
         case small, medium, large, hero
@@ -38,6 +40,9 @@ struct ShipAvatar: View {
     }
 
     @Environment(\.reelTheme) private var theme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var bobOffset: CGFloat = 0
+    @State private var bobTilt: Double = 0
 
     var body: some View {
         ZStack {
@@ -91,6 +96,16 @@ struct ShipAvatar: View {
             }
         }
         .frame(width: size.diameter, height: size.diameter + (showCrown ? size.diameter * 0.18 : 0), alignment: .bottom)
+        .offset(y: bobOffset)
+        .rotationEffect(.degrees(bobTilt), anchor: .bottom)
+        .onAppear {
+            guard waveBob, !reduceMotion else { return }
+            let dur = 2.2 + Double.random(in: -0.3...0.4)
+            withAnimation(.easeInOut(duration: dur).repeatForever(autoreverses: true)) {
+                bobOffset = -3.5
+                bobTilt = 2.5
+            }
+        }
     }
 
     private var initialView: some View {

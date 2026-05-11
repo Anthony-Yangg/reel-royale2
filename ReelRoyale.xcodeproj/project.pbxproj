@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		02A400E07177BC9868797610 /* DethroneEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D07A8DDA02E4061F6E32A7 /* DethroneEvent.swift */; };
 		03E3F0A2C4AC215403A57B71 /* ReelThemeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221DD970EE3B2A3EA30705F /* ReelThemeShadow.swift */; };
+		06057F91BDAE4B8BCE23F2E6 /* WaveStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69092EC6675565F01346413 /* WaveStrip.swift */; };
 		1CA28FCF15155DAEFCCE39CB /* SoundService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64252B70A9728B51E43022C8 /* SoundService.swift */; };
 		1D07C88D108F20EAD24645B7 /* ReelThemeMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287273BDEE3813F3DCEB3DC8 /* ReelThemeMotion.swift */; };
 		2172FDED881372D2CB743AB2 /* TierEmblem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5EDE258AB68E6CF6363ED43 /* TierEmblem.swift */; };
@@ -161,6 +162,7 @@
 		DFE5713A395D888E28F52510 /* ReelTheme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReelTheme.swift; sourceTree = "<group>"; };
 		E1FFE8DE975CD4E5CB2D665D /* IconButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 		E4DD33DBB2DB3301BC9FCB27 /* TabBarShell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TabBarShell.swift; sourceTree = "<group>"; };
+		E69092EC6675565F01346413 /* WaveStrip.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WaveStrip.swift; sourceTree = "<group>"; };
 		E7E77AA35E641EEA25B1912F /* LeaderboardEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LeaderboardEntry.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000000 /* ReelRoyale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReelRoyale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E80000002D4A000000000001 /* ReelRoyaleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReelRoyaleApp.swift; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 				1B8901814E84665D90BA204B /* StepperRail.swift */,
 				D1272932D06551C00EC70027 /* LeaderboardRow.swift */,
 				60598F83DB9A9A790F342CC5 /* StatTile.swift */,
+				E69092EC6675565F01346413 /* WaveStrip.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -701,6 +704,7 @@
 				E17B07ABB8E7F9343C753F99 /* LeaderboardRow.swift in Sources */,
 				53A08298F0CA25B9DB76AD1F /* StatTile.swift in Sources */,
 				EEF075563FC2A197FFAF0640 /* IntroCinematicView.swift in Sources */,
+				06057F91BDAE4B8BCE23F2E6 /* WaveStrip.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

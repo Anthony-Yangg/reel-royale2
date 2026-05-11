@@ -17,7 +17,8 @@ struct LeaderboardRow: View {
                     initial: entry.captainName,
                     tier: entry.tier,
                     size: .medium,
-                    showCrown: entry.crownsHeld > 0
+                    showCrown: entry.crownsHeld > 0,
+                    waveBob: true
                 )
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 4) {

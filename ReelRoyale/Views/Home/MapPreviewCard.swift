@@ -21,12 +21,18 @@ struct MapPreviewCard: View {
             Button(action: onOpenMap) {
                 ZStack(alignment: .bottomLeading) {
                     Map(initialPosition: .region(region))
-                        .frame(height: 150)
+                        .frame(height: 170)
                         .disabled(true)
                         .overlay(
                             // Stylized teal tint over water
                             theme.colors.brand.deepSea.opacity(0.25)
                         )
+                        .overlay(alignment: .bottom) {
+                            WaveStrip(amplitude: 8, frequency: 0.025)
+                                .frame(height: 32)
+                                .opacity(0.7)
+                                .allowsHitTesting(false)
+                        }
                         .clipShape(RoundedRectangle(cornerRadius: theme.radius.card, style: .continuous))
                     HStack(spacing: 6) {
                         Image(systemName: "mappin.circle.fill")

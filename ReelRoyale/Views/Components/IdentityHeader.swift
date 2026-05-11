@@ -14,7 +14,8 @@ struct IdentityHeader: View {
                 initial: initial,
                 tier: tier,
                 size: .medium,
-                showCrown: crownsHeld > 0
+                showCrown: crownsHeld > 0,
+                waveBob: true
             )
 
             VStack(alignment: .leading, spacing: 2) {

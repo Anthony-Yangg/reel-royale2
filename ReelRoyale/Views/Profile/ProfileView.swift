@@ -60,18 +60,31 @@ struct ProfileView: View {
                 .frame(height: 220)
                 .clipShape(RoundedRectangle(cornerRadius: theme.radius.heroCard, style: .continuous))
 
+                // Animated wave band behind the avatar for depth
+                VStack {
+                    Spacer()
+                    WaveStrip()
+                        .frame(height: 60)
+                        .opacity(0.6)
+                }
+                .frame(height: 220)
+                .allowsHitTesting(false)
+
                 VStack(spacing: 8) {
                     ShipAvatar(
                         imageURL: user.avatarURL.flatMap(URL.init),
                         initial: user.username,
                         tier: .deckhand,
                         size: .hero,
-                        showCrown: viewModel.stats.crownedSpots > 0
+                        showCrown: viewModel.stats.crownedSpots > 0,
+                        waveBob: true
                     )
+                    .shadow(color: theme.colors.brand.crown.opacity(0.3), radius: 18)
                     Text(user.username)
                         .font(theme.typography.title1)
                         .foregroundStyle(theme.colors.text.primary)
                         .lineLimit(1)
+                        .shadow(color: .black.opacity(0.7), radius: 2)
                     TierEmblem(tier: .deckhand, division: 1, size: .medium)
                 }
             }
