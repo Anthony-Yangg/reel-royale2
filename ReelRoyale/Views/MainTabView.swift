@@ -68,6 +68,7 @@ struct MainTabView: View {
             .navigationDestination(for: NavigationDestination.self) { destination in
                 destinationView(for: destination)
             }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
@@ -80,6 +81,7 @@ struct MainTabView: View {
             .navigationDestination(for: NavigationDestination.self) { destination in
                 destinationView(for: destination)
             }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
@@ -112,27 +114,46 @@ struct MainTabView: View {
     }
 }
 
-// Settings placeholder retained from previous version.
+/// Themed settings — pirate-flavored copy + theme tokens.
 struct SettingsView: View {
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.reelTheme) private var theme
+    @AppStorage("haptics.enabled") private var hapticsEnabled = true
+    @AppStorage("sounds.enabled")  private var soundsEnabled = true
+
     var body: some View {
-        List {
-            Section("Account") {
-                NavigationLink("Edit Profile") { Text("Edit Profile") }
-                NavigationLink("Privacy Settings") { Text("Privacy Settings") }
-            }
-            Section("App") {
-                NavigationLink("Notifications") { Text("Notifications") }
-                NavigationLink("Units & Measurements") { Text("Units & Measurements") }
-            }
-            Section("About") {
-                HStack {
-                    Text("Version")
-                    Spacer()
-                    Text("1.0.0").foregroundColor(.secondary)
+        ZStack {
+            theme.colors.surface.canvas.ignoresSafeArea()
+            List {
+                Section("Captain") {
+                    NavigationLink("Edit Profile") { Text("Edit Profile") }
+                    NavigationLink("Privacy & Visibility") { Text("Privacy") }
+                }
+                Section("Feel") {
+                    Toggle("Haptics", isOn: $hapticsEnabled)
+                        .onChange(of: hapticsEnabled) { _, on in appState.haptics?.isEnabled = on }
+                    Toggle("Sound Effects", isOn: $soundsEnabled)
+                        .onChange(of: soundsEnabled) { _, on in appState.sounds?.isEnabled = on }
+                }
+                Section("App") {
+                    NavigationLink("Notifications") { Text("Notifications") }
+                    NavigationLink("Units & Measurements") { Text("Units") }
+                    NavigationLink("How to Play") { Text("Tutorial") }
+                }
+                Section("About") {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text("1.0.0").foregroundStyle(theme.colors.text.secondary)
+                    }
+                    Link("Privacy Policy", destination: URL(string: "https://reelroyale.app/privacy")!)
+                    Link("Terms of Service", destination: URL(string: "https://reelroyale.app/terms")!)
                 }
             }
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle("Settings")
+        .toolbarBackground(theme.colors.surface.canvas, for: .navigationBar)
     }
 }
 

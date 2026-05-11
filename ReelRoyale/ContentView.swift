@@ -2,10 +2,18 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
-    
+    @Environment(\.reelTheme) private var theme
+    @AppStorage("intro.shown") private var introShown = false
+    @State private var introComplete = false
+
     var body: some View {
         Group {
-            if appState.isLoading {
+            if !introShown && !introComplete {
+                IntroCinematicView {
+                    introShown = true
+                    introComplete = true
+                }
+            } else if appState.isLoading {
                 LaunchScreen()
             } else if !appState.isAuthenticated {
                 AuthView()
@@ -25,50 +33,47 @@ struct ContentView: View {
     }
 }
 
+/// Initial loading screen shown while AppState resolves auth state.
 struct LaunchScreen: View {
-    @State private var scale: CGFloat = 0.8
-    @State private var opacity: Double = 0.5
-    
+    @Environment(\.reelTheme) private var theme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var scale: CGFloat = 0.85
+    @State private var opacity: Double = 0.4
+
     var body: some View {
         ZStack {
-            // Background gradient
             LinearGradient(
-                colors: [Color.deepOcean, Color.oceanBlue],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+                colors: [theme.colors.brand.deepSea, theme.colors.surface.canvas],
+                startPoint: .topLeading, endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
-            
-            VStack(spacing: 24) {
-                // App icon/logo
-                Image(systemName: "fish.fill")
-                    .font(.system(size: 80))
+
+            VStack(spacing: theme.spacing.m) {
+                Image(systemName: "crown.fill")
+                    .font(.system(size: 72, weight: .black))
                     .foregroundStyle(
-                        LinearGradient(
-                            colors: [Color.seafoam, Color.coral],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        LinearGradient(colors: [theme.colors.brand.crown, theme.colors.brand.brassGold], startPoint: .top, endPoint: .bottom)
                     )
                     .scaleEffect(scale)
-                
                 Text("Reel Royale")
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                
-                Text("King of the Hill Fishing")
-                    .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.7))
-                
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .seafoam))
-                    .scaleEffect(1.2)
-                    .padding(.top, 32)
+                    .font(.system(size: 32, weight: .black, design: .rounded))
+                    .foregroundStyle(theme.colors.text.primary)
+                Text("King of the Seven Seas")
+                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .foregroundStyle(theme.colors.brand.brassGold)
+                    .tracking(2)
+                ShipWheelSpinner(size: 36)
+                    .padding(.top, theme.spacing.m)
             }
             .opacity(opacity)
         }
         .onAppear {
-            withAnimation(.easeOut(duration: 0.8)) {
+            guard !reduceMotion else {
+                scale = 1
+                opacity = 1
+                return
+            }
+            withAnimation(.easeOut(duration: 0.7)) {
                 scale = 1.0
                 opacity = 1.0
             }
@@ -79,5 +84,6 @@ struct LaunchScreen: View {
 #Preview {
     ContentView()
         .environmentObject(AppState.shared)
+        .environment(\.reelTheme, .default)
+        .preferredColorScheme(.dark)
 }
-
