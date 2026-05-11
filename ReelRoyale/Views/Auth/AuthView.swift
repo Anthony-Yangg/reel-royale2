@@ -99,6 +99,33 @@ struct AuthView: View {
                                 removal: .move(edge: .leading).combined(with: .opacity)
                             ))
                     }
+
+                    #if DEBUG
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            AppState.shared.bypassAuthenticationForDevelopment()
+                        }
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: "arrow.forward.circle.fill")
+                                .font(.headline)
+
+                            Text("Skip Login for Now")
+                                .fontWeight(.semibold)
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Color.white.opacity(0.14))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.white.opacity(0.24), lineWidth: 1)
+                        )
+                        .cornerRadius(12)
+                    }
+                    .padding(.horizontal, 32)
+                    .accessibilityLabel("Skip login for now")
+                    #endif
                     
                     Spacer(minLength: 40)
                 }
@@ -110,4 +137,3 @@ struct AuthView: View {
 #Preview {
     AuthView()
 }
-

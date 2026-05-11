@@ -11,6 +11,13 @@ final class AppState: ObservableObject {
     // MARK: - Auth & UI state
 
     @Published var isAuthenticated = false
+
+    #if DEBUG
+    /// Local-only login bypass for development builds.
+    @Published private(set) var isUsingAuthBypass = false
+    #endif
+
+    /// Current user (nil if not logged in)
     @Published var currentUser: User?
     @Published var needsProfileSetup = false
     @Published var isLoading = true
@@ -166,6 +173,11 @@ final class AppState: ObservableObject {
 
     private func checkAuthState() async {
         #if DEBUG
+        guard !isUsingAuthBypass else {
+            isLoading = false
+            return
+        }
+
         if previewBypassEnabled {
             isLoading = false
             currentUser = User(
@@ -239,6 +251,10 @@ final class AppState: ObservableObject {
     }
 
     private func handleLogout() {
+        #if DEBUG
+        isUsingAuthBypass = false
+        #endif
+
         isAuthenticated = false
         currentUser = nil
         needsProfileSetup = false
@@ -262,7 +278,31 @@ final class AppState: ObservableObject {
         needsProfileSetup = false
     }
 
+    #if DEBUG
+    func bypassAuthenticationForDevelopment() {
+        isUsingAuthBypass = true
+        currentUser = User(
+            id: "dev-bypass-user",
+            username: "Dev Angler",
+            avatarURL: nil,
+            homeLocation: "Local Simulator",
+            bio: "Temporary development account"
+        )
+        isAuthenticated = true
+        needsProfileSetup = false
+        isLoading = false
+        selectedTab = .spots
+    }
+    #endif
+
     func signOut() async {
+        #if DEBUG
+        if isUsingAuthBypass {
+            handleLogout()
+            return
+        }
+        #endif
+
         do {
             try await authService.signOut()
             handleLogout()
