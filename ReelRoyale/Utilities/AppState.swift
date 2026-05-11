@@ -62,6 +62,16 @@ final class AppState: ObservableObject {
     
     private init() {}
     
+    /// DEBUG-only preview bypass.
+    /// Setting UserDefaults RR_PREVIEW_AUTH_BYPASS=YES skips Supabase auth
+    /// and injects a mock captain for visual QA.
+    #if DEBUG
+    private var previewBypassEnabled: Bool {
+        UserDefaults.standard.bool(forKey: "RR_PREVIEW_AUTH_BYPASS")
+            || ProcessInfo.processInfo.environment["RR_PREVIEW_AUTH_BYPASS"] == "1"
+    }
+    #endif
+
     /// Initialize services (call from App.init)
     func configure() {
         // Initialize Supabase
@@ -121,9 +131,30 @@ final class AppState: ObservableObject {
     }
     
     private func checkAuthState() async {
+        #if DEBUG
+        if previewBypassEnabled {
+            isLoading = false
+            currentUser = User(
+                id: "preview-captain",
+                username: "Blackbeard",
+                avatarURL: nil,
+                homeLocation: "San Francisco Bay",
+                bio: "Looking for the biggest catch.",
+                createdAt: Date()
+            )
+            isAuthenticated = true
+            needsProfileSetup = false
+            if let tabRaw = UserDefaults.standard.string(forKey: "RR_PREVIEW_TAB"),
+               let tab = AppTab(rawValue: tabRaw) {
+                selectedTab = tab
+            }
+            return
+        }
+        #endif
+
         isLoading = true
         defer { isLoading = false }
-        
+
         do {
             if let user = try await authService.getCurrentUser() {
                 currentUser = user

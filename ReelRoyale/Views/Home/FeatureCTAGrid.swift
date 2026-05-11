@@ -40,29 +40,32 @@ struct FeatureCTAGrid: View {
 
     private func tile(_ cta: CTA) -> some View {
         Button(action: cta.action) {
-            HStack(spacing: theme.spacing.s) {
-                ZStack {
-                    Circle()
-                        .fill(cta.tint.opacity(0.22))
-                        .frame(width: 40, height: 40)
-                    Image(systemName: cta.icon)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(cta.tint)
+            VStack(alignment: .leading, spacing: theme.spacing.xs) {
+                HStack {
+                    ZStack {
+                        Circle()
+                            .fill(cta.tint.opacity(0.22))
+                            .frame(width: 40, height: 40)
+                        Image(systemName: cta.icon)
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundStyle(cta.tint)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .heavy))
+                        .foregroundStyle(theme.colors.text.muted)
                 }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(cta.title)
-                        .font(.system(size: 14, weight: .heavy, design: .rounded))
-                        .foregroundStyle(theme.colors.text.primary)
-                    Text(cta.subtitle)
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(theme.colors.text.secondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .heavy))
-                    .foregroundStyle(theme.colors.text.muted)
+                Text(cta.title)
+                    .font(.system(size: 15, weight: .heavy, design: .rounded))
+                    .foregroundStyle(theme.colors.text.primary)
+                    .lineLimit(1)
+                Text(cta.subtitle)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(theme.colors.text.secondary)
+                    .lineLimit(1)
             }
             .padding(theme.spacing.s + 2)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: theme.radius.card, style: .continuous)
                     .fill(theme.colors.surface.elevated)

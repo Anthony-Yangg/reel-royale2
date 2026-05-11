@@ -15,7 +15,41 @@ struct MainTabView: View {
         .fullScreenCover(isPresented: $showLogCatch) {
             CatchFlowView(preselectedSpotId: nil)
         }
+        .task {
+            #if DEBUG
+            applyPreviewDeeplink()
+            #endif
+        }
     }
+
+    #if DEBUG
+    /// QA helper: tap RR_PREVIEW_DEEPLINK = "leaderboard|fishID|measure|regulations|catchFlow" in UserDefaults.
+    private func applyPreviewDeeplink() {
+        guard let raw = UserDefaults.standard.string(forKey: "RR_PREVIEW_DEEPLINK"), !raw.isEmpty else { return }
+        UserDefaults.standard.removeObject(forKey: "RR_PREVIEW_DEEPLINK")
+
+        switch raw {
+        case "leaderboard":
+            appState.selectedTab = .home
+            appState.homeNavigationPath.append(NavigationDestination.leaderboard)
+        case "fishID":
+            appState.selectedTab = .home
+            appState.homeNavigationPath.append(NavigationDestination.fishID)
+        case "measure":
+            appState.selectedTab = .home
+            appState.homeNavigationPath.append(NavigationDestination.measureFish)
+        case "regulations":
+            appState.selectedTab = .home
+            appState.homeNavigationPath.append(NavigationDestination.regulations(spotId: nil))
+        case "settings":
+            appState.selectedTab = .more
+        case "catchFlow":
+            showLogCatch = true
+        default:
+            break
+        }
+    }
+    #endif
 
     @ViewBuilder
     private func tabContent(for tab: AppTab) -> some View {
@@ -94,6 +128,7 @@ struct MainTabView: View {
             .navigationDestination(for: NavigationDestination.self) { destination in
                 destinationView(for: destination)
             }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 

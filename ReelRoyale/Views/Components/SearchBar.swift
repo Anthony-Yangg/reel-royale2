@@ -58,6 +58,8 @@ struct FilterChip: View {
                 }
                 Text(label)
                     .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .lineLimit(1)
+                    .fixedSize(horizontal: true, vertical: false)
             }
             .foregroundStyle(isSelected ? theme.colors.text.onLight : theme.colors.text.primary)
             .padding(.horizontal, theme.spacing.s)

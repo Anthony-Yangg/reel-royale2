@@ -7,9 +7,44 @@ struct FishIDView: View {
     
     @StateObject private var viewModel = FishIDViewModel()
     @Environment(\.dismiss) var dismiss
+    @Environment(\.reelTheme) private var theme
     @State private var photoItem: PhotosPickerItem?
-    
+
     var body: some View {
+        ZStack {
+            theme.colors.surface.canvas.ignoresSafeArea()
+            scrollContent
+        }
+        .navigationTitle("Fish ID")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(theme.colors.surface.canvas, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbar {
+            if onSpeciesSelected != nil {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") { dismiss() }
+                        .foregroundStyle(theme.colors.brand.brassGold)
+                }
+            }
+        }
+        .onChange(of: photoItem) { _, newItem in
+            Task {
+                if let newItem = newItem,
+                   let data = try? await newItem.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data) {
+                    viewModel.setImage(image)
+                }
+            }
+        }
+        .onAppear {
+            if let image = initialImage, viewModel.selectedImage == nil {
+                viewModel.setImage(image)
+            }
+        }
+    }
+
+    private var scrollContent: some View {
         ScrollView {
             VStack(spacing: 24) {
                 // Header
@@ -132,30 +167,6 @@ struct FishIDView: View {
                 tipsSection
                 
                 Spacer(minLength: 32)
-            }
-        }
-        .navigationTitle("Fish ID")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            if onSpeciesSelected != nil {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .onChange(of: photoItem) { _, newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let image = UIImage(data: data) {
-                    viewModel.setImage(image)
-                }
-            }
-        }
-        .onAppear {
-            if let image = initialImage {
-                viewModel.setImage(image)
             }
         }
         .alert("Error", isPresented: $viewModel.showError) {
