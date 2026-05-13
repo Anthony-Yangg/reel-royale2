@@ -1,0 +1,20 @@
+{
+    "name": "PokemonGo.NativeBridge",
+    "rootNamespace": "PokemonGo.NativeBridge",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "PokemonGo.GPS",
+        "PokemonGo.Camera",
+        "PokemonGo.Rendering",
+        "PokemonGo.Stylization",
+        "Unity.Mathematics"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

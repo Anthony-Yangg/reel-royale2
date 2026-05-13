@@ -1,0 +1,15 @@
+{
+    "name": "PokemonGo.Stylization",
+    "rootNamespace": "PokemonGo.Rendering",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.Rendering",
+        "Unity.Mathematics",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

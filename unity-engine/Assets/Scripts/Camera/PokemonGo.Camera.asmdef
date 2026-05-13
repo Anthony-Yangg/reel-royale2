@@ -1,0 +1,15 @@
+{
+    "name": "PokemonGo.Camera",
+    "rootNamespace": "PokemonGo.Camera",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "PokemonGo.Streaming",
+        "Unity.Mathematics",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

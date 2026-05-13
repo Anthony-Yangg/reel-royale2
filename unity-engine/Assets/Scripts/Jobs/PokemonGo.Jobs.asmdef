@@ -1,0 +1,15 @@
+{
+    "name": "PokemonGo.Jobs",
+    "rootNamespace": "PokemonGo.Jobs",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "Unity.Mathematics",
+        "Unity.Collections",
+        "Unity.Burst"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "autoReferenced": true
+}

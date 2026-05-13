@@ -13,7 +13,25 @@ final class SpotsViewModel: ObservableObject {
     @Published var selectedSpot: Spot?
     @Published var isLoading = false
     @Published var errorMessage: String?
-    
+
+    /// Procedural water-region polygons + control snapshots derived from the
+    /// currently loaded spots. Recomputed whenever spots load or the current
+    /// user changes. The map view renders these as colored MKPolygons.
+    @Published var regionControls: [WaterRegionControl] = []
+
+    /// Whether to render the water-region overlay on the map. Bound to the
+    /// "Regions" toggle in `SpotsView`.
+    @Published var showsRegions: Bool = true
+
+    /// Owner identity for "you rule this water" coloring. Set by the view
+    /// from `AppState.currentUser?.id` so the VM stays free of UI deps.
+    var currentUserId: String? {
+        didSet {
+            guard oldValue != currentUserId else { return }
+            recomputeRegions()
+        }
+    }
+
     // View mode
     @Published var viewMode: ViewMode = .map
     
@@ -161,7 +179,8 @@ final class SpotsViewModel: ObservableObject {
             
             spots = spotsWithDetails
             applyFilters(query: searchQuery, waterType: selectedWaterType, distance: distanceFilter)
-            
+            recomputeRegions()
+
             // Update map region to show all spots
             if let firstSpot = spots.first {
                 updateMapRegion(center: firstSpot.spot.coordinate)
@@ -171,6 +190,17 @@ final class SpotsViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+
+    /// Rebuild the water-region polygon set + control snapshots from current
+    /// spots. Pure function — safe to call repeatedly; cheap for typical
+    /// spot counts (<500).
+    private func recomputeRegions() {
+        let rawSpots = spots.map(\.spot)
+        regionControls = WaterRegionService.controls(
+            from: rawSpots,
+            currentUserId: currentUserId
+        )
     }
     
     // MARK: - Filtering

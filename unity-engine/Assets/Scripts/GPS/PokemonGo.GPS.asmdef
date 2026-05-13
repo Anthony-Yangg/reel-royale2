@@ -1,0 +1,13 @@
+{
+    "name": "PokemonGo.GPS",
+    "rootNamespace": "PokemonGo.GPS",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "Unity.Mathematics"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

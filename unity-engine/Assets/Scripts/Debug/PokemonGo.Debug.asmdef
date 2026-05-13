@@ -1,0 +1,17 @@
+{
+    "name": "PokemonGo.Debug",
+    "rootNamespace": "PokemonGo.Debug",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "PokemonGo.Streaming",
+        "PokemonGo.Camera",
+        "PokemonGo.GPS",
+        "Unity.Mathematics",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

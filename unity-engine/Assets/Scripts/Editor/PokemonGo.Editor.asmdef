@@ -1,0 +1,23 @@
+{
+    "name": "PokemonGo.Editor",
+    "rootNamespace": "PokemonGo.Editor",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.Bootstrap",
+        "PokemonGo.GIS",
+        "PokemonGo.VectorTiles",
+        "PokemonGo.Streaming",
+        "PokemonGo.Terrain",
+        "PokemonGo.Rendering",
+        "PokemonGo.Stylization",
+        "PokemonGo.Camera",
+        "PokemonGo.Debug",
+        "PokemonGo.GPS",
+        "PokemonGo.NativeBridge",
+        "Unity.Mathematics"
+    ],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

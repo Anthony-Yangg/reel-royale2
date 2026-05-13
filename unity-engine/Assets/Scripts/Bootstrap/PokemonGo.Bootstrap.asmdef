@@ -1,0 +1,19 @@
+{
+    "name": "PokemonGo.Bootstrap",
+    "rootNamespace": "PokemonGo.Bootstrap",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "PokemonGo.Streaming",
+        "PokemonGo.Terrain",
+        "PokemonGo.Rendering",
+        "PokemonGo.Stylization",
+        "PokemonGo.Camera",
+        "PokemonGo.GPS",
+        "PokemonGo.Debug"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

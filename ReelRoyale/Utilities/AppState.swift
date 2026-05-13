@@ -36,6 +36,17 @@ final class AppState: ObservableObject {
     @Published var unreadNotifications: Int = 0
     @Published var activeSeason: Season?
 
+    // MARK: - Live HUD (persistent identity-header status)
+
+    /// Number of spots where the current user currently holds the crown.
+    @Published var crownsHeld: Int = 0
+
+    /// Current user's placement on the active season's global leaderboard, 1-indexed. nil while unknown.
+    @Published var seasonRank: Int?
+
+    /// Rolling daily-catch streak (consecutive days with at least one public catch). 0 if not loaded.
+    @Published var dailyStreak: Int = 0
+
     // MARK: - Services (injected)
 
     private(set) var supabaseService: SupabaseService!
@@ -166,7 +177,18 @@ final class AppState: ObservableObject {
         NotificationCenter.default.publisher(for: .catchCreated)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                Task { await self?.refreshUnreadCount() }
+                Task {
+                    await self?.refreshUnreadCount()
+                    await self?.refreshHUD()
+                }
+            }
+            .store(in: &cancellables)
+
+        // A dethrone anywhere may change our crown count — re-pull the HUD.
+        NotificationCenter.default.publisher(for: .kingDethroned)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                Task { await self?.refreshHUD() }
             }
             .store(in: &cancellables)
     }
@@ -234,12 +256,54 @@ final class AppState: ObservableObject {
         self.unreadNotifications = (try? await unreadTask) ?? 0
 
         _ = await notificationService.requestAuthorization()
+
+        await refreshHUD()
     }
 
     /// Pulls fresh unread-notification count for the current user.
     func refreshUnreadCount() async {
         guard let userId = currentUser?.id else { return }
         unreadNotifications = (try? await notificationService.unreadCount(forUser: userId)) ?? 0
+    }
+
+    /// Repopulates the persistent identity-header HUD: crowns held, season rank, daily streak.
+    /// Best-effort; failures leave previous values intact.
+    func refreshHUD() async {
+        guard let userId = currentUser?.id else { return }
+
+        async let crownsTask: Int? = (try? await gameService.getCrownCount(for: userId))
+        async let rankTask: CaptainRankEntry? = (try? await leaderboardService.fetchUserRank(
+            userId: userId,
+            scope: .global,
+            timeframe: .season
+        ))
+        async let streakTask: Int = computeDailyStreak(for: userId)
+
+        let (crowns, rank, streak) = await (crownsTask, rankTask, streakTask)
+
+        if let crowns { self.crownsHeld = crowns }
+        self.seasonRank = rank?.rank
+        self.dailyStreak = streak
+    }
+
+    /// Consecutive calendar days, ending today, on which the user logged a public catch.
+    /// Stops at the first gap. Capped at 60 days for cheapness.
+    private func computeDailyStreak(for userId: String) async -> Int {
+        guard let catches = try? await catchRepository.getCatches(forUser: userId) else { return 0 }
+        let cal = Calendar.current
+        let days: Set<Date> = Set(
+            catches
+                .filter { $0.isPublic }
+                .map { cal.startOfDay(for: $0.createdAt) }
+        )
+        var streak = 0
+        var cursor = cal.startOfDay(for: Date())
+        while days.contains(cursor), streak < 60 {
+            streak += 1
+            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = prev
+        }
+        return streak
     }
 
     /// Pulls a fresh user row (useful after a catch or shop purchase).
@@ -260,6 +324,9 @@ final class AppState: ObservableObject {
         needsProfileSetup = false
         unreadNotifications = 0
         activeSeason = nil
+        crownsHeld = 0
+        seasonRank = nil
+        dailyStreak = 0
 
         spotsNavigationPath = NavigationPath()
         communityNavigationPath = NavigationPath()
