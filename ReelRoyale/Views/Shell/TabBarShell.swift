@@ -35,7 +35,7 @@ struct TabBarShell<Content: View>: View {
                 tabButton(.home)
                 tabButton(.spots)
                 Spacer(minLength: 72)  // reserved space for FAB
-                tabButton(.community)
+                tabButton(.fishLog)
                 tabButton(.profile)
             }
             .frame(height: 68)
