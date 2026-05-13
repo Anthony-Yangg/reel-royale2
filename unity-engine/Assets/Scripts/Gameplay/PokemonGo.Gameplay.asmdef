@@ -1,0 +1,13 @@
+{
+    "name": "PokemonGo.Gameplay",
+    "rootNamespace": "PokemonGo.Gameplay",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "PokemonGo.NativeBridge"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

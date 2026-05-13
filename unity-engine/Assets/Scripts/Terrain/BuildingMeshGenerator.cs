@@ -74,8 +74,8 @@ namespace PokemonGo.Terrain
                 if (!EarClippingTriangulator.Triangulate(outer, holes, vertList, indList)) continue;
 
                 int baseRoof = mesh.Vertices.Count;
-                Color32 roofCol = new Color32(220, 218, 230, 255);
-                Color32 wallCol = new Color32(240, 235, 245, 255);
+                Color32 roofCol = new Color32(194, 224, 226, 255);
+                Color32 wallCol = new Color32(230, 246, 232, 255);
 
                 // Roof (top) -------------------------------------------------
                 for (int v = 0; v < vertList.Count; v++)

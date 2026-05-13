@@ -31,15 +31,15 @@ namespace PokemonGo.Rendering
 
         public Task InitializeAsync(CancellationToken ct)
         {
-            Terrain     = Load("M_Terrain")  ?? Synth("PokemonGo/StylizedTerrain",  Color.white);
-            Road        = Load("M_Road")     ?? Synth("PokemonGo/EmissiveRoad",     new Color(0.045f, 0.098f, 0.165f));
-            Building    = Load("M_Building") ?? Synth("PokemonGo/StylizedBuilding", new Color(0.48f, 0.52f, 0.62f));
-            Water       = Load("M_Water")    ?? Synth("PokemonGo/StylizedWater",    new Color(0.18f, 0.52f, 0.72f));
+            Terrain     = Load("M_Terrain")  ?? Synth("PokemonGo/StylizedTerrain",  new Color(0.60f, 0.92f, 0.78f));
+            Road        = Load("M_Road")     ?? Synth("PokemonGo/EmissiveRoad",     new Color(0.98f, 0.86f, 0.56f));
+            Building    = Load("M_Building") ?? Synth("PokemonGo/StylizedBuilding", new Color(0.88f, 0.94f, 0.90f));
+            Water       = Load("M_Water")    ?? Synth("PokemonGo/StylizedWater",    new Color(0.36f, 0.76f, 0.92f));
             Park        = Load("M_Park")     ?? Synth("PokemonGo/StylizedTerrain",  Color.white);
             Landuse     = Load("M_Landuse")  ?? Synth("PokemonGo/StylizedTerrain",  Color.white);
-            BuildingLOD = Load("M_BuildingLOD") ?? Synth("PokemonGo/StylizedBuilding", new Color(0.38f, 0.42f, 0.52f));
+            BuildingLOD = Load("M_BuildingLOD") ?? Synth("PokemonGo/StylizedBuilding", new Color(0.74f, 0.84f, 0.84f));
 
-            ApplyNightRoadWaterDefaults(Road, Water);
+            ApplyDaylightDefaults(Terrain, Road, Building, Water, Park, Landuse, BuildingLOD);
 
             foreach (var m in new[] { Terrain, Road, Building, Water, Park, Landuse, BuildingLOD })
             {
@@ -59,29 +59,77 @@ namespace PokemonGo.Rendering
         }
 
         /// <summary>
-        /// Pokémon GO–night tuning when materials are shader-synthesised (no .mat assets).
+        /// Daylight location-game tuning when materials are shader-synthesised (no .mat assets).
         /// </summary>
-        private static void ApplyNightRoadWaterDefaults(Material road, Material water)
+        private static void ApplyDaylightDefaults(
+            Material terrain,
+            Material road,
+            Material building,
+            Material water,
+            Material park,
+            Material landuse,
+            Material buildingLod)
         {
+            if (terrain != null)
+            {
+                if (terrain.HasProperty("_BaseColor"))
+                    terrain.SetColor("_BaseColor", new Color(0.58f, 0.92f, 0.78f));
+                if (terrain.HasProperty("_Saturation"))
+                    terrain.SetFloat("_Saturation", 1.18f);
+            }
             if (road != null)
             {
+                if (road.HasProperty("_BaseColor"))
+                    road.SetColor("_BaseColor", new Color(0.96f, 0.82f, 0.50f));
                 if (road.HasProperty("_EdgeColor"))
-                    road.SetColor("_EdgeColor", new Color(0.05f, 0.72f, 0.92f));
+                    road.SetColor("_EdgeColor", new Color(0.18f, 0.44f, 0.50f));
                 if (road.HasProperty("_NightColor"))
-                    road.SetColor("_NightColor", new Color(0.35f, 0.92f, 1f));
+                    road.SetColor("_NightColor", new Color(1.0f, 0.70f, 0.35f));
                 if (road.HasProperty("_NightIntensity"))
-                    road.SetFloat("_NightIntensity", 2.1f);
+                    road.SetFloat("_NightIntensity", 0.55f);
                 if (road.HasProperty("_EdgeWidth"))
-                    road.SetFloat("_EdgeWidth", 0.22f);
+                    road.SetFloat("_EdgeWidth", 0.24f);
+                if (road.HasProperty("_CenterStripe"))
+                    road.SetFloat("_CenterStripe", 0.18f);
+            }
+            if (building != null)
+            {
+                if (building.HasProperty("_BaseColor"))
+                    building.SetColor("_BaseColor", new Color(0.90f, 0.96f, 0.91f));
+                if (building.HasProperty("_RoofColor"))
+                    building.SetColor("_RoofColor", new Color(0.76f, 0.88f, 0.88f));
+                if (building.HasProperty("_ShadowColor"))
+                    building.SetColor("_ShadowColor", new Color(0.54f, 0.66f, 0.72f));
             }
             if (water != null)
             {
                 if (water.HasProperty("_DeepColor"))
-                    water.SetColor("_DeepColor", new Color(0.015f, 0.13f, 0.34f));
+                    water.SetColor("_DeepColor", new Color(0.18f, 0.58f, 0.84f));
                 if (water.HasProperty("_ShallowColor"))
-                    water.SetColor("_ShallowColor", new Color(0.06f, 0.30f, 0.52f));
+                    water.SetColor("_ShallowColor", new Color(0.58f, 0.90f, 0.96f));
                 if (water.HasProperty("_NightEmissive"))
-                    water.SetColor("_NightEmissive", new Color(0.15f, 0.38f, 0.72f));
+                    water.SetColor("_NightEmissive", new Color(0.26f, 0.68f, 0.96f));
+                if (water.HasProperty("_CausticsStrength"))
+                    water.SetFloat("_CausticsStrength", 0.72f);
+            }
+            if (park != null)
+            {
+                if (park.HasProperty("_BaseColor"))
+                    park.SetColor("_BaseColor", new Color(0.50f, 0.88f, 0.42f));
+                if (park.HasProperty("_Saturation"))
+                    park.SetFloat("_Saturation", 1.22f);
+            }
+            if (landuse != null)
+            {
+                if (landuse.HasProperty("_BaseColor"))
+                    landuse.SetColor("_BaseColor", new Color(0.50f, 0.84f, 0.70f));
+                if (landuse.HasProperty("_Saturation"))
+                    landuse.SetFloat("_Saturation", 1.14f);
+            }
+            if (buildingLod != null)
+            {
+                if (buildingLod.HasProperty("_BaseColor"))
+                    buildingLod.SetColor("_BaseColor", new Color(0.74f, 0.84f, 0.84f));
             }
         }
 

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Treasure-chest map pin. Variants: vacant (closed) / claimed-by-other / claimed-by-you.
+/// Fishing-spot map marker. Variants: vacant / claimed-by-other / claimed-by-you.
 struct TreasureChestPin: View {
     enum Variant {
         case vacant
@@ -19,47 +19,66 @@ struct TreasureChestPin: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 4) {
+            VStack(spacing: 0) {
                 ZStack {
-                    // Glow halo for claimed
-                    if case .claimedByYou = variant {
-                        Circle()
-                            .fill(theme.colors.brand.crown.opacity(0.35))
-                            .frame(width: 56, height: 56)
-                            .blur(radius: 10)
-                    } else if case .claimedByOther(let tier) = variant {
-                        Circle()
-                            .fill(theme.colors.tier.color(for: tier).opacity(0.3))
-                            .frame(width: 52, height: 52)
-                            .blur(radius: 8)
-                    }
+                    Circle()
+                        .fill(pinTint.opacity(claimed ? 0.32 : 0.22))
+                        .frame(width: isSelected ? 66 : 58, height: isSelected ? 66 : 58)
+                        .blur(radius: 8)
 
-                    // Chest body
-                    chestBody
-                        .frame(width: isSelected ? 44 : 38, height: isSelected ? 44 : 38)
+                    Circle()
+                        .stroke(Color.white.opacity(0.82), lineWidth: 3)
+                        .frame(width: isSelected ? 50 : 44, height: isSelected ? 50 : 44)
+                        .shadow(color: pinTint.opacity(0.35), radius: 7)
 
-                    // Crown overlay for claimed
-                    if claimed {
-                        Image(systemName: "crown.fill")
-                            .font(.system(size: 14, weight: .black))
-                            .foregroundStyle(theme.colors.brand.crown)
-                            .shadow(color: .black.opacity(0.5), radius: 2)
-                            .offset(y: -22)
-                    }
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [Color.white, pinTint, pinTint.opacity(0.72)],
+                                center: .topLeading,
+                                startRadius: 1,
+                                endRadius: 28
+                            )
+                        )
+                        .frame(width: isSelected ? 40 : 34, height: isSelected ? 40 : 34)
+                        .overlay {
+                            Image(systemName: symbolName)
+                                .font(.system(size: claimed ? 17 : 16, weight: .black))
+                                .foregroundStyle(symbolColor)
+                        }
+                        .overlay(alignment: .topTrailing) {
+                            if claimed {
+                                Image(systemName: "crown.fill")
+                                    .font(.system(size: 11, weight: .black))
+                                    .foregroundStyle(theme.colors.brand.crown)
+                                    .shadow(color: Color(hex: 0x38270B).opacity(0.5), radius: 2)
+                                    .offset(x: 5, y: -6)
+                            }
+                        }
                 }
+                Capsule(style: .continuous)
+                    .fill(Color.white.opacity(0.82))
+                    .frame(width: 9, height: 18)
+                    .overlay(Capsule().fill(pinTint.opacity(0.45)).frame(width: 3))
+                    .offset(y: -4)
+                Ellipse()
+                    .fill(Color(hex: 0x174F5E).opacity(0.28))
+                    .frame(width: isSelected ? 42 : 34, height: 12)
+                    .offset(y: -6)
+
                 if isSelected, let name = spotName {
                     Text(name)
                         .font(.system(size: 11, weight: .heavy, design: .rounded))
-                        .foregroundStyle(theme.colors.text.primary)
+                        .foregroundStyle(Color(hex: 0x16475A))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
                         .background(
-                            Capsule().fill(theme.colors.surface.elevated.opacity(0.95))
+                            Capsule().fill(Color.white.opacity(0.96))
                         )
                         .overlay(
-                            Capsule().strokeBorder(theme.colors.brand.brassGold.opacity(0.5), lineWidth: 1)
+                            Capsule().strokeBorder(pinTint.opacity(0.55), lineWidth: 1)
                         )
-                        .padding(.top, 2)
+                        .padding(.top, -2)
                 }
             }
         }
@@ -81,51 +100,34 @@ struct TreasureChestPin: View {
         }
     }
 
-    @ViewBuilder
-    private var chestBody: some View {
+    private var pinTint: Color {
         switch variant {
         case .vacant:
-            chestImage(fillColor: theme.colors.brand.walnut, lidColor: theme.colors.brand.driftwoodish, open: false)
+            return Color(hex: 0x28CFC6)
         case .claimedByOther(let tier):
-            chestImage(fillColor: theme.colors.brand.walnut, lidColor: theme.colors.tier.color(for: tier), open: true)
+            return theme.colors.tier.color(for: tier)
         case .claimedByYou:
-            chestImage(fillColor: theme.colors.brand.walnut, lidColor: theme.colors.brand.crown, open: true)
+            return theme.colors.brand.crown
         }
     }
 
-    /// Stylized treasure chest icon composited from SF Symbols + a rectangle.
-    private func chestImage(fillColor: Color, lidColor: Color, open: Bool) -> some View {
-        ZStack {
-            // Chest base — a rounded rectangle
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                .fill(fillColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5, style: .continuous)
-                        .strokeBorder(theme.colors.brand.walnut.opacity(0.9), lineWidth: 1.5)
-                )
-            // Lid strap
-            Rectangle()
-                .fill(lidColor)
-                .frame(height: 8)
-                .offset(y: -8)
-            // Lock
-            Circle()
-                .fill(theme.colors.brand.brassGold)
-                .frame(width: 8, height: 8)
-                .offset(y: -2)
-            // Sparkle if open
-            if open {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 10, weight: .black))
-                    .foregroundStyle(theme.colors.brand.crown)
-                    .offset(y: -2)
-            }
+    private var symbolName: String {
+        switch variant {
+        case .vacant:
+            return "water.waves"
+        case .claimedByOther:
+            return "fish.fill"
+        case .claimedByYou:
+            return "crown.fill"
         }
-        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
     }
-}
 
-extension ReelThemeColors.Brand {
-    /// Stand-in for a slightly-lighter walnut used as a closed-lid color.
-    var driftwoodish: Color { Color(hex: 0x6B4429) }
+    private var symbolColor: Color {
+        switch variant {
+        case .claimedByYou:
+            return Color(hex: 0x39290D)
+        default:
+            return Color(hex: 0x08384A)
+        }
+    }
 }

@@ -17,31 +17,32 @@ namespace PokemonGo.Terrain
         // Road widths in meters per class. Tuned to Pokémon-GO-style chunky look.
         private static readonly Dictionary<RoadClass, float> Width = new()
         {
-            [RoadClass.Motorway]  = 14f,
-            [RoadClass.Trunk]     = 12f,
-            [RoadClass.Primary]   = 10f,
-            [RoadClass.Secondary] = 8f,
-            [RoadClass.Tertiary]  = 7f,
-            [RoadClass.Street]    = 6f,
-            [RoadClass.Service]   = 5f,
-            [RoadClass.Path]      = 3.5f,
-            [RoadClass.Pedestrian]= 4f,
-            [RoadClass.Unknown]   = 6f
+            [RoadClass.Motorway]  = 18f,
+            [RoadClass.Trunk]     = 16f,
+            [RoadClass.Primary]   = 14f,
+            [RoadClass.Secondary] = 11f,
+            [RoadClass.Tertiary]  = 9f,
+            [RoadClass.Street]    = 8f,
+            [RoadClass.Service]   = 6f,
+            [RoadClass.Path]      = 4.2f,
+            [RoadClass.Pedestrian]= 5f,
+            [RoadClass.Unknown]   = 8f
         };
 
-        // Cool muted ribbon tints for Pokémon GO–style night roads (multiply with EmissiveRoad).
+        // Warm, high-value ribbon tints. The shader supplies teal edging, so
+        // the roads read as chunky game paths instead of technical linework.
         private static readonly Dictionary<RoadClass, Color32> Tint = new()
         {
-            [RoadClass.Motorway]  = new Color32(155, 185, 205, 255),
-            [RoadClass.Trunk]     = new Color32(148, 178, 198, 255),
-            [RoadClass.Primary]   = new Color32(138, 168, 188, 255),
-            [RoadClass.Secondary] = new Color32(125, 158, 178, 255),
-            [RoadClass.Tertiary]  = new Color32(118, 148, 168, 255),
-            [RoadClass.Street]    = new Color32(112, 142, 162, 255),
-            [RoadClass.Service]   = new Color32(105, 132, 152, 255),
-            [RoadClass.Path]      = new Color32(98, 122, 138, 255),
-            [RoadClass.Pedestrian]= new Color32(108, 132, 148, 255),
-            [RoadClass.Unknown]   = new Color32(118, 148, 168, 255),
+            [RoadClass.Motorway]  = new Color32(255, 235, 166, 255),
+            [RoadClass.Trunk]     = new Color32(255, 230, 158, 255),
+            [RoadClass.Primary]   = new Color32(250, 224, 148, 255),
+            [RoadClass.Secondary] = new Color32(242, 218, 146, 255),
+            [RoadClass.Tertiary]  = new Color32(236, 212, 148, 255),
+            [RoadClass.Street]    = new Color32(230, 208, 150, 255),
+            [RoadClass.Service]   = new Color32(222, 204, 154, 255),
+            [RoadClass.Path]      = new Color32(214, 204, 164, 255),
+            [RoadClass.Pedestrian]= new Color32(220, 208, 164, 255),
+            [RoadClass.Unknown]   = new Color32(234, 212, 150, 255),
         };
 
         public static void Build(

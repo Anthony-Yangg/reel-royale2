@@ -50,7 +50,7 @@ namespace PokemonGo.Terrain
             chunk.TerrainRoot = terrainRoot;
             BuildLayer(chunk.TerrainRoot, _materials.Terrain, builder =>
                 TerrainBaseGenerator.Build(builder, _coords, z, x, y,
-                    new Color32(22, 52, 56, 255), -0.02f));
+                    new Color32(154, 226, 194, 255), -0.02f));
 
             await YieldIfBudgetExceeded(ct);
 
@@ -63,7 +63,7 @@ namespace PokemonGo.Terrain
                 chunk.WaterRoot = waterRoot;
                 BuildLayer(chunk.WaterRoot, _materials.Water, builder =>
                     PolygonMeshGenerator.BuildFlat(water, builder, _coords,
-                        z, x, y, new Color32(12, 68, 118, 255), 0.01f));
+                        z, x, y, new Color32(82, 188, 226, 255), 0.01f));
             }
             await YieldIfBudgetExceeded(ct);
 
@@ -76,7 +76,7 @@ namespace PokemonGo.Terrain
                 chunk.ParksRoot = parksRoot;
                 BuildLayer(chunk.ParksRoot, _materials.Park, builder =>
                     PolygonMeshGenerator.BuildFlat(parks, builder, _coords,
-                        z, x, y, new Color32(38, 82, 58, 255), 0.02f));
+                        z, x, y, new Color32(92, 202, 90, 255), 0.02f));
             }
             await YieldIfBudgetExceeded(ct);
 
@@ -86,7 +86,7 @@ namespace PokemonGo.Terrain
             {
                 BuildLayer(chunk.TerrainRoot, _materials.Landuse, builder =>
                     PolygonMeshGenerator.BuildFlat(land, builder, _coords,
-                        z, x, y, new Color32(34, 62, 58, 255), 0.015f));
+                        z, x, y, new Color32(124, 216, 178, 255), 0.015f));
             }
             await YieldIfBudgetExceeded(ct);
 

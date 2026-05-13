@@ -53,8 +53,8 @@ namespace PokemonGo.Core
 
         [Header("Atmosphere")]
         [Tooltip("Global time-of-day 0…1 passed to shaders (0 ≈ midnight). " +
-            "Pokemon GO night map reads best around ~0.02-0.08.")]
-        [Range(0f, 1f)] public float atmosphereTimeOfDay01 = 0.035f;
+            "Daylight map reads best around ~0.42-0.56.")]
+        [Range(0f, 1f)] public float atmosphereTimeOfDay01 = 0.48f;
 
         [Header("Rendering")]
         public bool enableSrpBatcher = true;
@@ -72,7 +72,7 @@ namespace PokemonGo.Core
 
         [Header("Camera")]
         public float defaultCameraTiltDegrees = 60f;
-        public float defaultCameraDistance = 90f;
+        public float defaultCameraDistance = 110f;
         public float minCameraDistance = 35f;
         public float maxCameraDistance = 220f;
         public float cameraInertiaSeconds = 0.18f;

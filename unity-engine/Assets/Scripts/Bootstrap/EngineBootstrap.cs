@@ -2,6 +2,7 @@ using PokemonGo.Camera;
 using PokemonGo.Core;
 using PokemonGo.GIS;
 using PokemonGo.GPS;
+using PokemonGo.Gameplay;
 using PokemonGo.Rendering;
 using PokemonGo.Streaming;
 using PokemonGo.Terrain;
@@ -55,6 +56,9 @@ namespace PokemonGo.Bootstrap
 
             // Stylization / time-of-day ---------------------------------------
             loc.Register<IAtmosphereService>(new AtmosphereService(ctx.Settings));
+
+            // Game objects that make the map feel alive -----------------------
+            loc.Register<IGameplayMapService>(new GameplayMapService());
         }
     }
 }

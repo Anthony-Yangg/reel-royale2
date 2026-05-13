@@ -33,6 +33,12 @@ namespace PokemonGo.NativeBridge
         /// <summary>Latest user id pushed from iOS.</summary>
         public string CurrentUserId { get; private set; } = string.Empty;
 
+        /// <summary>Latest spot payload pushed from iOS, replayed to late subscribers.</summary>
+        public SpotPayload[] LatestSpots { get; private set; } = Array.Empty<SpotPayload>();
+
+        /// <summary>Latest region payload pushed from iOS, replayed to late subscribers.</summary>
+        public RegionPayload[] LatestRegions { get; private set; } = Array.Empty<RegionPayload>();
+
         public event Action<SpotPayload[]> SpotsChanged;
         public event Action<RegionPayload[]> RegionsChanged;
         public event Action<GeoCoordinate> PlayerMoved;
@@ -121,7 +127,8 @@ namespace PokemonGo.NativeBridge
             {
                 var batch = JsonUtility.FromJson<SpotsPayload>(json);
                 if (batch.spots == null) return;
-                SpotsChanged?.Invoke(batch.spots);
+                LatestSpots = batch.spots;
+                SpotsChanged?.Invoke(LatestSpots);
             }
             catch (Exception e) { EngineLog.Error($"NativeBridge.SetSpots: {e}"); }
         }
@@ -132,7 +139,8 @@ namespace PokemonGo.NativeBridge
             {
                 var batch = JsonUtility.FromJson<RegionsPayload>(json);
                 if (batch.regions == null) return;
-                RegionsChanged?.Invoke(batch.regions);
+                LatestRegions = batch.regions;
+                RegionsChanged?.Invoke(LatestRegions);
             }
             catch (Exception e) { EngineLog.Error($"NativeBridge.SetRegions: {e}"); }
         }

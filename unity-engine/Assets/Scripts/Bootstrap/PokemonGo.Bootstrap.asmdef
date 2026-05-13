@@ -10,7 +10,8 @@
         "PokemonGo.Stylization",
         "PokemonGo.Camera",
         "PokemonGo.GPS",
-        "PokemonGo.Debug"
+        "PokemonGo.Debug",
+        "PokemonGo.Gameplay"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

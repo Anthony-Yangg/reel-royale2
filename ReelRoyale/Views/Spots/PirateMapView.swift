@@ -4,13 +4,13 @@ import UIKit
 import simd
 
 /// Pokémon-GO-style map surface. We render real OpenStreetMap geography via
-/// Apple's `MKMapView` with the base layer replaced by stylized dark raster
-/// tiles (CARTO "dark_all"), then layer two game-meaningful overlays on top:
+/// Apple's `MKMapView` with the base layer replaced by bright stylized raster
+/// tiles, then layer two game-meaningful overlays on top:
 ///
 ///   1. `WaterRegion` polygons — procedural ~3 km hex cells, one per
 ///      contestable region. Filled with the ruling player's color (or a
 ///      vacant teal). Tapping one reveals the region info card.
-///   2. Treasure-chest pins — one per `Spot`, the action point you fish at
+///   2. Floating fishing markers — one per `Spot`, the action point you fish at
 ///      to take a king crown (and through that, regions).
 ///
 /// The camera is pitched ~55° for the canonical tilted-world Niantic feel.
@@ -35,7 +35,10 @@ struct PirateMapView: View {
             mapSurface
                 .ignoresSafeArea()
 
-            playerPulse
+            mapAtmosphereLayer
+                .allowsHitTesting(false)
+
+            playerAvatarLayer
                 .allowsHitTesting(false)
 
             VStack {
@@ -66,7 +69,7 @@ struct PirateMapView: View {
                 .allowsHitTesting(true)
             }
         }
-        .background(Color(hex: 0x05101D).ignoresSafeArea())
+        .background(Color(hex: 0x9DE7D8).ignoresSafeArea())
     }
 
     /// Picks the rendering backend at runtime. If UnityFramework.framework
@@ -105,34 +108,82 @@ struct PirateMapView: View {
         return regions.first { $0.region.id == id }
     }
 
+    private var playerAvatarLayer: some View {
+        GeometryReader { proxy in
+            playerPulse
+                .position(x: proxy.size.width / 2, y: proxy.size.height * 0.68)
+        }
+    }
+
+    private var mapAtmosphereLayer: some View {
+        TimelineView(.animation(minimumInterval: reduceMotion ? 1 : 1 / 24)) { timeline in
+            let t = reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+            GeometryReader { proxy in
+                ZStack {
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.42),
+                            Color(hex: 0xB9F2FF).opacity(0.18),
+                            Color.clear
+                        ],
+                        startPoint: .top,
+                        endPoint: .center
+                    )
+
+                    Circle()
+                        .stroke(Color.white.opacity(0.58), lineWidth: 2)
+                        .frame(width: min(proxy.size.width * 1.45, 560),
+                               height: min(proxy.size.width * 1.45, 560))
+                        .position(x: proxy.size.width / 2, y: proxy.size.height * 0.78)
+                        .shadow(color: Color(hex: 0x59D8FF).opacity(0.22), radius: 8)
+
+                    ForEach(0..<9, id: \.self) { index in
+                        MapShard(index: index, time: t, size: proxy.size)
+                    }
+                }
+            }
+        }
+        .accessibilityHidden(true)
+    }
+
     private var playerPulse: some View {
         TimelineView(.animation(minimumInterval: reduceMotion ? 1 : 1 / 30)) { timeline in
             let t = reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
-            let pulse = 0.6 + 0.25 * sin(t * 2)
+            let pulse = 0.5 + 0.35 * sin(t * 2.2)
             ZStack {
                 Circle()
-                    .fill(theme.colors.brand.crown.opacity(0.18))
-                    .frame(width: 110 + pulse * 22, height: 110 + pulse * 22)
-                    .blur(radius: 10)
+                    .fill(Color(hex: 0x7DE9D5).opacity(0.22))
+                    .frame(width: 138 + pulse * 28, height: 138 + pulse * 28)
+                    .blur(radius: 12)
                 Circle()
-                    .stroke(theme.colors.brand.crown.opacity(0.55), lineWidth: 2)
-                    .frame(width: 58, height: 58)
+                    .stroke(Color.white.opacity(0.72), lineWidth: 2.5)
+                    .frame(width: 112, height: 112)
+                Circle()
+                    .stroke(Color(hex: 0x2CC6D8).opacity(0.5), lineWidth: 1.5)
+                    .frame(width: 82, height: 82)
                 Circle()
                     .fill(
                         RadialGradient(
-                            colors: [theme.colors.brand.crown, Color(hex: 0x7A4C1C)],
+                            colors: [Color.white, Color(hex: 0x4AE1C3), Color(hex: 0x168BA5)],
                             center: .topLeading,
                             startRadius: 2,
-                            endRadius: 30
+                            endRadius: 34
                         )
                     )
-                    .frame(width: 46, height: 46)
+                    .frame(width: 58, height: 58)
                     .overlay {
-                        Image(systemName: "fish.fill")
-                            .font(.system(size: 24, weight: .black))
-                            .foregroundStyle(Color(hex: 0x2B1A10))
+                        ZStack {
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 31, weight: .black))
+                                .foregroundStyle(Color(hex: 0x08384A))
+                                .offset(y: 2)
+                            Image(systemName: "fish.fill")
+                                .font(.system(size: 13, weight: .black))
+                                .foregroundStyle(theme.colors.brand.crown)
+                                .offset(x: 15, y: -14)
+                        }
                     }
-                    .shadow(color: theme.colors.brand.crown.opacity(0.45), radius: 16)
+                    .shadow(color: Color(hex: 0x0A7BA0).opacity(0.3), radius: 16, y: 8)
             }
         }
         .accessibilityHidden(true)
@@ -145,16 +196,16 @@ struct PirateMapView: View {
         } label: {
             Image(systemName: "location.north.fill")
                 .font(.system(size: 18, weight: .black))
-                .foregroundStyle(theme.colors.brand.crown)
+                .foregroundStyle(Color(hex: 0x17627C))
                 .frame(width: 48, height: 48)
                 .background(
                     Circle()
-                        .fill(Color(hex: 0x102338).opacity(0.94))
-                        .shadow(color: theme.colors.brand.seafoam.opacity(0.25), radius: 18)
+                        .fill(Color.white.opacity(0.92))
+                        .shadow(color: Color(hex: 0x199DB5).opacity(0.25), radius: 18)
                 )
                 .overlay(
                     Circle()
-                        .strokeBorder(theme.colors.brand.seafoam.opacity(0.22), lineWidth: 1)
+                        .strokeBorder(Color(hex: 0x6DDEF0).opacity(0.55), lineWidth: 1)
                 )
         }
         .buttonStyle(.plain)
@@ -166,11 +217,31 @@ struct PirateMapView: View {
             Spacer()
             Text("© OpenStreetMap · CARTO")
                 .font(.system(size: 9, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.colors.text.muted)
+                .foregroundStyle(Color(hex: 0x245268).opacity(0.78))
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
-                .background(Capsule(style: .continuous).fill(Color(hex: 0x05101D).opacity(0.7)))
+                .background(Capsule(style: .continuous).fill(Color.white.opacity(0.68)))
         }
+    }
+}
+
+private struct MapShard: View {
+    let index: Int
+    let time: TimeInterval
+    let size: CGSize
+
+    var body: some View {
+        let baseX = CGFloat((index * 73) % 100) / 100
+        let baseY = CGFloat((index * 41 + 16) % 70) / 100
+        let bob = CGFloat(sin(time * (0.7 + Double(index) * 0.08) + Double(index))) * 8
+        let side = CGFloat(8 + (index % 4) * 3)
+        RoundedRectangle(cornerRadius: 2, style: .continuous)
+            .fill(index.isMultiple(of: 3) ? Color(hex: 0x2BB7FF) : Color(hex: 0x6EE6FF))
+            .frame(width: side, height: side)
+            .rotationEffect(.degrees(time * 18 + Double(index * 23)))
+            .opacity(0.28)
+            .position(x: size.width * baseX, y: size.height * baseY + bob)
+            .shadow(color: Color(hex: 0x33BFFF).opacity(0.3), radius: 6)
     }
 }
 
@@ -344,13 +415,12 @@ private struct StylizedRealMapView: UIViewRepresentable {
         map.isRotateEnabled = true
         map.isZoomEnabled = true
         map.isScrollEnabled = true
-        map.overrideUserInterfaceStyle = .dark
+        map.overrideUserInterfaceStyle = .light
 
-        // Replace Apple's base map entirely with stylized OSM raster tiles.
-        // CARTO "dark_all" encodes land/water/roads mostly as luminance; we
-        // remap each pixel to Pokémon GO–night hues (deep blue water, teal
-        // land blocks, navy roads with cyan edge bloom).
-        let urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}@2x.png"
+        // Replace Apple's base map with bright OSM raster tiles and recolor
+        // them into a playful AR-game palette: mint ground, warm road ribbons,
+        // saturated water, and soft cream edge highlights.
+        let urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}@2x.png"
         let overlay = PokemonStyleTileOverlay(urlTemplate: urlTemplate)
         overlay.canReplaceMapContent = true
         overlay.maximumZ = 19
@@ -361,7 +431,7 @@ private struct StylizedRealMapView: UIViewRepresentable {
         // tap-on-overlay event, so we install our own that hit-tests the
         // polygon renderers under the touch point. cancelsTouchesInView is
         // false so map pan/zoom is unaffected; we skip the hit-test entirely
-        // when the touch lands on a treasure-chest pin.
+        // when the touch lands on a spot marker.
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
         tap.cancelsTouchesInView = false
         tap.delegate = context.coordinator
@@ -477,13 +547,11 @@ private struct StylizedRealMapView: UIViewRepresentable {
             if let region = overlay as? RegionPolygon {
                 let renderer = MKPolygonRenderer(polygon: region)
                 let fill = region.fillUIColor ?? UIColor(hex: PlayerColor.vacantHex)
-                // Cranked up from the original timid values so the colored
-                // sea actually reads against the recolored cyan tiles.
-                let fillAlpha: CGFloat = region.isCurrentUserRuler ? 0.72
-                    : (region.isVacant ? 0.32 : 0.58)
+                let fillAlpha: CGFloat = region.isCurrentUserRuler ? 0.42
+                    : (region.isVacant ? 0.18 : 0.30)
                 renderer.fillColor = fill.withAlphaComponent(fillAlpha)
-                renderer.strokeColor = fill.withAlphaComponent(1.0)
-                renderer.lineWidth = region.isCurrentUserRuler ? 3.2 : 2.4
+                renderer.strokeColor = fill.withAlphaComponent(0.82)
+                renderer.lineWidth = region.isCurrentUserRuler ? 3.0 : 2.0
                 if region.isVacant {
                     renderer.lineDashPattern = [6, 4]
                 }
@@ -543,7 +611,7 @@ private struct StylizedRealMapView: UIViewRepresentable {
             guard let mapView = recognizer.view as? MKMapView else { return }
             let point = recognizer.location(in: mapView)
 
-            // Skip if the tap landed on (or very near) any treasure pin — MapKit's
+            // Skip if the tap landed on (or very near) any spot marker — MapKit's
             // own annotation tap will handle it.
             for ann in mapView.annotations {
                 if let v = mapView.view(for: ann) {
@@ -630,9 +698,9 @@ private final class SpotAnnotation: NSObject, MKAnnotation {
 
 // MARK: - Tile overlay
 
-/// Tile overlay that downloads CARTO `dark_all` basemap and remaps pixels by
-/// luminance + local gradient into a Pokémon GO–style night palette (not a
-/// flat aqua wash). Cached in-memory after remap.
+/// Tile overlay that downloads CARTO Voyager tiles and remaps pixels by
+/// source color + local gradient into a bright location-game palette. Cached
+/// in-memory after remap.
 private final class PokemonStyleTileOverlay: MKTileOverlay {
     private static let subdomains = ["a", "b", "c", "d"]
     private static let cache: NSCache<NSString, NSData> = {
@@ -660,8 +728,8 @@ private final class PokemonStyleTileOverlay: MKTileOverlay {
         return URL(string: raw)!
     }
 
-/// Bump when tile post-processing changes so cached PNGs are not reused across palettes.
-    private static let paletteRevision = "v2"
+    /// Bump when tile post-processing changes so cached PNGs are not reused across palettes.
+    private static let paletteRevision = "v3-day"
 
     override func loadTile(at path: MKTileOverlayPath, result: @escaping (Data?, Error?) -> Void) {
         let key = "\(Self.paletteRevision)/\(path.z)/\(path.x)/\(path.y)" as NSString
@@ -684,9 +752,9 @@ private final class PokemonStyleTileOverlay: MKTileOverlay {
         task.resume()
     }
 
-    /// Map CARTO `dark_all` luminance bands into Pokémon GO–night colors:
-    /// deep saturated water, dark teal blocks for land, navy road fills,
-    /// cyan bloom on luminance discontinuities (street outlines).
+    /// Map CARTO Voyager pixels into an immediately game-like daylight map:
+    /// aqua water, mint/grass land, darker road ribbons, and warm edge
+    /// highlights from luminance discontinuities.
     private static func recolor(data: Data) -> Data? {
         guard let cgImage = UIImage(data: data)?.cgImage else { return nil }
         let w = cgImage.width
@@ -722,11 +790,14 @@ private final class PokemonStyleTileOverlay: MKTileOverlay {
             lum[i] = y
         }
 
-        let waterDeep = SIMD3<Float>(0.00, 0.145, 0.355)
-        let land = SIMD3<Float>(Float(16) / 255, Float(42) / 255, Float(45) / 255)
-        let roadCore = SIMD3<Float>(Float(10) / 255, Float(25) / 255, Float(49) / 255)
-        let cyanEdge = SIMD3<Float>(0.0, 0.898, 1.0)
-        let labelHi = SIMD3<Float>(0.78, 0.93, 1.0)
+        let waterDeep = SIMD3<Float>(0.18, 0.60, 0.84)
+        let waterShallow = SIMD3<Float>(0.58, 0.88, 0.94)
+        let landBase = SIMD3<Float>(0.55, 0.88, 0.76)
+        let landCool = SIMD3<Float>(0.42, 0.80, 0.79)
+        let park = SIMD3<Float>(0.38, 0.78, 0.38)
+        let roadCore = SIMD3<Float>(0.19, 0.43, 0.50)
+        let roadEdge = SIMD3<Float>(1.00, 0.86, 0.55)
+        let linework = SIMD3<Float>(0.22, 0.52, 0.56)
 
         func edgeStrength(_ x: Int, _ y: Int) -> Float {
             guard x > 0, x < w - 1, y > 0, y < h - 1 else { return 0 }
@@ -742,8 +813,14 @@ private final class PokemonStyleTileOverlay: MKTileOverlay {
         }
 
         func microTint(ix: Int, iy: Int) -> SIMD3<Float> {
-            let n = Float(((ix & 15) ^ (iy & 15)) & 7) / 220
-            return SIMD3<Float>(n * 0.35, n * 0.55, n * 0.45)
+            let n = Float(((ix & 15) ^ (iy & 15)) & 7) / 255
+            return SIMD3<Float>(n * 0.25, n * 0.35, n * 0.28)
+        }
+
+        func smoothstep(_ edge0: Float, _ edge1: Float, _ x: Float) -> Float {
+            if edge1 < edge0 { return 1 - smoothstep(edge1, edge0, x) }
+            let t = simd_clamp((x - edge0) / max(edge1 - edge0, 0.0001), 0, 1)
+            return t * t * (3 - 2 * t)
         }
 
         var outRaw = raw
@@ -752,25 +829,35 @@ private final class PokemonStyleTileOverlay: MKTileOverlay {
                 let i = y * w + x
                 let L = lum[i]
                 let o = i * bytesPerPixel
+                let r = Float(raw[o]) / 255
+                let g = Float(raw[o + 1]) / 255
+                let b = Float(raw[o + 2]) / 255
+                let mx = max(r, max(g, b))
+                let mn = min(r, min(g, b))
+                let sat = mx - mn
 
-                let baseCol: SIMD3<Float>
-                if L < 0.078 {
-                    let t = L / 0.078
-                    baseCol = mix(waterDeep * 0.72, waterDeep, t)
-                } else if L < 0.265 {
-                    let t = (L - 0.078) / (0.265 - 0.078)
-                    baseCol = mix(waterDeep * 0.92, land + microTint(ix: x, iy: y), t)
-                } else if L < 0.58 {
-                    let t = (L - 0.265) / (0.58 - 0.265)
-                    baseCol = mix(land * 1.05 + microTint(ix: x, iy: y) * 0.35, roadCore, t)
+                let isWater = b > 0.46 && b > r + 0.045 && b >= g - 0.04
+                let isPark = g > r + 0.035 && g > b + 0.02 && L < 0.92
+                let roadWeight = smoothstep(0.965, 0.998, L) * (1 - smoothstep(0.10, 0.20, sat))
+                let waterLineDamp: Float = isWater ? 0.4 : 1
+                let darkLineWeight = smoothstep(0.34, 0.08, L) * waterLineDamp
+
+                var baseCol: SIMD3<Float>
+                if isWater {
+                    let t = simd_clamp((b - 0.46) / 0.34, 0, 1)
+                    baseCol = mix(waterDeep, waterShallow, t)
+                } else if isPark {
+                    baseCol = mix(park * 0.92, park + SIMD3<Float>(0.10, 0.10, 0.03), simd_clamp((g - r) * 2, 0, 1))
                 } else {
-                    let t = min((L - 0.58) / (0.92 - 0.58), 1)
-                    baseCol = mix(roadCore * 1.12, labelHi, t)
+                    let terrainT = simd_clamp((L - 0.40) / 0.50, 0, 1)
+                    baseCol = mix(landCool, landBase, terrainT) + microTint(ix: x, iy: y)
                 }
 
                 let rim = edgeStrength(x, y)
-                let rimWeight = rim * (L > 0.11 && L < 0.82 ? 1 : 0.38)
-                let rgb = mix(baseCol, cyanEdge, rimWeight * 0.62)
+                baseCol = mix(baseCol, roadCore, roadWeight * 0.92)
+                baseCol = mix(baseCol, linework, darkLineWeight * 0.28)
+                let edgeWarmth = rim * (0.36 + roadWeight * 0.34) * (isWater ? 0.35 : 1)
+                let rgb = mix(baseCol, roadEdge, edgeWarmth)
 
                 outRaw[o] = UInt8(min(max(Int(rgb.x * 255 + 0.5), 0), 255))
                 outRaw[o + 1] = UInt8(min(max(Int(rgb.y * 255 + 0.5), 0), 255))
