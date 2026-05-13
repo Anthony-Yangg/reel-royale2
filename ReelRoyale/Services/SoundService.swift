@@ -1,6 +1,7 @@
 import AVFoundation
+import AudioToolbox
 
-/// SFX library. Wave 1 ships the API; real audio assets are wired in Wave 4/6.
+/// SFX library. Bundled app audio is preferred; system sounds keep feedback live when assets are absent.
 enum SoundEffect: String, CaseIterable {
     case tap             = "tap"
     case confirm         = "confirm"
@@ -25,6 +26,18 @@ final class SoundService: SoundServiceProtocol {
 
     private var players: [SoundEffect: AVAudioPlayer] = [:]
     private let bundle: Bundle
+    private let fallbackSystemSounds: [SoundEffect: SystemSoundID] = [
+        .tap: 1104,
+        .confirm: 1111,
+        .coinShower: 1109,
+        .cannonBoom: 1005,
+        .crownShatter: 1054,
+        .seaShantyHorn: 1023,
+        .brassChime: 1013,
+        .bellRing: 1016,
+        .lowThud: 1156,
+        .ropeCreak: 1107
+    ]
 
     init(bundle: Bundle = .main) {
         self.bundle = bundle
@@ -46,7 +59,9 @@ final class SoundService: SoundServiceProtocol {
         }
         guard let url = bundle.url(forResource: effect.rawValue, withExtension: "m4a")
                 ?? bundle.url(forResource: effect.rawValue, withExtension: "wav") else {
-            // Asset not bundled yet (Wave 1 stub). Silently no-op.
+            if let fallback = fallbackSystemSounds[effect] {
+                AudioServicesPlaySystemSound(fallback)
+            }
             return
         }
         do {
@@ -55,7 +70,9 @@ final class SoundService: SoundServiceProtocol {
             players[effect] = player
             player.play()
         } catch {
-            // No assets yet; ignore.
+            if let fallback = fallbackSystemSounds[effect] {
+                AudioServicesPlaySystemSound(fallback)
+            }
         }
     }
 

@@ -107,18 +107,10 @@ struct FeedItemView: View {
                 }
                 .buttonStyle(.plain)
                 
-                // Comment placeholder
-                HStack(spacing: 6) {
-                    Image(systemName: "bubble.right")
-                        .foregroundColor(.secondary)
-                    Text("0")
-                        .font(.caption)
+                ShareLink(item: shareText) {
+                    Image(systemName: "square.and.arrow.up")
                         .foregroundColor(.secondary)
                 }
-                
-                // Share placeholder
-                Image(systemName: "square.and.arrow.up")
-                    .foregroundColor(.secondary)
                 
                 Spacer()
                 
@@ -138,6 +130,11 @@ struct FeedItemView: View {
         .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2)
+    }
+
+    private var shareText: String {
+        let spotName = item.spot?.name ?? "a Reel Royale spot"
+        return "\(item.user?.username ?? "A captain") logged a \(item.fishCatch.sizeDisplay) \(item.fishCatch.species) at \(spotName)."
     }
 }
 
@@ -167,4 +164,3 @@ struct FeedItemView: View {
     }
     .background(Color(.systemGray6))
 }
-

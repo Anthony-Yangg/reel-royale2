@@ -74,7 +74,7 @@ struct ProfileView: View {
                     ShipAvatar(
                         imageURL: user.avatarURL.flatMap(URL.init),
                         initial: user.username,
-                        tier: .deckhand,
+                        tier: CaptainTier.from(rankTier: user.rankTier),
                         size: .hero,
                         showCrown: viewModel.stats.crownedSpots > 0,
                         waveBob: true
@@ -85,7 +85,7 @@ struct ProfileView: View {
                         .foregroundStyle(theme.colors.text.primary)
                         .lineLimit(1)
                         .shadow(color: .black.opacity(0.7), radius: 2)
-                    TierEmblem(tier: .deckhand, division: 1, size: .medium)
+                    TierEmblem(tier: CaptainTier.from(rankTier: user.rankTier), division: 1, size: .medium)
                 }
             }
             .overlay(
@@ -123,20 +123,20 @@ struct ProfileView: View {
         return "—"
     }
 
-    // MARK: - Trophy Case (Wave 5 mock — real persistence Wave 6)
+    // MARK: - Trophy Case
 
     private var trophyCase: some View {
         VStack(alignment: .leading, spacing: theme.spacing.s) {
-            SectionHeader(title: "Trophy Case", subtitle: "Achievements")
+            SectionHeader(title: "Trophy Case", subtitle: "Derived from your live stats")
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: theme.spacing.s) {
                 AchievementTile(title: "First Catch",   icon: "checkmark.seal.fill", unlocked: viewModel.stats.totalCatches >= 1, rarity: .bronze)
                 AchievementTile(title: "Crown Thief",   icon: "crown.fill",          unlocked: viewModel.stats.crownedSpots >= 1, rarity: .silver)
                 AchievementTile(title: "Cartographer",  icon: "mappin.and.ellipse",  unlocked: viewModel.stats.totalCatches >= 5, rarity: .silver)
                 AchievementTile(title: "10-Crown Pirate", icon: "rosette",           unlocked: viewModel.stats.crownedSpots >= 10, rarity: .gold)
                 AchievementTile(title: "Apex Predator", icon: "trophy.fill",         unlocked: (viewModel.stats.largestCatch ?? 0) >= 60, rarity: .gold)
-                AchievementTile(title: "Species Hunter", icon: "fish.fill",          unlocked: viewModel.stats.totalCatches >= 10, rarity: .silver)
-                AchievementTile(title: "Streak Master", icon: "flame.fill",          unlocked: false, rarity: .gold)
-                AchievementTile(title: "Pirate Lord",   icon: "crown.fill",          unlocked: false, rarity: .legendary)
+                AchievementTile(title: "Species Hunter", icon: "fish.fill",          unlocked: viewModel.stats.speciesDiscovered >= 10, rarity: .silver)
+                AchievementTile(title: "Streak Master", icon: "flame.fill",          unlocked: viewModel.isCurrentUser && appState.dailyStreak >= 7, rarity: .gold)
+                AchievementTile(title: "Pirate Lord",   icon: "crown.fill",          unlocked: (viewModel.user?.rankTier ?? .minnow) == .legend, rarity: .legendary)
             }
         }
     }
@@ -218,7 +218,7 @@ struct ProfileView: View {
     }
 }
 
-/// Minimal profile edit sheet — Wave 6 expands.
+/// Profile edit sheet.
 struct ProfileEditSheet: View {
     @ObservedObject var viewModel: ProfileViewModel
     @Environment(\.dismiss) private var dismiss

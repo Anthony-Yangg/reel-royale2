@@ -26,14 +26,13 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
     }
     
     private func loadModel() {
-        // TODO: Add actual Core ML model file (FishClassifier.mlmodelc)
-        // For now, this will fail gracefully and use fallback
         do {
-            // Attempt to load bundled model
-            // let config = MLModelConfiguration()
-            // let model = try FishClassifier(configuration: config).model
-            // mlModel = try VNCoreMLModel(for: model)
-            mlModel = nil
+            guard let modelURL = Bundle.main.urls(forResourcesWithExtension: "mlmodelc", subdirectory: nil)?.first else {
+                mlModel = nil
+                return
+            }
+            let model = try MLModel(contentsOf: modelURL)
+            mlModel = try VNCoreMLModel(for: model)
         } catch {
             print("Failed to load Core ML model: \(error)")
             mlModel = nil
@@ -93,16 +92,12 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
     }
     
     private func identifyWithCloudAPI(image: UIImage) async throws -> FishIDResult {
-        // Cloud-based fallback for fish identification
-        // This would call an external API (e.g., custom model on AWS/GCP, or a fish ID service)
-        
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             throw AppError.validationError("Failed to encode image")
         }
         
-        // Check if API is configured (via SecretsConfig)
         guard SecretsConfig.hasFishIDKey else {
-            return createDemoResult(from: image)
+            throw AppError.validationError("Fish ID needs a bundled Core ML model or a configured Fish ID API key.")
         }
 
         guard let url = URL(string: "\(SecretsConfig.fishIDBaseURL)/identify") else {
@@ -127,7 +122,6 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
             throw AppError.networkError("Fish ID API request failed")
         }
         
-        // Parse response (adjust based on actual API response format)
         let apiResult = try JSONDecoder().decode(FishIDAPIResponse.self, from: data)
         
         return FishIDResult(
@@ -136,46 +130,6 @@ final class CoreMLFishIDService: FishIDServiceProtocol {
             alternativeSpecies: apiResult.alternatives.map { ($0.species, $0.confidence) },
             timestamp: Date()
         )
-    }
-    
-    /// Creates a demo result for testing when no ML model or API is available
-    private func createDemoResult(from image: UIImage) -> FishIDResult {
-        // Analyze image colors to make a "smart" guess
-        let species = analyzeImageForSpecies(image)
-        
-        return FishIDResult(
-            species: species.0,
-            confidence: species.1,
-            alternativeSpecies: [
-                ("Smallmouth Bass", 0.15),
-                ("Spotted Bass", 0.08),
-                ("Rock Bass", 0.05)
-            ],
-            timestamp: Date()
-        )
-    }
-    
-    private func analyzeImageForSpecies(_ image: UIImage) -> (String, Double) {
-        // Simple heuristic based on dominant colors
-        // This is a placeholder - real implementation would use actual ML
-        let commonSpecies = [
-            "Largemouth Bass",
-            "Smallmouth Bass",
-            "Rainbow Trout",
-            "Brown Trout",
-            "Walleye",
-            "Northern Pike",
-            "Channel Catfish",
-            "Bluegill",
-            "Crappie",
-            "Striped Bass"
-        ]
-        
-        // Random selection weighted by common catches
-        let selected = commonSpecies.randomElement() ?? "Largemouth Bass"
-        let confidence = Double.random(in: 0.65...0.92)
-        
-        return (selected, confidence)
     }
 }
 
@@ -191,4 +145,3 @@ private struct FishIDAPIResponse: Decodable {
         let confidence: Double
     }
 }
-

@@ -135,7 +135,7 @@ struct LeaderboardView: View {
                 yourEntry = try await appState.leaderboardService.fetchUserRank(userId: uid, scope: scope, timeframe: timeframe)
             }
         } catch {
-            // Silently keep mock data on error.
+            appState.showError("Could not load leaderboard: \(error.localizedDescription)")
         }
     }
 }

@@ -3,8 +3,7 @@ import SwiftUI
 /// Unified interaction feedback. One call fires haptic + sound + animation hooks together,
 /// so every button across the app feels consistent — Pokémon-style press response.
 ///
-/// Audio is currently stubbed (`SoundService` no-ops when assets are absent); when SFX are
-/// dropped into the bundle they light up automatically with zero call-site changes.
+/// Bundled SFX play when present; otherwise `SoundService` uses lightweight system sounds.
 enum AppFeedback {
     case tap            // generic taps, chip selection, nav rows
     case confirm        // primary CTAs (Cast Your Claim, Save, Continue)

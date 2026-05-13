@@ -1,22 +1,32 @@
 import SwiftUI
 
 /// Horizontal scroll of spots the user currently rules.
-/// Wave 2 mocks empty state ("Claim your first crown") since real user crowns lands in Wave 5.
 struct YourCrownsSection: View {
-    let crownsHeld: Int                    // 0 in Wave 2
+    let spots: [Spot]
     let onClaimFirst: () -> Void
+    let onSelectSpot: (Spot) -> Void
 
     @Environment(\.reelTheme) private var theme
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.s) {
             SectionHeader(title: "Your Crowns", subtitle: "Spots you rule")
-            if crownsHeld == 0 {
+            if spots.isEmpty {
                 emptyState
             } else {
-                Text("Wave 5 wires real crowns.")
-                    .font(theme.typography.caption)
-                    .foregroundStyle(theme.colors.text.muted)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: theme.spacing.s) {
+                        ForEach(spots) { spot in
+                            Button {
+                                onSelectSpot(spot)
+                            } label: {
+                                CrownSpotTile(spot: spot)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, 1)
+                }
             }
         }
     }
@@ -50,6 +60,42 @@ struct YourCrownsSection: View {
         .overlay(
             RoundedRectangle(cornerRadius: theme.radius.card, style: .continuous)
                 .strokeBorder(theme.colors.brand.brassGold.opacity(0.2), lineWidth: 1)
+        )
+    }
+}
+
+private struct CrownSpotTile: View {
+    let spot: Spot
+    @Environment(\.reelTheme) private var theme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 5) {
+                CrownBadge(size: .small)
+                Text(spot.name)
+                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .foregroundStyle(theme.colors.text.primary)
+                    .lineLimit(1)
+            }
+            Text(spot.bestCatchDisplay ?? "Ruling spot")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(theme.colors.text.secondary)
+                .lineLimit(1)
+            Text(spot.regionName ?? spot.waterType?.displayName ?? "Open water")
+                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .foregroundStyle(theme.colors.brand.seafoam)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, theme.spacing.s)
+        .padding(.vertical, theme.spacing.xs + 2)
+        .frame(width: 170, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: theme.radius.button, style: .continuous)
+                .fill(theme.colors.surface.elevated)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.radius.button, style: .continuous)
+                .strokeBorder(theme.colors.brand.crown.opacity(0.4), lineWidth: 1)
         )
     }
 }

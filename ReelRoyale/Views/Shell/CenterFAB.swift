@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The center catch button that hovers above the tab bar.
-/// Tapping opens the Log Catch flow (Wave 1 = existing `LogCatchView`, Wave 4 = new 4-step flow).
+/// Tapping opens the catch flow.
 struct CenterFAB: View {
     let action: () -> Void
 

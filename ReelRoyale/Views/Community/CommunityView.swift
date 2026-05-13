@@ -144,7 +144,7 @@ struct CommunityView: View {
     }
 
     private func load() async {
-        async let b: [Bounty] = (try? appState.bountyService.fetchActive()) ?? []
+        async let b: [Bounty] = (try? appState.bountyService.fetchActive(for: appState.currentUser?.id)) ?? []
         async let d: [DethroneEvent] = (try? appState.dethroneEventService.fetchRecent(limit: 8)) ?? []
         bounties = await b
         dethrones = await d

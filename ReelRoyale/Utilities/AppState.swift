@@ -62,7 +62,7 @@ final class AppState: ObservableObject {
     private(set) var shopService: ShopServiceProtocol!
     private(set) var codexService: CodexServiceProtocol!
     private(set) var notificationService: NotificationServiceProtocol!
-    // UI feedback + mock services from the redesign waves
+    // UI feedback + home data services
     private(set) var haptics: HapticsServiceProtocol!
     private(set) var sounds: SoundServiceProtocol!
     private(set) var bountyService: BountyServiceProtocol!
@@ -88,7 +88,7 @@ final class AppState: ObservableObject {
 
     /// DEBUG-only preview bypass.
     /// Setting UserDefaults RR_PREVIEW_AUTH_BYPASS=YES skips Supabase auth
-    /// and injects a mock captain for visual QA.
+    /// and injects a local development captain for visual QA.
     #if DEBUG
     private var previewBypassEnabled: Bool {
         UserDefaults.standard.bool(forKey: "RR_PREVIEW_AUTH_BYPASS")
@@ -98,6 +98,8 @@ final class AppState: ObservableObject {
 
     /// Initialize services (call from App.init)
     func configure() {
+        guard supabaseService == nil else { return }
+
         // Core
         supabaseService = SupabaseService()
 
@@ -143,12 +145,22 @@ final class AppState: ObservableObject {
             challengeService: challengeService
         )
 
-        // UI feedback + mock-backed services from the redesign waves
+        // UI feedback + real home data services
         haptics = HapticsService()
         sounds = SoundService()
-        bountyService = MockBountyService()
-        dethroneEventService = MockDethroneEventService()
-        leaderboardService = MockLeaderboardService()
+        bountyService = SupabaseBountyService(
+            challengeService: challengeService,
+            challengeRepository: challengeRepository
+        )
+        dethroneEventService = SupabaseDethroneEventService(
+            catchRepository: catchRepository,
+            spotRepository: spotRepository,
+            userRepository: userRepository
+        )
+        leaderboardService = SupabaseLeaderboardService(
+            userRepository: userRepository,
+            spotRepository: spotRepository
+        )
 
         // Auth state listener
         setupAuthStateListener()

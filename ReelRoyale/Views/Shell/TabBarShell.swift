@@ -1,8 +1,6 @@
 import SwiftUI
 
 /// Custom tab bar with center FAB. Wraps the existing primary tab content.
-/// Wave 1 renders Map / Community / [FAB] / Profile / More.
-/// (Home tab is declared in AppTab but rendered only starting Wave 2.)
 struct TabBarShell<Content: View>: View {
     @ViewBuilder var content: (AppTab) -> Content
     let onFABTap: () -> Void

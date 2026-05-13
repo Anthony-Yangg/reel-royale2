@@ -54,7 +54,7 @@ final class SupabaseAuthService: AuthServiceProtocol {
         if let profile = try? await userRepository.getUser(byId: userId) {
             createdUser = profile
         } else {
-            // Fallback placeholder; will be completed in profile setup.
+            // Email-confirmation flows may create the profile after the first verified sign-in.
             createdUser = User(id: userId, username: "", createdAt: Date())
         }
         
@@ -125,4 +125,3 @@ final class SupabaseAuthService: AuthServiceProtocol {
         return existing == nil
     }
 }
-
