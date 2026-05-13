@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 /// The post-catch celebration. Shown immediately after a successful catch.
 /// Animates XP and coin counters, surfaces dethrone/rank-up/challenge events,
@@ -22,6 +23,10 @@ struct CatchCelebrationView: View {
                 VStack(spacing: 24) {
                     headerBanner
                         .padding(.top, 32)
+
+                    if result.regionControlChanged, let region = result.capturedRegion {
+                        regionCaptureCard(region)
+                    }
 
                     rewardsCard
                     rankProgressCard
@@ -243,6 +248,7 @@ struct CatchCelebrationView: View {
     // MARK: - Helpers
 
     private var headerTitle: String {
+        if result.regionControlChanged { return "Sea claimed!" }
         if result.leveledUp { return "Rank up!" }
         if result.isNewKing { return "King of the spot!" }
         if result.firstSpeciesEver { return "New species discovered!" }
@@ -250,6 +256,9 @@ struct CatchCelebrationView: View {
     }
 
     private var headerSubtitle: String? {
+        if result.regionControlChanged, let region = result.capturedRegion {
+            return "You now rule \(region.name)."
+        }
         if result.isNewKing {
             return "You took the crown at this spot."
         }
@@ -258,6 +267,49 @@ struct CatchCelebrationView: View {
         }
         let size = result.fishCatch.sizeDisplay
         return "\(size) \(result.fishCatch.species)"
+    }
+
+    @ViewBuilder
+    private func regionCaptureCard(_ region: WaterRegion) -> some View {
+        HStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Color.crown.opacity(0.25))
+                    .frame(width: 56, height: 56)
+                    .blur(radius: 6)
+                Image(systemName: "flag.checkered")
+                    .font(.system(size: 26, weight: .heavy))
+                    .foregroundStyle(Color.crown)
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("REGION CAPTURED")
+                    .font(.caption2)
+                    .fontWeight(.heavy)
+                    .tracking(1.2)
+                    .foregroundColor(.crown)
+                Text(region.name)
+                    .font(.system(size: 20, weight: .heavy, design: .rounded))
+                    .foregroundColor(.white)
+                Text("\(region.spotIds.count) \(region.spotIds.count == 1 ? "spot" : "spots") now flying your colors.")
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.85))
+            }
+            Spacer()
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(LinearGradient(
+                    colors: [Color.crown.opacity(0.28), Color.crown.opacity(0.08)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Color.crown.opacity(0.75), lineWidth: 1.5)
+        )
+        .shadow(color: Color.crown.opacity(0.35), radius: 18, y: 4)
     }
 
     private var progressValue: Double {
@@ -307,6 +359,14 @@ struct CatchCelebrationView: View {
             previousKingId: "x",
             territoryControlChanged: true,
             newTerritoryRulerId: "u1",
+            regionControlChanged: true,
+            capturedRegion: WaterRegion(
+                id: "h_0_0",
+                polygon: [],
+                center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+                spotIds: ["s1", "s2", "s3"],
+                name: "Half Moon Bay"
+            ),
             xpAwarded: 520,
             coinsAwarded: 60,
             xpBreakdown: XPBreakdown(

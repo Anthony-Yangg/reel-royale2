@@ -44,6 +44,13 @@ struct CatchResult: Identifiable, Equatable {
     let previousKingId: String?
     let territoryControlChanged: Bool
     let newTerritoryRulerId: String?
+    /// True iff this catch *flipped* rulership of the procedural water
+    /// region containing the spot — i.e. the current user was not the
+    /// region ruler before and is the region ruler after.
+    let regionControlChanged: Bool
+    /// The captured region (geometry + name) when `regionControlChanged`
+    /// is true; nil otherwise.
+    let capturedRegion: WaterRegion?
     let xpAwarded: Int
     let coinsAwarded: Int
     let xpBreakdown: XPBreakdown
@@ -65,6 +72,8 @@ struct CatchResult: Identifiable, Equatable {
             previousKingId: nil,
             territoryControlChanged: false,
             newTerritoryRulerId: nil,
+            regionControlChanged: false,
+            capturedRegion: nil,
             xpAwarded: 0,
             coinsAwarded: 0,
             xpBreakdown: .zero,
@@ -206,6 +215,53 @@ final class GameService: GameServiceProtocol {
             }
         }
 
+        // Water-region capture? Independent of named territories — the
+        // procedural hex grid. We snapshot region rulership BEFORE applying
+        // the new king (using `preSpot`'s prior state) vs AFTER (using
+        // `updatedSpot`'s new state). A "capture" = current user is the
+        // ruler now but wasn't before.
+        var regionControlChanged = false
+        var capturedRegion: WaterRegion?
+        if isNewKing, let updatedSpot {
+            do {
+                let regionSpotPool = try await spotRepository.getSpots(
+                    near: updatedSpot.coordinate,
+                    radiusMeters: WaterRegionService.cellEdgeMeters * 4.0
+                )
+                let regionAfter = WaterRegionService.region(
+                    forSpotAt: updatedSpot.coordinate,
+                    fromSpots: regionSpotPool
+                )
+                let controlAfter = WaterRegionService.control(
+                    for: regionAfter,
+                    spots: regionSpotPool,
+                    currentUserId: currentUser.id
+                )
+
+                // Reconstruct the pre-state spot pool by swapping the
+                // updated spot with its pre-state row.
+                var preStatePool = regionSpotPool
+                if let pre = preSpot, let idx = preStatePool.firstIndex(where: { $0.id == pre.id }) {
+                    preStatePool[idx] = pre
+                }
+                let controlBefore = WaterRegionService.control(
+                    for: regionAfter,
+                    spots: preStatePool,
+                    currentUserId: currentUser.id
+                )
+
+                if controlAfter.rulerUserId == currentUser.id,
+                   controlBefore.rulerUserId != currentUser.id {
+                    regionControlChanged = true
+                    capturedRegion = regionAfter
+                }
+            } catch {
+                #if DEBUG
+                print("WaterRegion capture check failed: \(error)")
+                #endif
+            }
+        }
+
         // Client-side breakdown for celebration UI.
         let firstCatchInTerritoryPrediction = await isFirstCatchInTerritory(
             territoryId: updatedSpot?.territoryId,
@@ -301,6 +357,8 @@ final class GameService: GameServiceProtocol {
             previousKingId: previousKingId,
             territoryControlChanged: territoryControlChanged,
             newTerritoryRulerId: newTerritoryRulerId,
+            regionControlChanged: regionControlChanged,
+            capturedRegion: capturedRegion,
             xpAwarded: inserted.xpAwarded,
             coinsAwarded: inserted.coinsAwarded,
             xpBreakdown: breakdown,

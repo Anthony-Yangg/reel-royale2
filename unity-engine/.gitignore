@@ -1,0 +1,40 @@
+# Unity project ignores
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Memory caches & generated assets
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Asset meta data
+sysinfo.txt
+
+# Build artifacts
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.ipa
+
+# Crashlytics generated
+crashlytics-build.properties
+
+# Generated tile caches
+Assets/AddressableAssetsData/*/
+StreamingAssets/aa/
+
+# IDE
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.user
+
+# OS
+.DS_Store
+Thumbs.db

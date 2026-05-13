@@ -1,0 +1,12 @@
+{
+    "name": "PokemonGo.Utilities",
+    "rootNamespace": "PokemonGo.Utilities",
+    "references": [
+        "PokemonGo.Core",
+        "Unity.Mathematics"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true
+}

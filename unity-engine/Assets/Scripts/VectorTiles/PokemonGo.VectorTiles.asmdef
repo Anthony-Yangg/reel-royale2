@@ -1,0 +1,14 @@
+{
+    "name": "PokemonGo.VectorTiles",
+    "rootNamespace": "PokemonGo.VectorTiles",
+    "references": [
+        "PokemonGo.Core",
+        "PokemonGo.GIS",
+        "Unity.Mathematics",
+        "Unity.Collections"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "autoReferenced": true
+}

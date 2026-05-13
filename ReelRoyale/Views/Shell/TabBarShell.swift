@@ -20,25 +20,21 @@ struct TabBarShell<Content: View>: View {
             // Tab bar overlay
             tabBar
         }
+        .ignoresSafeArea(.container, edges: .bottom)
     }
 
     private var tabBar: some View {
-        ZStack(alignment: .top) {
+        ZStack(alignment: .bottom) {
             // Bar background
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .fill(theme.colors.surface.elevated)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 28, style: .continuous)
-                        .strokeBorder(theme.colors.brand.brassGold.opacity(0.25), lineWidth: 1)
-                )
                 .reelShadow(theme.shadow.heroCard)
-                .frame(height: 68)
-                .padding(.horizontal, theme.spacing.s)
+                .frame(height: 76)
 
             HStack(spacing: 0) {
                 tabButton(.home)
                 tabButton(.spots)
-                Spacer(minLength: 64)  // reserved space for FAB
+                Spacer(minLength: 72)  // reserved space for FAB
                 tabButton(.community)
                 tabButton(.profile)
             }
@@ -47,18 +43,22 @@ struct TabBarShell<Content: View>: View {
 
             // Center FAB anchored above bar center
             CenterFAB(action: onFABTap)
-                .offset(y: -22)
+                .offset(y: -24)
         }
-        .frame(height: 92, alignment: .top)
-        .padding(.bottom, 14)   // lift higher above home indicator
+        // The dock spans edge-to-edge so it visually catches the phone corners, while the
+        // controls stay inset enough to remain comfortable touch targets.
+        .frame(height: 96, alignment: .bottom)
         .ignoresSafeArea(.keyboard)
     }
 
     private func tabButton(_ tab: AppTab) -> some View {
         let isSelected = appState.selectedTab == tab
         return Button {
-            appState.haptics?.tap()
-            appState.selectedTab = tab
+            guard appState.selectedTab != tab else { return }
+            AppFeedback.tap.play(appState: appState)
+            withAnimation(theme.motion.fast) {
+                appState.selectedTab = tab
+            }
         } label: {
             VStack(spacing: 4) {
                 Image(systemName: tab.icon)

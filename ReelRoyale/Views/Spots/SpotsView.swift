@@ -17,9 +17,12 @@ struct SpotsView: View {
                 if viewModel.viewMode == .map {
                     PirateMapView(
                         spots: viewModel.filteredSpots,
+                        regions: viewModel.regionControls,
                         selectedSpot: $viewModel.selectedSpot,
                         cameraPosition: $cameraPosition,
-                        currentUserId: appState.currentUser?.id
+                        currentUserId: appState.currentUser?.id,
+                        userLocation: viewModel.userLocation,
+                        showsRegions: viewModel.showsRegions
                     )
                 } else {
                     SpotListView(spots: viewModel.filteredSpots)
@@ -32,9 +35,13 @@ struct SpotsView: View {
             }
         }
         .task {
+            viewModel.currentUserId = appState.currentUser?.id
             await viewModel.loadSpots()
             // Set initial camera to map region
             cameraPosition = .region(viewModel.mapRegion)
+        }
+        .onChange(of: appState.currentUser?.id) { _, newId in
+            viewModel.currentUserId = newId
         }
         .refreshable {
             await viewModel.loadSpots()

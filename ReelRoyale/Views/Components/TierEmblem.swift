@@ -26,6 +26,19 @@ enum CaptainTier: Int, Codable, CaseIterable, Identifiable {
 
     /// Number of chevrons shown on the emblem.
     var chevronCount: Int { rawValue + 1 }
+
+    /// Map the database-backed `RankTier` (6 tiers) onto the captain progression (7 tiers).
+    /// We skip `commodore` as a reserved "elite-plus" slot; legend → pirate lord.
+    static func from(rankTier: RankTier) -> CaptainTier {
+        switch rankTier {
+        case .minnow:  return .deckhand
+        case .angler:  return .sailor
+        case .veteran: return .firstMate
+        case .elite:   return .captain
+        case .master:  return .admiral
+        case .legend:  return .pirateLord
+        }
+    }
 }
 
 extension ReelThemeColors.TierColors {

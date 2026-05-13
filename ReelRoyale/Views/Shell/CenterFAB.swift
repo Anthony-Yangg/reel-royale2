@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The center ⚓ anchor button that hovers above the tab bar.
+/// The center catch button that hovers above the tab bar.
 /// Tapping opens the Log Catch flow (Wave 1 = existing `LogCatchView`, Wave 4 = new 4-step flow).
 struct CenterFAB: View {
     let action: () -> Void
@@ -13,7 +13,7 @@ struct CenterFAB: View {
 
     var body: some View {
         Button {
-            appState.haptics?.heavy()
+            AppFeedback.heavy.play(appState: appState)
             action()
         } label: {
             ZStack {
@@ -40,9 +40,9 @@ struct CenterFAB: View {
                             .blendMode(.overlay)
                     )
 
-                // Anchor icon
-                Image(systemName: "anchor")
-                    .font(.system(size: 28, weight: .heavy))
+                // Fish icon
+                Image(systemName: "fish.fill")
+                    .font(.system(size: 27, weight: .heavy))
                     .foregroundStyle(theme.colors.brand.walnut)
             }
             .scaleEffect(isPressed ? 0.92 : idleScale)

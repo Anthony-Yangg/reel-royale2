@@ -39,6 +39,8 @@
 		6287566588D19F30DFC2F3E6 /* TodaysBountySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB7F78AA7DBD66DD6E31FEF /* TodaysBountySection.swift */; };
 		6445093C5DCF976490FB77C1 /* ReelThemeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5D4CF179C186CFEC51E4F2 /* ReelThemeShadow.swift */; };
 		65AE5532585D83B511D12341 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5088588928E23E4DFA19B3C5 /* IconButton.swift */; };
+		B7E1D4C0E1E14A0F0F000001 /* GameButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E1D4C0E1E14A0F0F000002 /* GameButton.swift */; };
+		B7E1D4C0E1E14A0F0F000003 /* AppFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E1D4C0E1E14A0F0F000004 /* AppFeedback.swift */; };
 		670C9D282687DED07749B8AE /* ChallengeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 637258D271D1797EB3CA0C2A /* ChallengeService.swift */; };
 		6732896F44D3D8CE73D2A50D /* ShipAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1ADFFD15618E2274E718ED /* ShipAvatar.swift */; };
 		6A7583EA3988A72DC3CEA830 /* SeasonService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3DA987199C2FA9286299F2 /* SeasonService.swift */; };
@@ -82,6 +84,7 @@
 		E80000012D4A000000000105 /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000105 /* Like.swift */; };
 		E80000012D4A000000000106 /* WeatherConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000106 /* WeatherConditions.swift */; };
 		E80000012D4A000000000107 /* RegulationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000107 /* RegulationInfo.swift */; };
+		E80000012D4A000000000150 /* WaterRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000150 /* WaterRegion.swift */; };
 		E80000012D4A000000000201 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000201 /* SupabaseService.swift */; };
 		E80000012D4A000000000202 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000202 /* AuthService.swift */; };
 		E80000012D4A000000000203 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000203 /* WeatherService.swift */; };
@@ -90,6 +93,7 @@
 		E80000012D4A000000000206 /* MeasurementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000206 /* MeasurementService.swift */; };
 		E80000012D4A000000000207 /* GameService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000207 /* GameService.swift */; };
 		E80000012D4A000000000208 /* ImageUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000208 /* ImageUploadService.swift */; };
+		E80000012D4A000000000250 /* WaterRegionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000250 /* WaterRegionService.swift */; };
 		E80000012D4A000000000301 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000301 /* UserRepository.swift */; };
 		E80000012D4A000000000302 /* SpotRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000302 /* SpotRepository.swift */; };
 		E80000012D4A000000000303 /* CatchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000303 /* CatchRepository.swift */; };
@@ -130,6 +134,7 @@
 		E80000012D4A000000000601 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000601 /* Extensions.swift */; };
 		E80000012D4A000000000602 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000602 /* Constants.swift */; };
 		E80000012D4A000000000603 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000603 /* AppState.swift */; };
+		E80000012D4A000000000650 /* PlayerColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000650 /* PlayerColor.swift */; };
 		E80000012D4A000000000604 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000604 /* LeaderboardView.swift */; };
 		E80000012D4A000000000605 /* TerritoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000605 /* TerritoryView.swift */; };
 		E80000012D4A000000000606 /* SpotPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000606 /* SpotPickerView.swift */; };
@@ -143,6 +148,10 @@
 		FB814EDA7AED5E1D43591770 /* LeaderboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DDEF636ED2D036C603F455 /* LeaderboardService.swift */; };
 		FB96F27BDE3C5A3AA30E9AB7 /* BountyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FC42A155E370B38847C22D /* BountyService.swift */; };
 		FF9A5CF2AAD8B5B345F5231C /* DethroneCinematicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77C4410D7890EF5B271B2A /* DethroneCinematicView.swift */; };
+		E80000002D4AUNTY00000102 /* UnityBridgeC.mm in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4AUNTY00000002 /* UnityBridgeC.mm */; };
+		E80000002D4AUNTY00000104 /* UnityMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4AUNTY00000004 /* UnityMessages.swift */; };
+		E80000002D4AUNTY00000105 /* UnityRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4AUNTY00000005 /* UnityRuntime.swift */; };
+		E80000002D4AUNTY00000106 /* UnityMapHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4AUNTY00000006 /* UnityMapHostView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -171,6 +180,8 @@
 		4AA5B808BC1F88EC4C25BF65 /* FeatureCTAGrid.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FeatureCTAGrid.swift; sourceTree = "<group>"; };
 		4C5442596EB6901C41C0E52A /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		5088588928E23E4DFA19B3C5 /* IconButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
+		B7E1D4C0E1E14A0F0F000002 /* GameButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GameButton.swift; sourceTree = "<group>"; };
+		B7E1D4C0E1E14A0F0F000004 /* AppFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFeedback.swift; sourceTree = "<group>"; };
 		5149E13F11772278568D65C6 /* LeaderboardEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LeaderboardEntry.swift; sourceTree = "<group>"; };
 		540891DDDC2AB56A45E9B26E /* TreasureChestPin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TreasureChestPin.swift; sourceTree = "<group>"; };
 		5B6C2717ADACD0279F2A4B86 /* Season.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Season.swift; sourceTree = "<group>"; };
@@ -225,6 +236,7 @@
 		E80000002D4A000000000105 /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000106 /* WeatherConditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherConditions.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000107 /* RegulationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegulationInfo.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000150 /* WaterRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterRegion.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000201 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000202 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000203 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
@@ -233,6 +245,7 @@
 		E80000002D4A000000000206 /* MeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000207 /* GameService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000208 /* ImageUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadService.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000250 /* WaterRegionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterRegionService.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000301 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000302 /* SpotRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotRepository.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000303 /* CatchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatchRepository.swift; sourceTree = "<group>"; };
@@ -273,6 +286,7 @@
 		E80000002D4A000000000601 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000602 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000603 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		E80000002D4A000000000650 /* PlayerColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerColor.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000604 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000605 /* TerritoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerritoryView.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000606 /* SpotPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotPickerView.swift; sourceTree = "<group>"; };
@@ -283,6 +297,12 @@
 		F0C61AE8466272B8EC1134C4 /* NotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		F685EECC117663D61A8DF6A2 /* PirateButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PirateButton.swift; sourceTree = "<group>"; };
 		FE3DA987199C2FA9286299F2 /* SeasonService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SeasonService.swift; sourceTree = "<group>"; };
+		E80000002D4AUNTY00000001 /* UnityBridgeC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnityBridgeC.h; sourceTree = "<group>"; };
+		E80000002D4AUNTY00000002 /* UnityBridgeC.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UnityBridgeC.mm; sourceTree = "<group>"; };
+		E80000002D4AUNTY00000003 /* ReelRoyale-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReelRoyale-Bridging-Header.h; sourceTree = "<group>"; };
+		E80000002D4AUNTY00000004 /* UnityMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnityMessages.swift; sourceTree = "<group>"; };
+		E80000002D4AUNTY00000005 /* UnityRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnityRuntime.swift; sourceTree = "<group>"; };
+		E80000002D4AUNTY00000006 /* UnityMapHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnityMapHostView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -368,6 +388,7 @@
 				F685EECC117663D61A8DF6A2 /* PirateButton.swift */,
 				32DE55601AF9E96825031324 /* GhostButton.swift */,
 				5088588928E23E4DFA19B3C5 /* IconButton.swift */,
+				B7E1D4C0E1E14A0F0F000002 /* GameButton.swift */,
 				D20D1F0A8C497A3F3F76A65C /* TierEmblem.swift */,
 				6D4C6E998F8F27F65C60C256 /* DoubloonChip.swift */,
 				1D1ADFFD15618E2274E718ED /* ShipAvatar.swift */,
@@ -425,6 +446,7 @@
 				E80000002D4AVIWS00000000 /* Views */,
 				E80000002D4AUTLS00000000 /* Utilities */,
 				3766485C67F451E9F2D33BF2 /* Theme */,
+				E80000002D4AUNTY00000011 /* Bridges */,
 			);
 			path = ReelRoyale;
 			sourceTree = "<group>";
@@ -439,6 +461,7 @@
 				E80000002D4A000000000105 /* Like.swift */,
 				E80000002D4A000000000106 /* WeatherConditions.swift */,
 				E80000002D4A000000000107 /* RegulationInfo.swift */,
+				E80000002D4A000000000150 /* WaterRegion.swift */,
 				5CD6095922B5A2E487062F41 /* AppNotification.swift */,
 				218FFF208A9412E65DE9537D /* Challenge.swift */,
 				5B6C2717ADACD0279F2A4B86 /* Season.swift */,
@@ -534,6 +557,7 @@
 				E80000002D4A000000000206 /* MeasurementService.swift */,
 				E80000002D4A000000000207 /* GameService.swift */,
 				E80000002D4A000000000208 /* ImageUploadService.swift */,
+				E80000002D4A000000000250 /* WaterRegionService.swift */,
 				637258D271D1797EB3CA0C2A /* ChallengeService.swift */,
 				4A130FE5E86C64138D78C141 /* CodexService.swift */,
 				F0C61AE8466272B8EC1134C4 /* NotificationService.swift */,
@@ -556,7 +580,9 @@
 				E80000002D4A000000000601 /* Extensions.swift */,
 				E80000002D4A000000000602 /* Constants.swift */,
 				E80000002D4A000000000603 /* AppState.swift */,
+				B7E1D4C0E1E14A0F0F000004 /* AppFeedback.swift */,
 				904F1D3841B9DE0F072D82BA /* SecretsConfig.swift */,
+				E80000002D4A000000000650 /* PlayerColor.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -593,6 +619,27 @@
 				4C5442596EB6901C41C0E52A /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E80000002D4AUNTY00000010 /* UnityBridge */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4AUNTY00000001 /* UnityBridgeC.h */,
+				E80000002D4AUNTY00000002 /* UnityBridgeC.mm */,
+				E80000002D4AUNTY00000003 /* ReelRoyale-Bridging-Header.h */,
+				E80000002D4AUNTY00000004 /* UnityMessages.swift */,
+				E80000002D4AUNTY00000005 /* UnityRuntime.swift */,
+				E80000002D4AUNTY00000006 /* UnityMapHostView.swift */,
+			);
+			path = UnityBridge;
+			sourceTree = "<group>";
+		};
+		E80000002D4AUNTY00000011 /* Bridges */ = {
+			isa = PBXGroup;
+			children = (
+				E80000002D4AUNTY00000010 /* UnityBridge */,
+			);
+			path = Bridges;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -679,6 +726,7 @@
 				E80000012D4A000000000105 /* Like.swift in Sources */,
 				E80000012D4A000000000106 /* WeatherConditions.swift in Sources */,
 				E80000012D4A000000000107 /* RegulationInfo.swift in Sources */,
+				E80000012D4A000000000150 /* WaterRegion.swift in Sources */,
 				E80000012D4A000000000201 /* SupabaseService.swift in Sources */,
 				E80000012D4A000000000202 /* AuthService.swift in Sources */,
 				E80000012D4A000000000203 /* WeatherService.swift in Sources */,
@@ -687,6 +735,7 @@
 				E80000012D4A000000000206 /* MeasurementService.swift in Sources */,
 				E80000012D4A000000000207 /* GameService.swift in Sources */,
 				E80000012D4A000000000208 /* ImageUploadService.swift in Sources */,
+				E80000012D4A000000000250 /* WaterRegionService.swift in Sources */,
 				E80000012D4A000000000301 /* UserRepository.swift in Sources */,
 				E80000012D4A000000000302 /* SpotRepository.swift in Sources */,
 				E80000012D4A000000000303 /* CatchRepository.swift in Sources */,
@@ -727,6 +776,7 @@
 				E80000012D4A000000000601 /* Extensions.swift in Sources */,
 				E80000012D4A000000000602 /* Constants.swift in Sources */,
 				E80000012D4A000000000603 /* AppState.swift in Sources */,
+				E80000012D4A000000000650 /* PlayerColor.swift in Sources */,
 				E80000012D4A000000000604 /* LeaderboardView.swift in Sources */,
 				E80000012D4A000000000605 /* TerritoryView.swift in Sources */,
 				E80000012D4A000000000606 /* SpotPickerView.swift in Sources */,
@@ -776,6 +826,8 @@
 				2C84DDE109E560B23C976C9D /* PirateButton.swift in Sources */,
 				5C0124B682005C1899F20621 /* GhostButton.swift in Sources */,
 				65AE5532585D83B511D12341 /* IconButton.swift in Sources */,
+				B7E1D4C0E1E14A0F0F000001 /* GameButton.swift in Sources */,
+				B7E1D4C0E1E14A0F0F000003 /* AppFeedback.swift in Sources */,
 				C3A1507EA9BF4BEA80ED874A /* TierEmblem.swift in Sources */,
 				108775F8E8EF1215974CB0A0 /* DoubloonChip.swift in Sources */,
 				6732896F44D3D8CE73D2A50D /* ShipAvatar.swift in Sources */,
@@ -805,6 +857,10 @@
 				FF9A5CF2AAD8B5B345F5231C /* DethroneCinematicView.swift in Sources */,
 				C50F526C118248EA44C40305 /* IntroCinematicView.swift in Sources */,
 				2AEB7B4B9495A2B99EE160AA /* FloatingSparkles.swift in Sources */,
+				E80000002D4AUNTY00000102 /* UnityBridgeC.mm in Sources */,
+				E80000002D4AUNTY00000104 /* UnityMessages.swift in Sources */,
+				E80000002D4AUNTY00000105 /* UnityRuntime.swift in Sources */,
+				E80000002D4AUNTY00000106 /* UnityMapHostView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -951,7 +1007,10 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
+							SWIFT_OBJC_BRIDGING_HEADER = "ReelRoyale/Bridges/UnityBridge/ReelRoyale-Bridging-Header.h";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+};
 			name = Debug;
 		};
 		E80000002D4ABCFG00000006 /* Release */ = {
@@ -975,7 +1034,10 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
+							SWIFT_OBJC_BRIDGING_HEADER = "ReelRoyale/Bridges/UnityBridge/ReelRoyale-Bridging-Header.h";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
