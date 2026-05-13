@@ -30,6 +30,7 @@ final class AppState: ObservableObject {
     @Published var communityNavigationPath = NavigationPath()
     @Published var profileNavigationPath = NavigationPath()
     @Published var homeNavigationPath = NavigationPath()
+    @Published var fishLogNavigationPath = NavigationPath()
 
     // MARK: - Progression badges
 
@@ -332,6 +333,7 @@ final class AppState: ObservableObject {
         communityNavigationPath = NavigationPath()
         profileNavigationPath = NavigationPath()
         homeNavigationPath = NavigationPath()
+        fishLogNavigationPath = NavigationPath()
         selectedTab = .home
     }
 
@@ -383,6 +385,7 @@ final class AppState: ObservableObject {
 enum AppTab: String, CaseIterable, Identifiable {
     case home      = "Home"
     case spots     = "Map"
+    case fishLog   = "Log"
     case community = "Community"
     case profile   = "Profile"
     case more      = "More"
@@ -393,6 +396,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         switch self {
         case .home:      return "house.fill"
         case .spots:     return "map.fill"
+        case .fishLog:   return "books.vertical.fill"
         case .community: return "person.3.fill"
         case .profile:   return "person.crop.circle.fill"
         case .more:      return "ellipsis.circle.fill"

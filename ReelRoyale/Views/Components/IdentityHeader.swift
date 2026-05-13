@@ -201,6 +201,7 @@ struct IdentityHeader: View {
         switch appState.selectedTab {
         case .home:      appState.homeNavigationPath.append(destination)
         case .spots:     appState.spotsNavigationPath.append(destination)
+        case .fishLog:   appState.fishLogNavigationPath.append(destination)
         case .community: appState.communityNavigationPath.append(destination)
         case .profile:   appState.profileNavigationPath.append(destination)
         case .more:      appState.homeNavigationPath.append(destination); appState.selectedTab = .home

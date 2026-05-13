@@ -58,6 +58,8 @@ struct MainTabView: View {
             homeTab
         case .spots:
             spotsTab
+        case .fishLog:
+            fishLogTab
         case .community:
             communityTab
         case .profile:
@@ -98,6 +100,19 @@ struct MainTabView: View {
             VStack(spacing: 0) {
                 IdentityHeader()
                 CommunityView()
+            }
+            .navigationDestination(for: NavigationDestination.self) { destination in
+                destinationView(for: destination)
+            }
+            .toolbar(.hidden, for: .navigationBar)
+        }
+    }
+
+    private var fishLogTab: some View {
+        NavigationStack(path: $appState.fishLogNavigationPath) {
+            VStack(spacing: 0) {
+                IdentityHeader()
+                FishLogView()
             }
             .navigationDestination(for: NavigationDestination.self) { destination in
                 destinationView(for: destination)

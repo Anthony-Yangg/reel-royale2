@@ -104,6 +104,7 @@ struct CodexEntry: Identifiable, Equatable {
 
     var id: String { species.id }
     var isDiscovered: Bool { userRecord != nil }
+    var totalCaught: Int { userRecord?.totalCaught ?? 0 }
 
     var personalBestDisplay: String? {
         guard let record = userRecord,
@@ -111,5 +112,110 @@ struct CodexEntry: Identifiable, Equatable {
               let unit = record.personalBestUnit
         else { return nil }
         return String(format: "%.1f %@", size, unit)
+    }
+
+    /// Mastery tier derived from how many of this species the user has caught.
+    /// Locked when undiscovered; bronze on first catch; scales up to diamond.
+    var masteryTier: FishMasteryTier {
+        FishMasteryTier.from(totalCaught: totalCaught)
+    }
+}
+
+/// Per-species mastery progression. Pokemon-Go-style tiered badge that
+/// summarizes how many of a given species the user has caught.
+enum FishMasteryTier: Int, Codable, CaseIterable, Identifiable, Comparable {
+    case locked   = 0
+    case bronze   = 1
+    case silver   = 2
+    case gold     = 3
+    case platinum = 4
+    case diamond  = 5
+
+    var id: Int { rawValue }
+
+    /// Inclusive lower bound of catches to enter this tier.
+    var minCatches: Int {
+        switch self {
+        case .locked:   return 0
+        case .bronze:   return 1
+        case .silver:   return 5
+        case .gold:     return 15
+        case .platinum: return 35
+        case .diamond:  return 75
+        }
+    }
+
+    /// First-catch count of the next tier, or `nil` at terminal tier.
+    var nextTierCatches: Int? {
+        switch self {
+        case .locked:   return FishMasteryTier.bronze.minCatches
+        case .bronze:   return FishMasteryTier.silver.minCatches
+        case .silver:   return FishMasteryTier.gold.minCatches
+        case .gold:     return FishMasteryTier.platinum.minCatches
+        case .platinum: return FishMasteryTier.diamond.minCatches
+        case .diamond:  return nil
+        }
+    }
+
+    var displayName: String {
+        switch self {
+        case .locked:   return "Locked"
+        case .bronze:   return "Bronze"
+        case .silver:   return "Silver"
+        case .gold:     return "Gold"
+        case .platinum: return "Platinum"
+        case .diamond:  return "Diamond"
+        }
+    }
+
+    var shortLabel: String {
+        switch self {
+        case .locked:   return "—"
+        case .bronze:   return "B"
+        case .silver:   return "S"
+        case .gold:     return "G"
+        case .platinum: return "P"
+        case .diamond:  return "D"
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .locked:   return "lock.fill"
+        case .bronze:   return "shield.fill"
+        case .silver:   return "shield.lefthalf.filled"
+        case .gold:     return "rosette"
+        case .platinum: return "trophy.fill"
+        case .diamond:  return "diamond.fill"
+        }
+    }
+
+    /// 0...1 progress toward next tier. Diamond stays full.
+    func progress(catches: Int) -> Double {
+        guard let next = nextTierCatches else { return 1.0 }
+        let span = Double(next - minCatches)
+        guard span > 0 else { return 1.0 }
+        return min(1.0, max(0.0, Double(catches - minCatches) / span))
+    }
+
+    /// Catches remaining to reach the next tier, or nil if already maxed.
+    func catchesToNext(current: Int) -> Int? {
+        guard let next = nextTierCatches else { return nil }
+        return max(0, next - current)
+    }
+
+    static func from(totalCaught: Int) -> FishMasteryTier {
+        if totalCaught >= FishMasteryTier.diamond.minCatches  { return .diamond }
+        if totalCaught >= FishMasteryTier.platinum.minCatches { return .platinum }
+        if totalCaught >= FishMasteryTier.gold.minCatches     { return .gold }
+        if totalCaught >= FishMasteryTier.silver.minCatches   { return .silver }
+        if totalCaught >= FishMasteryTier.bronze.minCatches   { return .bronze }
+        return .locked
+    }
+
+    private var rank: Int { rawValue }
+
+    static func < (lhs: FishMasteryTier, rhs: FishMasteryTier) -> Bool {
+        lhs.rank < rhs.rank
     }
 }
