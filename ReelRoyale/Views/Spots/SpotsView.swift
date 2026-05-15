@@ -77,13 +77,13 @@ struct SpotsView: View {
                                 Text(mode.rawValue)
                                     .font(.system(size: 13, weight: .heavy, design: .rounded))
                             }
-                            .foregroundStyle(viewModel.viewMode == mode ? theme.colors.text.onLight : theme.colors.text.primary)
+                            .foregroundStyle(viewModel.viewMode == mode ? Color.white : theme.colors.text.primary)
                             .padding(.horizontal, theme.spacing.s)
                             .padding(.vertical, 7)
                             .frame(maxWidth: .infinity)
                             .background(
                                 Capsule(style: .continuous)
-                                    .fill(viewModel.viewMode == mode ? theme.colors.brand.brassGold : Color.clear)
+                                    .fill(viewModel.viewMode == mode ? theme.colors.text.primary : Color.clear)
                             )
                         }
                         .buttonStyle(.plain)
@@ -96,6 +96,21 @@ struct SpotsView: View {
                 )
 
                 Spacer()
+
+                Button {
+                    appState.haptics?.tap()
+                    withAnimation(theme.motion.fast) {
+                        viewModel.showsRegions.toggle()
+                    }
+                } label: {
+                    FilterChip(
+                        label: "Control",
+                        icon: "hexagon.fill",
+                        isSelected: viewModel.showsRegions
+                    ) {}
+                        .allowsHitTesting(false)
+                }
+                .buttonStyle(.plain)
 
                 Menu {
                     Button("All Types") { viewModel.selectedWaterType = nil }
@@ -132,7 +147,7 @@ struct SpotsView: View {
         .background(theme.colors.surface.canvas)
         .overlay(alignment: .bottom) {
             Rectangle()
-                .fill(theme.colors.brand.brassGold.opacity(0.18))
+                .fill(Color.black.opacity(0.06))
                 .frame(height: 0.75)
         }
     }
@@ -143,6 +158,6 @@ struct SpotsView: View {
         SpotsView()
             .environmentObject(AppState.shared)
             .environment(\.reelTheme, .default)
-            .preferredColorScheme(.dark)
+            .preferredColorScheme(.light)
     }
 }

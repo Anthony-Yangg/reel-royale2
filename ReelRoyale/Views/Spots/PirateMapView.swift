@@ -59,6 +59,17 @@ struct PirateMapView: View {
                     RegionInfoCard(
                         control: selectedControl,
                         currentUserId: currentUserId,
+                        rulerName: rulerName(for: selectedControl.rulerUserId),
+                        leadingSpotName: leadingSpot(for: selectedControl)?.name,
+                        onChallengeRuler: {
+                            guard let rulerId = selectedControl.rulerUserId else { return }
+                            AppFeedback.confirm.play(appState: appState)
+                            appState.spotsNavigationPath.append(NavigationDestination.userProfile(userId: rulerId))
+                        },
+                        onOpenSpot: {
+                            guard let spot = leadingSpot(for: selectedControl) else { return }
+                            selectedSpot = spot
+                        },
                         onDismiss: { selectedRegionId = nil }
                     )
                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -106,6 +117,27 @@ struct PirateMapView: View {
     private var currentSelectedControl: WaterRegionControl? {
         guard let id = selectedRegionId else { return nil }
         return regions.first { $0.region.id == id }
+    }
+
+    private func rulerName(for userId: String?) -> String? {
+        guard let userId else { return nil }
+        return spots
+            .compactMap(\.kingUser)
+            .first { $0.id == userId }?
+            .username
+    }
+
+    private func leadingSpot(for control: WaterRegionControl) -> Spot? {
+        spots
+            .filter { control.region.spotIds.contains($0.spot.id) }
+            .sorted {
+                let lhsMine = $0.spot.currentKingUserId == currentUserId
+                let rhsMine = $1.spot.currentKingUserId == currentUserId
+                if lhsMine != rhsMine { return lhsMine }
+                return $0.spot.name < $1.spot.name
+            }
+            .first?
+            .spot
     }
 
     private var playerAvatarLayer: some View {
@@ -250,6 +282,10 @@ private struct MapShard: View {
 private struct RegionInfoCard: View {
     let control: WaterRegionControl
     let currentUserId: String?
+    let rulerName: String?
+    let leadingSpotName: String?
+    let onChallengeRuler: () -> Void
+    let onOpenSpot: () -> Void
     let onDismiss: () -> Void
 
     @Environment(\.reelTheme) private var theme
@@ -275,7 +311,7 @@ private struct RegionInfoCard: View {
                         .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(theme.colors.text.muted)
                         .frame(width: 28, height: 28)
-                        .background(Circle().fill(Color.white.opacity(0.06)))
+                        .background(Circle().fill(theme.colors.surface.elevatedAlt.opacity(0.82)))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Dismiss region info")
@@ -294,17 +330,51 @@ private struct RegionInfoCard: View {
                 .font(.caption)
                 .foregroundStyle(theme.colors.text.secondary)
                 .multilineTextAlignment(.leading)
+
+            HStack(spacing: 10) {
+                if canChallengeRuler {
+                    Button(action: onChallengeRuler) {
+                        Label("Challenge Rival", systemImage: "scope")
+                            .font(.system(size: 12, weight: .black, design: .rounded))
+                            .foregroundStyle(Color.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .fill(theme.colors.text.primary)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Button(action: onOpenSpot) {
+                    Label(control.rulerUserId == currentUserId ? "Defend Spot" : "Fish Spot", systemImage: "fish.fill")
+                        .font(.system(size: 12, weight: .black, design: .rounded))
+                        .foregroundStyle(theme.colors.text.primary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .fill(theme.colors.surface.elevatedAlt.opacity(0.72))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .strokeBorder(Color.black.opacity(0.07), lineWidth: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
         }
         .padding(14)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(hex: 0x0E1B26).opacity(0.96))
+                .fill(theme.colors.surface.elevated.opacity(0.96))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(borderColor.opacity(0.65), lineWidth: 1.2)
+                .stroke(Color.black.opacity(0.07), lineWidth: 1.2)
         )
-        .shadow(color: borderColor.opacity(0.35), radius: 18, y: 6)
+        .shadow(color: Color.black.opacity(0.13), radius: 22, y: 10)
     }
 
     private var rulerSwatch: some View {
@@ -315,7 +385,7 @@ private struct RegionInfoCard: View {
                 Image(systemName: control.rulerUserId == nil ? "questionmark" :
                         (control.rulerUserId == currentUserId ? "crown.fill" : "flag.fill"))
                     .font(.system(size: 14, weight: .heavy))
-                    .foregroundStyle(Color(hex: 0x0E1B26))
+                    .foregroundStyle(theme.colors.text.primary)
             )
             .shadow(color: PlayerColor.color(forRuler: control.rulerUserId, currentUserId: currentUserId).opacity(0.55), radius: 10)
     }
@@ -323,8 +393,10 @@ private struct RegionInfoCard: View {
     private var rulerLabel: String {
         if let ruler = control.rulerUserId {
             if ruler == currentUserId { return "RULED BY YOU" }
-            let shortId = String(ruler.prefix(8))
-            return "RULED BY @\(shortId)"
+            if let rulerName, !rulerName.isEmpty {
+                return "RULED BY \(rulerName)"
+            }
+            return "RULED BY #\(String(ruler.prefix(8)).uppercased())"
         }
         return "OPEN WATER · UP FOR GRABS"
     }
@@ -340,13 +412,19 @@ private struct RegionInfoCard: View {
     private var callToActionText: String {
         let need = control.crownsNeededForCurrentUser
         if control.rulerUserId == currentUserId {
-            return "Defend it — any rival who beats your size at one of these spots steals a crown back."
+            return "Defend \(leadingSpotName ?? "this water") - any rival who beats your size at one of these spots steals a crown back."
         }
         if control.rulerUserId == nil {
-            return "Land a king-sized catch at any spot here to claim this water."
+            return "Land a king-sized catch at \(leadingSpotName ?? "any spot here") to claim this water."
         }
         let plural = need == 1 ? "crown" : "crowns"
-        return "Take \(need) more spot \(plural) inside this region to flip control to you."
+        let owner = rulerName?.isEmpty == false ? rulerName! : "the ruler"
+        return "Take \(need) more spot \(plural) inside this region to flip control from \(owner) to you."
+    }
+
+    private var canChallengeRuler: Bool {
+        guard let ruler = control.rulerUserId else { return false }
+        return ruler != currentUserId
     }
 
     private func statTile(value: String, label: String) -> some View {
@@ -363,7 +441,11 @@ private struct RegionInfoCard: View {
         .padding(.vertical, 8)
         .background(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(Color.white.opacity(0.04))
+                .fill(theme.colors.surface.elevatedAlt.opacity(0.72))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .strokeBorder(Color.black.opacity(0.05), lineWidth: 1)
+                )
         )
     }
 
@@ -690,7 +772,7 @@ private final class SpotAnnotation: NSObject, MKAnnotation {
             return .claimedByYou
         }
         if spot.spot.hasKing {
-            return .claimedByOther(tier: .firstMate)
+            return .claimedByOther(tier: CaptainTier.from(rankTier: spot.kingUser?.rankTier ?? .minnow))
         }
         return .vacant
     }

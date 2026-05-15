@@ -17,33 +17,36 @@ struct CenterFAB: View {
             action()
         } label: {
             ZStack {
-                // Outer halo (subtle gold glow)
                 Circle()
-                    .fill(theme.colors.brand.crown.opacity(0.3))
-                    .frame(width: 86, height: 86)
-                    .blur(radius: 14)
+                    .fill(Color.black.opacity(0.22))
+                    .frame(width: 82, height: 82)
+                    .blur(radius: 18)
+                    .offset(y: 8)
 
-                // Brass gradient body
                 Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [theme.colors.brand.crown, theme.colors.brand.brassGold],
-                            startPoint: .top, endPoint: .bottom
-                        )
-                    )
+                    .fill(Color.black)
+                    .frame(width: 72, height: 72)
+                    .opacity(0.26)
+                    .blur(radius: 8)
+                    .offset(y: 3)
+
+                Circle()
+                    .fill(Color.white)
                     .frame(width: 64, height: 64)
                     .overlay(
-                        Circle().strokeBorder(theme.colors.brand.walnut, lineWidth: 2)
+                        Circle()
+                            .strokeBorder(Color.black.opacity(0.92), lineWidth: 3)
                     )
                     .overlay(
-                        Circle().strokeBorder(Color.white.opacity(0.25), lineWidth: 1)
-                            .blendMode(.overlay)
+                        Circle()
+                            .strokeBorder(Color.white.opacity(0.82), lineWidth: 1)
+                            .padding(5)
                     )
+                    .shadow(color: Color.black.opacity(0.22), radius: 18, x: 0, y: 10)
 
-                // Fish icon
                 Image(systemName: "fish.fill")
-                    .font(.system(size: 27, weight: .heavy))
-                    .foregroundStyle(theme.colors.brand.walnut)
+                    .font(.system(size: 27, weight: .black))
+                    .foregroundStyle(Color.black)
             }
             .scaleEffect(isPressed ? 0.92 : idleScale)
         }
@@ -65,5 +68,5 @@ struct CenterFAB: View {
         .background(ReelTheme.default.colors.surface.canvas)
         .environment(\.reelTheme, .default)
         .environmentObject(AppState.shared)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

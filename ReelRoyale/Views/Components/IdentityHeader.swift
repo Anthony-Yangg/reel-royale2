@@ -201,6 +201,7 @@ struct IdentityHeader: View {
         switch appState.selectedTab {
         case .home:      appState.homeNavigationPath.append(destination)
         case .spots:     appState.spotsNavigationPath.append(destination)
+        case .fishLog:   appState.fishLogNavigationPath.append(destination)
         case .community: appState.communityNavigationPath.append(destination)
         case .profile:   appState.profileNavigationPath.append(destination)
         case .more:      appState.homeNavigationPath.append(destination); appState.selectedTab = .home
@@ -247,4 +248,103 @@ struct IdentityHeader: View {
     .environment(\.reelTheme, .default)
     .environmentObject(AppState.shared)
     .preferredColorScheme(.dark)
+}
+
+/// Modern centered page header used across primary tabs and pushed pages.
+/// It keeps the app chrome close to the reference: circular side controls,
+/// centered title, and a small optional page-position mark under the title.
+struct ModernPageHeader: View {
+    let title: String
+    var leadingIcon: String? = "person.crop.circle.fill"
+    var trailingIcon: String? = "ellipsis"
+    var showsIndicator: Bool = true
+    var onLeadingTap: (() -> Void)?
+    var onTrailingTap: (() -> Void)?
+
+    @Environment(\.reelTheme) private var theme
+    @EnvironmentObject private var appState: AppState
+
+    var body: some View {
+        ZStack {
+            HStack {
+                headerButton(icon: leadingIcon, action: onLeadingTap)
+                Spacer()
+                headerButton(icon: trailingIcon, action: onTrailingTap)
+            }
+
+            VStack(spacing: 8) {
+                Text(title)
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Color.black)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+
+                if showsIndicator {
+                    pageIndicator
+                }
+            }
+            .padding(.horizontal, 72)
+        }
+        .frame(height: 70)
+        .padding(.horizontal, 16)
+        .padding(.top, 6)
+        .padding(.bottom, 4)
+        .background(
+            theme.colors.surface.canvas
+                .overlay(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.58), Color.clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .ignoresSafeArea(.container, edges: .top)
+        )
+        .task {
+            await appState.refreshHUD()
+        }
+    }
+
+    private var pageIndicator: some View {
+        HStack(spacing: 4) {
+            Capsule(style: .continuous)
+                .fill(Color.black)
+                .frame(width: 22, height: 6)
+            Circle()
+                .fill(Color.black.opacity(0.10))
+                .frame(width: 5, height: 5)
+            Circle()
+                .fill(Color.black.opacity(0.08))
+                .frame(width: 5, height: 5)
+        }
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private func headerButton(icon: String?, action: (() -> Void)?) -> some View {
+        if let icon {
+            Button {
+                AppFeedback.tap.play(appState: appState)
+                action?()
+            } label: {
+                Image(systemName: icon)
+                    .font(.system(size: 17, weight: .bold))
+                    .foregroundStyle(Color.black.opacity(action == nil ? 0.34 : 0.82))
+                    .frame(width: 46, height: 46)
+                    .background(
+                        Circle()
+                            .fill(Color.black.opacity(0.045))
+                    )
+                    .overlay(
+                        Circle()
+                            .strokeBorder(Color.white.opacity(0.74), lineWidth: 1)
+                    )
+            }
+            .buttonStyle(.plain)
+            .disabled(action == nil)
+        } else {
+            Color.clear
+                .frame(width: 46, height: 46)
+        }
+    }
 }

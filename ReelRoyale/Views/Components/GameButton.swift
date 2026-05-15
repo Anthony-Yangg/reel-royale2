@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Single button API used across the app. Every tap = haptic + sound + scale, via `AppFeedback`.
 ///
-/// Variants map onto the existing visual language (brass primary, gold-outline secondary,
-/// ghost text, coral destructive, circular icon) so we can collapse `PirateButton`,
+/// Variants map onto the app's premium fishing-club visual language (black primary,
+/// soft secondary, ghost text, coral destructive, circular icon) so we can collapse `PirateButton`,
 /// `GhostButton`, and `IconButton` into one consistent surface.
 ///
 /// Usage:
@@ -161,7 +161,7 @@ struct GameButton: View {
     private var capsuleForeground: Color {
         switch variant {
         case .primary, .destructive: return theme.colors.text.onLight
-        case .secondary, .ghost:     return theme.colors.brand.brassGold
+        case .secondary, .ghost:     return theme.colors.text.primary
         }
     }
 
@@ -173,7 +173,7 @@ struct GameButton: View {
             RoundedRectangle(cornerRadius: r, style: .continuous)
                 .fill(
                     LinearGradient(
-                        colors: [theme.colors.brand.crown, theme.colors.brand.brassGold],
+                        colors: [Color(hex: 0x202020), Color(hex: 0x050505)],
                         startPoint: .top, endPoint: .bottom
                     )
                 )
@@ -187,7 +187,7 @@ struct GameButton: View {
                 )
         case .secondary:
             RoundedRectangle(cornerRadius: r, style: .continuous)
-                .fill(theme.colors.surface.elevated.opacity(0.6))
+                .fill(theme.colors.surface.elevated)
         case .ghost:
             RoundedRectangle(cornerRadius: r, style: .continuous)
                 .fill(Color.clear)
@@ -198,17 +198,24 @@ struct GameButton: View {
     private var capsuleBorder: some View {
         let r = theme.radius.button
         switch variant {
-        case .primary, .destructive:
+        case .primary:
             ZStack {
                 RoundedRectangle(cornerRadius: r, style: .continuous)
-                    .strokeBorder(theme.colors.brand.walnut, lineWidth: 1.5)
+                    .strokeBorder(Color.white.opacity(0.18), lineWidth: 1)
+                RoundedRectangle(cornerRadius: r, style: .continuous)
+                    .strokeBorder(Color.black.opacity(0.10), lineWidth: 1.5)
+            }
+        case .destructive:
+            ZStack {
+                RoundedRectangle(cornerRadius: r, style: .continuous)
+                    .strokeBorder(theme.colors.brand.coralRed.opacity(0.35), lineWidth: 1.5)
                 RoundedRectangle(cornerRadius: r, style: .continuous)
                     .strokeBorder(Color.white.opacity(0.18), lineWidth: 1)
                     .blendMode(.overlay)
             }
         case .secondary:
             RoundedRectangle(cornerRadius: r, style: .continuous)
-                .strokeBorder(theme.colors.brand.brassGold.opacity(0.7), lineWidth: 1.25)
+                .strokeBorder(Color.black.opacity(0.08), lineWidth: 1.25)
         case .ghost:
             EmptyView()
         }
@@ -219,7 +226,7 @@ struct GameButton: View {
     private func iconForeground(_ style: IconStyle) -> Color {
         switch style {
         case .elevated: return theme.colors.text.primary
-        case .ghost:    return theme.colors.brand.brassGold
+        case .ghost:    return theme.colors.text.primary
         case .brass:    return theme.colors.text.onLight
         }
     }
@@ -230,7 +237,7 @@ struct GameButton: View {
         case .ghost:    return AnyShapeStyle(Color.clear)
         case .brass:    return AnyShapeStyle(
             LinearGradient(
-                colors: [theme.colors.brand.crown, theme.colors.brand.brassGold],
+                colors: [Color(hex: 0x202020), Color(hex: 0x050505)],
                 startPoint: .top, endPoint: .bottom
             )
         )
@@ -238,7 +245,7 @@ struct GameButton: View {
     }
 
     private func iconBorder(_ style: IconStyle) -> Color {
-        style == .ghost ? theme.colors.brand.brassGold.opacity(0.6) : .clear
+        style == .ghost ? Color.black.opacity(0.12) : .clear
     }
 
     // MARK: - Defaults
@@ -286,5 +293,5 @@ private struct ShadowIfNotGhost: ViewModifier {
     .background(ReelTheme.default.colors.surface.canvas)
     .environment(\.reelTheme, .default)
     .environmentObject(AppState.shared)
-    .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

@@ -51,55 +51,19 @@ struct ProfileView: View {
     // MARK: - Hero
 
     private func captainHero(user: User) -> some View {
-        VStack(spacing: theme.spacing.m) {
-            ZStack {
-                LinearGradient(
-                    colors: [theme.colors.brand.deepSea, theme.colors.surface.elevatedAlt],
-                    startPoint: .top, endPoint: .bottom
-                )
-                .frame(height: 220)
-                .clipShape(RoundedRectangle(cornerRadius: theme.radius.heroCard, style: .continuous))
-
-                // Animated wave band behind the avatar for depth
-                VStack {
-                    Spacer()
-                    WaveStrip()
-                        .frame(height: 60)
-                        .opacity(0.6)
-                }
-                .frame(height: 220)
-                .allowsHitTesting(false)
-
-                VStack(spacing: 8) {
-                    ShipAvatar(
-                        imageURL: user.avatarURL.flatMap(URL.init),
-                        initial: user.username,
-                        tier: CaptainTier.from(rankTier: user.rankTier),
-                        size: .hero,
-                        showCrown: viewModel.stats.crownedSpots > 0,
-                        waveBob: true
-                    )
-                    .shadow(color: theme.colors.brand.crown.opacity(0.3), radius: 18)
-                    Text(user.username)
-                        .font(theme.typography.title1)
-                        .foregroundStyle(theme.colors.text.primary)
-                        .lineLimit(1)
-                        .shadow(color: .black.opacity(0.7), radius: 2)
-                    TierEmblem(tier: CaptainTier.from(rankTier: user.rankTier), division: 1, size: .medium)
-                }
+        BrawlProfileHero(
+            user: user,
+            stats: viewModel.stats,
+            fishMasteryPoints: viewModel.fishMasteryPoints,
+            fishLogStatus: viewModel.fishLogStatus,
+            topFishMastery: viewModel.topFishMastery,
+            isCurrentUser: viewModel.isCurrentUser,
+            onEdit: { viewModel.startEditing() },
+            onChallenge: {
+                AppFeedback.confirm.play(appState: appState)
+                appState.selectedTab = .spots
             }
-            .overlay(
-                RoundedRectangle(cornerRadius: theme.radius.heroCard, style: .continuous)
-                    .strokeBorder(theme.colors.brand.brassGold.opacity(0.3), lineWidth: 1)
-            )
-            .reelShadow(theme.shadow.heroCard)
-
-            if viewModel.isCurrentUser {
-                GhostButton(title: "Edit Captain", icon: "pencil", fullWidth: true) {
-                    viewModel.startEditing()
-                }
-            }
-        }
+        )
     }
 
     // MARK: - Stats
@@ -215,6 +179,315 @@ struct ProfileView: View {
             Task { await appState.signOut() }
         }
         .padding(.top, theme.spacing.s)
+    }
+}
+
+private struct BrawlProfileHero: View {
+    let user: User
+    let stats: UserStats
+    let fishMasteryPoints: Int
+    let fishLogStatus: FishLogStatus
+    let topFishMastery: FishMasteryTier
+    let isCurrentUser: Bool
+    let onEdit: () -> Void
+    let onChallenge: () -> Void
+
+    @Environment(\.reelTheme) private var theme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(spacing: theme.spacing.s) {
+            ZStack {
+                HStack(spacing: 0) {
+                    characterPanel
+                        .frame(maxWidth: .infinity)
+                    statsPanel
+                        .frame(maxWidth: .infinity)
+                }
+
+                Text("PROFILE")
+                    .font(.system(size: 24, weight: .black, design: .rounded))
+                    .foregroundStyle(theme.colors.text.primary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .offset(y: -112)
+            }
+            .frame(height: 280)
+            .clipShape(RoundedRectangle(cornerRadius: theme.radius.card, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: theme.radius.card, style: .continuous)
+                    .strokeBorder(Color.black.opacity(0.07), lineWidth: 1.2)
+            )
+            .shadow(color: Color.black.opacity(0.10), radius: 24, x: 0, y: 14)
+
+            if isCurrentUser {
+                GhostButton(title: "Edit Captain", icon: "pencil", fullWidth: true, action: onEdit)
+            } else {
+                PirateButton(title: "Challenge for Control", icon: "scope", fullWidth: true, action: onChallenge)
+            }
+        }
+    }
+
+    private var characterPanel: some View {
+        ZStack(alignment: .bottom) {
+            LinearGradient(
+                colors: [Color.white, theme.colors.surface.elevated, Color(hex: 0xDDEEE9)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            WaveStrip(amplitude: 12, frequency: 0.015, color: theme.colors.brand.tideTeal.opacity(0.24))
+                .frame(height: 80)
+                .opacity(0.35)
+                .offset(y: 14)
+
+            VStack(spacing: theme.spacing.xs) {
+                Spacer()
+                ShipAvatar(
+                    imageURL: user.avatarURL.flatMap(URL.init),
+                    initial: user.username,
+                    tier: CaptainTier.from(rankTier: user.rankTier),
+                    size: .hero,
+                    showCrown: stats.crownedSpots > 0,
+                    waveBob: !reduceMotion
+                )
+                .scaleEffect(1.22)
+                .shadow(color: theme.colors.brand.crown.opacity(0.36), radius: 18, x: 0, y: 8)
+
+                VStack(spacing: 2) {
+                    Text("FAVORITE FISH")
+                        .font(.system(size: 10, weight: .black, design: .rounded))
+                        .foregroundStyle(theme.colors.text.secondary)
+                    Text(stats.favoriteSpecies ?? "Not Set")
+                        .font(.system(size: 13, weight: .black, design: .rounded))
+                        .foregroundStyle(theme.colors.text.primary)
+                        .lineLimit(1)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.white.opacity(0.78))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .strokeBorder(Color.black.opacity(0.06), lineWidth: 1)
+                        )
+                )
+                .padding(.bottom, theme.spacing.s)
+            }
+            .padding(.horizontal, theme.spacing.s)
+        }
+    }
+
+    private var statsPanel: some View {
+        ZStack {
+            LinearGradient(
+                colors: [theme.colors.surface.elevated, Color(hex: 0xF7F3EE), theme.colors.surface.elevatedAlt],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            Image(systemName: "crown.fill")
+                .font(.system(size: 132, weight: .black))
+                .foregroundStyle(Color.black.opacity(0.035))
+                .rotationEffect(.degrees(-16))
+                .offset(x: 45, y: 36)
+
+            VStack(alignment: .leading, spacing: theme.spacing.s) {
+                Spacer().frame(height: 42)
+
+                HStack(spacing: theme.spacing.xs) {
+                    ProfileRankBadge(rankTier: user.rankTier)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(user.username.isEmpty ? "Captain" : user.username)
+                            .font(.system(size: 21, weight: .black, design: .rounded))
+                            .foregroundStyle(theme.colors.text.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        Text("#\(String(user.id.prefix(8)).uppercased())")
+                            .font(.system(size: 11, weight: .black, design: .rounded))
+                            .foregroundStyle(theme.colors.text.secondary)
+                    }
+                }
+
+                TierEmblem(tier: CaptainTier.from(rankTier: user.rankTier), division: 1, size: .small)
+
+                HStack(spacing: theme.spacing.xs) {
+                    ProfileMetricTile(label: "Points", value: "\(user.xp)", icon: "bolt.fill", tint: theme.colors.brand.crown)
+                    ProfileMetricTile(label: "Coins", value: "\(user.lureCoins)", icon: "circle.hexagongrid.fill", tint: theme.colors.brand.brassGold)
+                }
+
+                HStack(spacing: theme.spacing.xs) {
+                    ProfileMetricTile(label: "Crowns", value: "\(stats.crownedSpots)", icon: "crown.fill", tint: theme.colors.brand.crown)
+                    ProfileMetricTile(label: "Regions", value: "\(stats.ruledTerritories)", icon: "flag.fill", tint: theme.colors.brand.seafoam)
+                }
+
+                HStack(spacing: theme.spacing.xs) {
+                    FishLogStatusChip(status: fishLogStatus, points: fishMasteryPoints)
+                    MasteryBadge(tier: topFishMastery)
+                }
+            }
+            .padding(.horizontal, theme.spacing.m)
+            .padding(.bottom, theme.spacing.m)
+        }
+    }
+}
+
+private struct ProfileRankBadge: View {
+    let rankTier: RankTier
+    @Environment(\.reelTheme) private var theme
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [theme.colors.brand.coralRed, theme.colors.brand.crown],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .frame(width: 54, height: 54)
+            Circle()
+                .strokeBorder(Color.white.opacity(0.65), lineWidth: 3)
+                .frame(width: 46, height: 46)
+            Image(systemName: rankTier.icon)
+                .font(.system(size: 23, weight: .black))
+                .foregroundStyle(Color(hex: 0x24121A))
+        }
+        .shadow(color: theme.colors.brand.crown.opacity(0.36), radius: 12, x: 0, y: 6)
+    }
+}
+
+private struct ProfileMetricTile: View {
+    let label: String
+    let value: String
+    let icon: String
+    let tint: Color
+
+    @Environment(\.reelTheme) private var theme
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 13, weight: .black))
+                .foregroundStyle(tint)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(value)
+                    .font(.system(size: 15, weight: .black, design: .rounded))
+                    .foregroundStyle(theme.colors.text.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                    .monospacedDigit()
+                Text(label)
+                    .font(.system(size: 8, weight: .black, design: .rounded))
+                    .foregroundStyle(theme.colors.text.secondary)
+                    .textCase(.uppercase)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 7)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color.white.opacity(0.72))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(Color.black.opacity(0.05), lineWidth: 1)
+                )
+        )
+    }
+}
+
+private struct FishLogStatusChip: View {
+    let status: FishLogStatus
+    let points: Int
+    @Environment(\.reelTheme) private var theme
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "books.vertical.fill")
+                .font(.system(size: 12, weight: .black))
+            VStack(alignment: .leading, spacing: 0) {
+                Text(status.rawValue)
+                    .font(.system(size: 10, weight: .black, design: .rounded))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                Text("\(points) pts")
+                    .font(.system(size: 8, weight: .heavy, design: .rounded))
+                    .monospacedDigit()
+            }
+        }
+        .foregroundStyle(theme.colors.text.primary)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 7)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(status.color(theme: theme).opacity(0.24))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(status.color(theme: theme).opacity(0.28), lineWidth: 1)
+                )
+        )
+    }
+}
+
+private struct MasteryBadge: View {
+    let tier: FishMasteryTier
+    @Environment(\.reelTheme) private var theme
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: tier.profileSymbolName)
+                .font(.system(size: 12, weight: .black))
+            Text(tier.displayName)
+                .font(.system(size: 10, weight: .black, design: .rounded))
+                .lineLimit(1)
+                .minimumScaleFactor(0.68)
+        }
+        .foregroundStyle(Color(hex: 0x091421))
+        .padding(.horizontal, 8)
+        .padding(.vertical, 9)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(tier.profileColor(theme: theme))
+        )
+    }
+}
+
+private extension FishLogStatus {
+    func color(theme: ReelTheme) -> Color {
+        switch self {
+        case .beginner: return theme.colors.brand.seafoam
+        case .collector: return theme.colors.brand.brassGold
+        case .specialist: return theme.colors.brand.crown
+        case .master: return Color(hex: 0x8FE8FF)
+        case .apex: return Color(hex: 0xA78BFA)
+        }
+    }
+}
+
+private extension FishMasteryTier {
+    var profileSymbolName: String {
+        switch self {
+        case .unranked: return "circle"
+        case .bronze, .silver: return "seal.fill"
+        case .gold: return "star.circle.fill"
+        case .platinum: return "sparkles"
+        case .diamond: return "diamond.fill"
+        }
+    }
+
+    func profileColor(theme: ReelTheme) -> Color {
+        switch self {
+        case .unranked: return theme.colors.text.muted
+        case .bronze: return Color(hex: 0xC27A3A)
+        case .silver: return Color(hex: 0xC8D3DE)
+        case .gold: return theme.colors.brand.crown
+        case .platinum: return Color(hex: 0x8FE8FF)
+        case .diamond: return Color(hex: 0xA78BFA)
+        }
     }
 }
 

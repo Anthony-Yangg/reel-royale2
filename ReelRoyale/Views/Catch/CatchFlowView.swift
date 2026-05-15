@@ -118,24 +118,14 @@ struct CatchFlowView: View {
     // MARK: - Top + Bottom Bars
 
     private var topBar: some View {
-        HStack {
-            Button { dismiss() } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 16, weight: .heavy))
-                    .foregroundStyle(theme.colors.text.primary)
-                    .frame(width: 36, height: 36)
-                    .background(Circle().fill(theme.colors.surface.elevatedAlt))
-            }
-            Spacer()
-            Text("Log a Catch")
-                .font(theme.typography.headline)
-                .foregroundStyle(theme.colors.text.primary)
-            Spacer()
-            // Spacer placeholder to keep title centered
-            Color.clear.frame(width: 36, height: 36)
-        }
-        .padding(.horizontal, theme.spacing.m)
-        .padding(.top, theme.spacing.s)
+        ModernPageHeader(
+            title: "Log a Catch",
+            leadingIcon: "xmark",
+            trailingIcon: nil,
+            showsIndicator: true,
+            onLeadingTap: { dismiss() },
+            onTrailingTap: nil
+        )
     }
 
     private var bottomBar: some View {

@@ -28,6 +28,7 @@ final class AppState: ObservableObject {
     @Published var selectedTab: AppTab = .home
     @Published var spotsNavigationPath = NavigationPath()
     @Published var communityNavigationPath = NavigationPath()
+    @Published var fishLogNavigationPath = NavigationPath()
     @Published var profileNavigationPath = NavigationPath()
     @Published var homeNavigationPath = NavigationPath()
 
@@ -342,6 +343,7 @@ final class AppState: ObservableObject {
 
         spotsNavigationPath = NavigationPath()
         communityNavigationPath = NavigationPath()
+        fishLogNavigationPath = NavigationPath()
         profileNavigationPath = NavigationPath()
         homeNavigationPath = NavigationPath()
         selectedTab = .home
@@ -395,6 +397,7 @@ final class AppState: ObservableObject {
 enum AppTab: String, CaseIterable, Identifiable {
     case home      = "Home"
     case spots     = "Map"
+    case fishLog   = "Fish Log"
     case community = "Community"
     case profile   = "Profile"
     case more      = "More"
@@ -405,14 +408,15 @@ enum AppTab: String, CaseIterable, Identifiable {
         switch self {
         case .home:      return "house.fill"
         case .spots:     return "map.fill"
+        case .fishLog:   return "books.vertical.fill"
         case .community: return "person.3.fill"
         case .profile:   return "person.crop.circle.fill"
         case .more:      return "ellipsis.circle.fill"
         }
     }
 
-    static var visibleInWave1: [AppTab] {
-        [.spots, .community, .profile, .more]
+    static var primaryTabs: [AppTab] {
+        [.home, .spots, .fishLog, .profile]
     }
 }
 

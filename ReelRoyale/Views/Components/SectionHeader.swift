@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Gold-rule section header used across Home, Profile, Community, etc.
+/// Section header used across Home, Profile, Community, etc.
 struct SectionHeader: View {
     let title: String
     var subtitle: String? = nil
@@ -30,7 +30,7 @@ struct SectionHeader: View {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 11, weight: .heavy))
                     }
-                    .foregroundStyle(theme.colors.brand.brassGold)
+                    .foregroundStyle(theme.colors.text.primary)
                 }
             }
         }

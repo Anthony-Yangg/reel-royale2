@@ -77,6 +77,7 @@
 		E80000012D4A000000000001 /* ReelRoyaleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000001 /* ReelRoyaleApp.swift */; };
 		E80000012D4A000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000002 /* ContentView.swift */; };
 		E80000012D4A000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000003 /* Assets.xcassets */; };
+		C0FE71B901014A0F0F010002 /* FishSpeciesCatalog.json in Resources */ = {isa = PBXBuildFile; fileRef = C0FE71B901014A0F0F010001 /* FishSpeciesCatalog.json */; };
 		E80000012D4A000000000101 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000101 /* User.swift */; };
 		E80000012D4A000000000102 /* Spot.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000102 /* Spot.swift */; };
 		E80000012D4A000000000103 /* Catch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80000002D4A000000000103 /* Catch.swift */; };
@@ -229,6 +230,7 @@
 		E80000002D4A000000000001 /* ReelRoyaleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReelRoyaleApp.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C0FE71B901014A0F0F010001 /* FishSpeciesCatalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = FishSpeciesCatalog.json; sourceTree = "<group>"; };
 		E80000002D4A000000000101 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000102 /* Spot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spot.swift; sourceTree = "<group>"; };
 		E80000002D4A000000000103 /* Catch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catch.swift; sourceTree = "<group>"; };
@@ -439,6 +441,7 @@
 				E80000002D4A000000000001 /* ReelRoyaleApp.swift */,
 				E80000002D4A000000000002 /* ContentView.swift */,
 				E80000002D4A000000000003 /* Assets.xcassets */,
+				C0FE71B901014A0F0F010000 /* Resources */,
 				E80000002D4AMODL00000000 /* Models */,
 				E80000002D4ASRVC00000000 /* Services */,
 				E80000002D4AREPO00000000 /* Repositories */,
@@ -521,6 +524,14 @@
 				78AB0BD2E89A2C63A0D81751 /* SpeciesRepository.swift */,
 			);
 			path = Repositories;
+			sourceTree = "<group>";
+		};
+		C0FE71B901014A0F0F010000 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C0FE71B901014A0F0F010001 /* FishSpeciesCatalog.json */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		E80000002D4AROOT00000000 = {
@@ -707,6 +718,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E80000012D4A000000000003 /* Assets.xcassets in Resources */,
+				C0FE71B901014A0F0F010002 /* FishSpeciesCatalog.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

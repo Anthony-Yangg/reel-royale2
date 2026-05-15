@@ -10,6 +10,9 @@ final class ProfileViewModel: ObservableObject {
     @Published var stats: UserStats = .empty
     @Published var crownedSpots: [Spot] = []
     @Published var recentCatches: [CatchWithDetails] = []
+    @Published var fishMasteryPoints = 0
+    @Published var fishLogStatus: FishLogStatus = .beginner
+    @Published var topFishMastery: FishMasteryTier = .unranked
     @Published var isLoading = false
     @Published var errorMessage: String?
     
@@ -170,7 +173,13 @@ final class ProfileViewModel: ObservableObject {
 
         // Progression-derived stats
         let releaseCount = allCatches.filter { $0.released }.count
-        let speciesDiscovered = (try? await AppState.shared.codexService.discoveryCount(for: userId)) ?? 0
+        let codexEntries = (try? await AppState.shared.codexService.getCodex(for: userId)) ?? []
+        let speciesDiscovered = codexEntries.filter(\.isDiscovered).count
+        fishMasteryPoints = codexEntries.reduce(0) { $0 + $1.masteryPoints }
+        fishLogStatus = FishLogStatus.status(for: fishMasteryPoints, discoveredCount: speciesDiscovered)
+        topFishMastery = codexEntries
+            .map(\.masteryTier)
+            .max() ?? .unranked
         let trophyCount = await countTrophies(in: allCatches)
 
         stats = UserStats(

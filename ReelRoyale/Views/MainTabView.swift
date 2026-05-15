@@ -4,6 +4,7 @@ struct MainTabView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.reelTheme) private var theme
     @State private var showLogCatch = false
+    @State private var moreNavigationPath = NavigationPath()
 
     var body: some View {
         TabBarShell(
@@ -23,7 +24,7 @@ struct MainTabView: View {
     }
 
     #if DEBUG
-    /// QA helper: tap RR_PREVIEW_DEEPLINK = "leaderboard|fishID|measure|regulations|catchFlow" in UserDefaults.
+    /// QA helper: tap RR_PREVIEW_DEEPLINK = "leaderboard|fishLog|fishID|measure|regulations|catchFlow" in UserDefaults.
     private func applyPreviewDeeplink() {
         guard let raw = UserDefaults.standard.string(forKey: "RR_PREVIEW_DEEPLINK"), !raw.isEmpty else { return }
         UserDefaults.standard.removeObject(forKey: "RR_PREVIEW_DEEPLINK")
@@ -35,6 +36,8 @@ struct MainTabView: View {
         case "fishID":
             appState.selectedTab = .home
             appState.homeNavigationPath.append(NavigationDestination.fishID)
+        case "fishLog":
+            appState.selectedTab = .fishLog
         case "measure":
             appState.selectedTab = .home
             appState.homeNavigationPath.append(NavigationDestination.measureFish)
@@ -58,6 +61,8 @@ struct MainTabView: View {
             homeTab
         case .spots:
             spotsTab
+        case .fishLog:
+            fishLogTab
         case .community:
             communityTab
         case .profile:
@@ -70,11 +75,13 @@ struct MainTabView: View {
     private var homeTab: some View {
         NavigationStack(path: $appState.homeNavigationPath) {
             VStack(spacing: 0) {
-                IdentityHeader()
+                rootHeader(for: .home)
                 HomeView()
             }
             .navigationDestination(for: NavigationDestination.self) { destination in
-                destinationView(for: destination)
+                destinationChrome(for: destination) {
+                    popHomePath()
+                }
             }
             .toolbar(.hidden, for: .navigationBar)
         }
@@ -83,11 +90,13 @@ struct MainTabView: View {
     private var spotsTab: some View {
         NavigationStack(path: $appState.spotsNavigationPath) {
             VStack(spacing: 0) {
-                IdentityHeader()
+                rootHeader(for: .spots)
                 SpotsView()
             }
             .navigationDestination(for: NavigationDestination.self) { destination in
-                destinationView(for: destination)
+                destinationChrome(for: destination) {
+                    popSpotsPath()
+                }
             }
             .toolbar(.hidden, for: .navigationBar)
         }
@@ -96,11 +105,28 @@ struct MainTabView: View {
     private var communityTab: some View {
         NavigationStack(path: $appState.communityNavigationPath) {
             VStack(spacing: 0) {
-                IdentityHeader()
+                rootHeader(for: .community)
                 CommunityView()
             }
             .navigationDestination(for: NavigationDestination.self) { destination in
-                destinationView(for: destination)
+                destinationChrome(for: destination) {
+                    popCommunityPath()
+                }
+            }
+            .toolbar(.hidden, for: .navigationBar)
+        }
+    }
+
+    private var fishLogTab: some View {
+        NavigationStack(path: $appState.fishLogNavigationPath) {
+            VStack(spacing: 0) {
+                rootHeader(for: .fishLog)
+                CodexView()
+            }
+            .navigationDestination(for: NavigationDestination.self) { destination in
+                destinationChrome(for: destination) {
+                    popFishLogPath()
+                }
             }
             .toolbar(.hidden, for: .navigationBar)
         }
@@ -109,26 +135,79 @@ struct MainTabView: View {
     private var profileTab: some View {
         NavigationStack(path: $appState.profileNavigationPath) {
             VStack(spacing: 0) {
-                IdentityHeader()
+                rootHeader(for: .profile)
                 ProfileView()
             }
             .navigationDestination(for: NavigationDestination.self) { destination in
-                destinationView(for: destination)
+                destinationChrome(for: destination) {
+                    popProfilePath()
+                }
             }
             .toolbar(.hidden, for: .navigationBar)
         }
     }
 
     private var moreTab: some View {
-        NavigationStack {
+        NavigationStack(path: $moreNavigationPath) {
             VStack(spacing: 0) {
-                IdentityHeader()
+                rootHeader(for: .more)
                 MoreView()
             }
             .navigationDestination(for: NavigationDestination.self) { destination in
+                destinationChrome(for: destination) {
+                    if moreNavigationPath.count > 0 {
+                        moreNavigationPath.removeLast()
+                    }
+                }
+            }
+            .toolbar(.hidden, for: .navigationBar)
+        }
+    }
+
+    private func rootHeader(for tab: AppTab) -> some View {
+        ModernPageHeader(
+            title: tab.rawValue,
+            leadingIcon: tab == .profile ? "house.fill" : "person.crop.circle.fill",
+            trailingIcon: "ellipsis",
+            showsIndicator: true,
+            onLeadingTap: {
+                withAnimation(theme.motion.fast) {
+                    appState.selectedTab = tab == .profile ? .home : .profile
+                }
+            },
+            onTrailingTap: {
+                withAnimation(theme.motion.fast) {
+                    appState.selectedTab = .more
+                }
+            }
+        )
+    }
+
+    @ViewBuilder
+    private func destinationChrome(for destination: NavigationDestination, onBack: @escaping () -> Void) -> some View {
+        if case .logCatch = destination {
+            destinationView(for: destination)
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(true)
+        } else {
+            VStack(spacing: 0) {
+                ModernPageHeader(
+                    title: destination.modernTitle,
+                    leadingIcon: "chevron.left",
+                    trailingIcon: destination.trailingIcon,
+                    showsIndicator: destination.showsHeaderIndicator,
+                    onLeadingTap: onBack,
+                    onTrailingTap: {
+                        withAnimation(theme.motion.fast) {
+                            appState.selectedTab = .more
+                        }
+                    }
+                )
+
                 destinationView(for: destination)
             }
             .toolbar(.hidden, for: .navigationBar)
+            .navigationBarBackButtonHidden(true)
         }
     }
 
@@ -137,7 +216,7 @@ struct MainTabView: View {
         switch destination {
         case .spotDetail(let spotId):    SpotDetailView(spotId: spotId)
         case .catchDetail(let catchId):  CatchDetailView(catchId: catchId)
-        case .logCatch(let spotId):      LogCatchView(preselectedSpotId: spotId)
+        case .logCatch(let spotId):      CatchFlowView(preselectedSpotId: spotId)
         case .userProfile(let userId):   ProfileView(userId: userId)
         case .territory(let tId):        TerritoryView(territoryId: tId)
         case .regulations(let sId):      RegulationsView(spotId: sId)
@@ -150,6 +229,77 @@ struct MainTabView: View {
         case .challenges:                ChallengesView()
         case .notifications:             NotificationsView()
         case .season:                    SeasonView()
+        }
+    }
+
+    private func popHomePath() {
+        if appState.homeNavigationPath.count > 0 {
+            appState.homeNavigationPath.removeLast()
+        }
+    }
+
+    private func popSpotsPath() {
+        if appState.spotsNavigationPath.count > 0 {
+            appState.spotsNavigationPath.removeLast()
+        }
+    }
+
+    private func popCommunityPath() {
+        if appState.communityNavigationPath.count > 0 {
+            appState.communityNavigationPath.removeLast()
+        }
+    }
+
+    private func popFishLogPath() {
+        if appState.fishLogNavigationPath.count > 0 {
+            appState.fishLogNavigationPath.removeLast()
+        }
+    }
+
+    private func popProfilePath() {
+        if appState.profileNavigationPath.count > 0 {
+            appState.profileNavigationPath.removeLast()
+        }
+    }
+}
+
+private extension NavigationDestination {
+    var modernTitle: String {
+        switch self {
+        case .spotDetail: return "Spot Details"
+        case .catchDetail: return "Catch Details"
+        case .logCatch: return "Log Catch"
+        case .userProfile: return "Profile"
+        case .territory: return "Territory"
+        case .regulations: return "Regulations"
+        case .fishID: return "Fish ID"
+        case .measureFish: return "Measure Fish"
+        case .leaderboard: return "Leaderboard"
+        case .settings: return "Settings"
+        case .codex: return "Fish Log"
+        case .shop: return "Tackle Shop"
+        case .challenges: return "Challenges"
+        case .notifications: return "Notifications"
+        case .season: return "Season"
+        }
+    }
+
+    var trailingIcon: String {
+        switch self {
+        case .catchDetail: return "heart"
+        case .shop: return "bag"
+        case .notifications: return "bell"
+        case .settings: return "gearshape"
+        default: return "ellipsis"
+        }
+    }
+
+    var showsHeaderIndicator: Bool {
+        switch self {
+        case .spotDetail, .catchDetail, .territory, .userProfile:
+            return false
+        default:
+            return true
         }
     }
 }

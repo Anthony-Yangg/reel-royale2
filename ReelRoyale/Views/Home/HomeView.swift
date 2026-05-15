@@ -121,21 +121,21 @@ private struct RoyaleAnimatedBackdrop: View {
             ZStack {
                 LinearGradient(
                     colors: [
-                        Color(hex: 0x143C74),
-                        theme.colors.brand.deepSea,
-                        Color(hex: 0x07111D)
+                        Color(hex: 0xFCFAF7),
+                        theme.colors.surface.canvas,
+                        Color(hex: 0xE4EFEC)
                     ],
                     startPoint: .top,
                     endPoint: .bottom
                 )
 
                 DiamondGrid()
-                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                    .stroke(Color.black.opacity(0.035), lineWidth: 1)
                     .offset(y: CGFloat(sin(t * 0.2) * 6))
 
                 RadialGradient(
                     colors: [
-                        theme.colors.brand.seafoam.opacity(0.32),
+                        theme.colors.brand.seafoam.opacity(0.26),
                         .clear
                     ],
                     center: UnitPoint(x: 0.25 + 0.04 * sin(t * 0.18), y: 0.12),
@@ -145,7 +145,7 @@ private struct RoyaleAnimatedBackdrop: View {
 
                 RadialGradient(
                     colors: [
-                        theme.colors.brand.coralRed.opacity(0.20),
+                        theme.colors.brand.brassGold.opacity(0.13),
                         .clear
                     ],
                     center: UnitPoint(x: 0.78, y: 0.42 + 0.04 * cos(t * 0.16)),
@@ -154,7 +154,7 @@ private struct RoyaleAnimatedBackdrop: View {
                 )
 
                 FloatingSparkles()
-                    .opacity(0.45)
+                    .opacity(0.22)
             }
         }
     }
@@ -240,7 +240,7 @@ private struct TopDockCard: View {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
                         .fill(
                             LinearGradient(
-                                colors: [Color(hex: 0x112C49), Color(hex: 0x27537A)],
+                                colors: [Color.white, theme.colors.surface.elevatedAlt],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
@@ -248,9 +248,9 @@ private struct TopDockCard: View {
                         .frame(width: 56, height: 56)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .strokeBorder(Color.white.opacity(0.26), lineWidth: 1.2)
+                                .strokeBorder(Color.black.opacity(0.08), lineWidth: 1.2)
                         )
-                        .shadow(color: colors.first?.opacity(0.32) ?? .clear, radius: 12, x: 0, y: 6)
+                        .shadow(color: Color.black.opacity(0.08), radius: 12, x: 0, y: 6)
 
                     Image(systemName: icon)
                         .font(.system(size: 28, weight: .black))
@@ -273,12 +273,12 @@ private struct TopDockCard: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(title)
                         .font(.system(size: 22, weight: .black, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(theme.colors.text.primary)
                         .minimumScaleFactor(0.72)
                         .lineLimit(1)
                     Text(subtitle)
                         .font(.system(size: 12, weight: .heavy, design: .rounded))
-                        .foregroundStyle(theme.colors.brand.parchment)
+                        .foregroundStyle(theme.colors.text.secondary)
                         .lineLimit(1)
                 }
                 Spacer(minLength: 0)
@@ -289,7 +289,7 @@ private struct TopDockCard: View {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color(hex: 0x1C6296), Color(hex: 0x143A5E)],
+                            colors: [theme.colors.surface.elevated, Color(hex: 0xF5F1EC)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -297,18 +297,18 @@ private struct TopDockCard: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.30), lineWidth: 1.5)
+                    .strokeBorder(Color.black.opacity(0.07), lineWidth: 1.2)
             )
             .overlay(alignment: .top) {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(Color.white.opacity(0.24), lineWidth: 3)
+                    .stroke(Color.white.opacity(0.85), lineWidth: 3)
                     .blur(radius: 1)
                     .offset(y: 2)
                     .mask(alignment: .top) {
                         Rectangle().frame(height: 18)
                     }
             }
-            .shadow(color: Color.black.opacity(0.34), radius: 14, x: 0, y: 8)
+            .shadow(color: Color.black.opacity(0.09), radius: 16, x: 0, y: 8)
         }
         .buttonStyle(RoyalePressStyle())
         .accessibilityLabel(title)
@@ -327,7 +327,7 @@ private struct RoyaleEventBanner: View {
             HStack(spacing: theme.spacing.s) {
                 ZStack {
                     Circle()
-                        .fill(theme.colors.brand.crown.opacity(0.28))
+                        .fill(theme.colors.brand.brassGold.opacity(0.14))
                         .frame(width: 58, height: 58)
                     Circle()
                         .strokeBorder(theme.colors.brand.crown, lineWidth: 4)
@@ -340,11 +340,11 @@ private struct RoyaleEventBanner: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(bounty?.title ?? "Loading arena quests")
                         .font(.system(size: 17, weight: .black, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(theme.colors.text.primary)
                         .lineLimit(1)
                     Text(bounty?.criteria ?? "Syncing your live challenges")
                         .font(.system(size: 13, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Color(hex: 0xEAF9C5))
+                        .foregroundStyle(theme.colors.text.secondary)
                         .lineLimit(1)
                 }
 
@@ -357,7 +357,7 @@ private struct RoyaleEventBanner: View {
                         Text("\(bounty?.rewardGlory ?? 0)")
                             .font(.system(size: 18, weight: .black, design: .rounded))
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(theme.colors.text.primary)
 
                     Text(rank.map { "#\($0)" } ?? "LIVE")
                         .font(.system(size: 12, weight: .black, design: .rounded))
@@ -373,9 +373,9 @@ private struct RoyaleEventBanner: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color(hex: 0x78D85C),
-                                Color(hex: 0x2FAD89),
-                                Color(hex: 0x2C8CD7)
+                                Color(hex: 0xF8F6F2),
+                                theme.colors.surface.elevated,
+                                Color(hex: 0xDDEEE9)
                             ],
                             startPoint: .leading,
                             endPoint: .trailing
@@ -384,15 +384,15 @@ private struct RoyaleEventBanner: View {
             )
             .overlay(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 9, style: .continuous)
-                    .fill(Color.black.opacity(0.18))
+                    .fill(Color.white.opacity(0.42))
                     .frame(height: 22)
                     .allowsHitTesting(false)
             }
             .overlay(
                 RoundedRectangle(cornerRadius: 9, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.50), lineWidth: 1.4)
+                    .strokeBorder(Color.black.opacity(0.07), lineWidth: 1.2)
             )
-            .shadow(color: Color.black.opacity(0.32), radius: 12, x: 0, y: 7)
+            .shadow(color: Color.black.opacity(0.08), radius: 16, x: 0, y: 8)
         }
         .buttonStyle(RoyalePressStyle())
         .accessibilityLabel(bounty?.title ?? "Arena quests")
@@ -455,7 +455,7 @@ private struct SideRail: View {
                         .font(.system(size: 25, weight: .black))
                         .foregroundStyle(
                             LinearGradient(
-                                colors: [theme.colors.brand.crown, theme.colors.brand.seafoam],
+                                colors: [theme.colors.text.primary, theme.colors.brand.tideTeal],
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
@@ -465,7 +465,7 @@ private struct SideRail: View {
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
                                 .fill(
                                     LinearGradient(
-                                        colors: [Color(hex: 0x31475E), Color(hex: 0x172433)],
+                                        colors: [Color.white, theme.colors.surface.elevatedAlt],
                                         startPoint: .top,
                                         endPoint: .bottom
                                     )
@@ -473,9 +473,9 @@ private struct SideRail: View {
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .strokeBorder(Color.white.opacity(0.28), lineWidth: 1.2)
+                                .strokeBorder(Color.black.opacity(0.08), lineWidth: 1.2)
                         )
-                        .shadow(color: Color.black.opacity(0.38), radius: 10, x: 0, y: 6)
+                        .shadow(color: Color.black.opacity(0.08), radius: 12, x: 0, y: 6)
                 }
                 .buttonStyle(RoyalePressStyle())
                 .accessibilityLabel(item.label)
@@ -512,7 +512,7 @@ private struct RoyaleArena3D: View {
                 }
 
                 Ellipse()
-                    .fill(Color.black.opacity(0.46))
+                    .fill(Color.black.opacity(0.16))
                     .frame(width: 250, height: 52)
                     .blur(radius: 10)
                     .offset(y: 118)
@@ -547,7 +547,7 @@ private struct RoyaleArena3D: View {
                 }
                 .rotation3DEffect(.degrees(11 + sway * 0.25), axis: (x: 1, y: 0, z: 0), perspective: 0.7)
                 .rotation3DEffect(.degrees(sway), axis: (x: 0, y: 1, z: 0), perspective: 0.7)
-                .shadow(color: Color.black.opacity(0.38), radius: 22, x: 0, y: 16)
+                .shadow(color: Color.black.opacity(0.16), radius: 24, x: 0, y: 18)
             }
         }
     }
@@ -567,14 +567,14 @@ private struct FloatingStone: View {
         RoundedRectangle(cornerRadius: 4, style: .continuous)
             .fill(
                 LinearGradient(
-                    colors: [Color(hex: 0x718397), Color(hex: 0x334152)],
+                    colors: [Color(hex: 0xD7D2CB), Color(hex: 0xA9B7B4)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
             .frame(width: size, height: size * 0.78)
             .rotationEffect(.degrees(angle * 40))
-            .shadow(color: Color.black.opacity(0.32), radius: 5, x: 0, y: 3)
+            .shadow(color: Color.black.opacity(0.14), radius: 6, x: 0, y: 3)
             .offset(x: x, y: y + 4)
             .opacity(0.72)
     }
@@ -586,7 +586,7 @@ private struct ArenaBase: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Color.black.opacity(0.55))
+                .fill(Color.black.opacity(0.14))
                 .frame(width: 250, height: 132)
                 .offset(y: 22)
 
@@ -594,8 +594,8 @@ private struct ArenaBase: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(hex: 0x39495D),
-                            Color(hex: 0x182633)
+                            Color(hex: 0xD8D1C9),
+                            Color(hex: 0xA5B5B2)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -604,8 +604,8 @@ private struct ArenaBase: View {
                 .frame(width: 248, height: 154)
 
             HStack(spacing: 0) {
-                Color(hex: 0x2B8FF7)
-                Color(hex: 0xD84C5E)
+                Color(hex: 0x9BC9C4)
+                Color(hex: 0xD77C72)
             }
             .frame(width: 196, height: 86)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -619,7 +619,7 @@ private struct ArenaBase: View {
                     RoundedRectangle(cornerRadius: 7, style: .continuous)
                         .fill(
                             LinearGradient(
-                                colors: [theme.colors.brand.brassGold, Color(hex: 0x8E6226)],
+                                colors: [theme.colors.brand.brassGold, Color(hex: 0x805A28)],
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
@@ -631,8 +631,8 @@ private struct ArenaBase: View {
             .offset(y: 18)
 
             HStack(spacing: 68) {
-                BannerPole(color: Color(hex: 0x2B8FF7))
-                BannerPole(color: Color(hex: 0xD84C5E))
+                BannerPole(color: Color(hex: 0x6F9D9A))
+                BannerPole(color: Color(hex: 0xD35F4B))
             }
             .offset(y: -36)
         }
@@ -683,8 +683,8 @@ private struct BattleTower: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 13, style: .continuous)
                     .fill(
-                        LinearGradient(
-                            colors: [Color(hex: 0x6A7582), Color(hex: 0x2E3946)],
+                LinearGradient(
+                    colors: [Color(hex: 0xE1DDD7), Color(hex: 0x9AA9A6)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -694,7 +694,7 @@ private struct BattleTower: View {
                         HStack(spacing: 5) {
                             ForEach(0..<3, id: \.self) { _ in
                                 Rectangle()
-                                    .fill(Color(hex: 0xAEB9C4))
+                                    .fill(Color(hex: 0xF7F4EF))
                                     .frame(width: 11, height: 10)
                             }
                         }
@@ -721,7 +721,7 @@ private struct BattleTower: View {
 
             Text(title)
                 .font(.system(size: 10, weight: .black, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(theme.colors.text.primary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.65)
                 .frame(width: 78)
@@ -748,14 +748,14 @@ private struct CentralCrest: View {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(
                     LinearGradient(
-                        colors: [Color(hex: 0xF7F9FF), Color(hex: 0x9FAABC), Color(hex: 0x1E2835)],
+                        colors: [Color(hex: 0xFFFFFF), Color(hex: 0xD8D3CC), Color(hex: 0x8FA4A1)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
                 .frame(width: 116, height: 116)
                 .rotationEffect(.degrees(45))
-                .shadow(color: Color.black.opacity(0.40), radius: 18, x: 0, y: 12)
+                .shadow(color: Color.black.opacity(0.18), radius: 18, x: 0, y: 12)
 
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .strokeBorder(Color.white.opacity(0.62), lineWidth: 3)
@@ -765,7 +765,7 @@ private struct CentralCrest: View {
             CrossedRods()
                 .stroke(
                     LinearGradient(
-                        colors: [Color.white, theme.colors.brand.crown],
+                            colors: [theme.colors.text.primary, theme.colors.brand.brassGold],
                         startPoint: .top,
                         endPoint: .bottom
                     ),
@@ -832,16 +832,16 @@ private struct RoyaleBattleActions: View {
                 title: "Battle",
                 subtitle: "Log catch",
                 icon: "scope",
-                colors: [Color(hex: 0xFFD857), Color(hex: 0xFF981F)],
-                foreground: Color(hex: 0x3B2100),
+                colors: [Color(hex: 0x202020), Color(hex: 0x050505)],
+                foreground: Color.white,
                 action: onBattle
             )
             RoyaleActionButton(
                 title: "2v2",
                 subtitle: "Community",
                 icon: "person.2.fill",
-                colors: [Color(hex: 0x70D5FF), Color(hex: 0x2D91FF)],
-                foreground: .white,
+                colors: [Color(hex: 0xFFFFFF), Color(hex: 0xE8E3DF)],
+                foreground: theme.colors.text.primary,
                 action: onDuo
             )
         }
@@ -884,16 +884,16 @@ private struct RoyaleActionButton: View {
             )
             .overlay(alignment: .top) {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.white.opacity(0.24))
+                    .fill(Color.white.opacity(0.18))
                     .frame(height: 22)
                     .padding(.horizontal, 4)
                     .padding(.top, 4)
             }
             .overlay(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.45), lineWidth: 1.5)
+                    .strokeBorder(Color.black.opacity(0.08), lineWidth: 1.2)
             )
-            .shadow(color: colors.last?.opacity(0.42) ?? .clear, radius: 16, x: 0, y: 8)
+            .shadow(color: Color.black.opacity(0.10), radius: 18, x: 0, y: 9)
         }
         .buttonStyle(RoyalePressStyle())
     }
@@ -920,7 +920,7 @@ private struct RoyaleChestRow: View {
                     subtitle: bounty.map { "+\($0.rewardDoubloons) coins" } ?? "Syncing",
                     footer: bounty.map { shortCountdown(until: $0.endsAt) } ?? "Today",
                     icon: "gift.fill",
-                    colors: [Color(hex: 0x55EE9C), Color(hex: 0x1D9B72)],
+                    colors: [Color(hex: 0xCFE9DF), Color(hex: 0x6F9D9A)],
                     action: onOpenBounty
                 )
 
@@ -929,7 +929,7 @@ private struct RoyaleChestRow: View {
                     subtitle: ruledSpots.first?.name ?? "Claim a spot",
                     footer: ruledSpots.first?.bestCatchDisplay ?? "Find waters",
                     icon: "crown.fill",
-                    colors: [Color(hex: 0xAEE7FF), Color(hex: 0x3D8DFF)],
+                    colors: [Color(hex: 0xF4E2BA), Color(hex: 0xB78D4D)],
                     action: onOpenSpots
                 )
 
@@ -938,7 +938,7 @@ private struct RoyaleChestRow: View {
                     subtitle: activeSeason.map { "Season \($0.seasonNumber)" } ?? "Live ladder",
                     footer: activeSeason.map { shortCountdown(until: $0.endDate) } ?? "Ranking",
                     icon: "shield.fill",
-                    colors: [Color(hex: 0xB47EFF), Color(hex: 0x435BFF)],
+                    colors: [Color(hex: 0xD7D2F0), Color(hex: 0x8E7BC7)],
                     action: onOpenSeason
                 )
 
@@ -947,7 +947,7 @@ private struct RoyaleChestRow: View {
                     subtitle: "\(currentUser?.lureCoins ?? 0) coins",
                     footer: currentUser?.rankTier.rawValue ?? "Captain",
                     icon: "shippingbox.fill",
-                    colors: [Color(hex: 0xFFD45E), Color(hex: 0xD17822)],
+                    colors: [Color(hex: 0xF5C86D), Color(hex: 0xB78D4D)],
                     action: onOpenShop
                 )
             }
@@ -971,14 +971,14 @@ private struct ChestSlotCard: View {
             VStack(spacing: 6) {
                 Text(footer)
                     .font(.system(size: 12, weight: .black, design: .rounded))
-                    .foregroundStyle(Color(hex: 0x17324A))
+                    .foregroundStyle(theme.colors.text.primary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 5)
                     .background(
                         Capsule()
-                            .fill(Color(hex: 0xDFFFEF).opacity(0.92))
+                            .fill(theme.colors.surface.elevatedAlt.opacity(0.82))
                     )
 
                 ZStack {
@@ -987,24 +987,24 @@ private struct ChestSlotCard: View {
                         .frame(width: 82, height: 70)
                         .shadow(color: colors.last?.opacity(0.42) ?? .clear, radius: 10, x: 0, y: 6)
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Color.black.opacity(0.20))
+                        .fill(Color.black.opacity(0.12))
                         .frame(width: 58, height: 12)
                         .offset(y: 14)
                     Image(systemName: icon)
                         .font(.system(size: 34, weight: .black))
                         .foregroundStyle(.white)
-                        .shadow(color: Color.black.opacity(0.24), radius: 5, x: 0, y: 3)
+                        .shadow(color: Color.black.opacity(0.12), radius: 5, x: 0, y: 3)
                 }
 
                 VStack(spacing: 0) {
                     Text(title)
                         .font(.system(size: 16, weight: .black, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(theme.colors.text.primary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.68)
                     Text(subtitle)
                         .font(.system(size: 11, weight: .heavy, design: .rounded))
-                        .foregroundStyle(theme.colors.brand.parchment)
+                        .foregroundStyle(theme.colors.text.secondary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.68)
                 }
@@ -1015,7 +1015,7 @@ private struct ChestSlotCard: View {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color(hex: 0x23557F), Color(hex: 0x152B45)],
+                            colors: [theme.colors.surface.elevated, Color(hex: 0xF1ECE6)],
                             startPoint: .top,
                             endPoint: .bottom
                         )
@@ -1023,9 +1023,9 @@ private struct ChestSlotCard: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.26), lineWidth: 1.2)
+                    .strokeBorder(Color.black.opacity(0.07), lineWidth: 1.2)
             )
-            .shadow(color: Color.black.opacity(0.32), radius: 10, x: 0, y: 6)
+            .shadow(color: Color.black.opacity(0.09), radius: 14, x: 0, y: 8)
         }
         .buttonStyle(RoyalePressStyle())
     }
@@ -1042,7 +1042,7 @@ private struct RoyaleDethroneFeed: View {
             HStack {
                 Text("Live Dethrones")
                     .font(.system(size: 18, weight: .black, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(theme.colors.text.primary)
                 Spacer()
                 Image(systemName: "bolt.fill")
                     .foregroundStyle(theme.colors.brand.crown)
@@ -1061,11 +1061,11 @@ private struct RoyaleDethroneFeed: View {
                 .padding(theme.spacing.s)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color(hex: 0x10283E).opacity(0.82))
+                        .fill(theme.colors.surface.elevated)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.14), lineWidth: 1)
+                        .strokeBorder(Color.black.opacity(0.07), lineWidth: 1)
                 )
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -1079,7 +1079,7 @@ private struct RoyaleDethroneFeed: View {
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(event.newKingName)
                                             .font(.system(size: 13, weight: .black, design: .rounded))
-                                            .foregroundStyle(.white)
+                                            .foregroundStyle(theme.colors.text.primary)
                                             .lineLimit(1)
                                         Text("\(event.spotName) - \(event.elapsedShort)")
                                             .font(.system(size: 11, weight: .heavy, design: .rounded))
@@ -1091,7 +1091,7 @@ private struct RoyaleDethroneFeed: View {
                                 .padding(.vertical, theme.spacing.xs)
                                 .background(
                                     RoundedRectangle(cornerRadius: 9, style: .continuous)
-                                        .fill(Color(hex: 0x10283E).opacity(0.92))
+                                        .fill(theme.colors.surface.elevated)
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 9, style: .continuous)

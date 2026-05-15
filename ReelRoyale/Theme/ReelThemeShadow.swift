@@ -14,9 +14,9 @@ struct ReelThemeShadow {
     }
 
     static let `default` = ReelThemeShadow(
-        card:     Shadow(color: Color.black.opacity(0.30), radius: 16, x: 0, y: 4),
-        heroCard: Shadow(color: Color.black.opacity(0.45), radius: 24, x: 0, y: 8),
-        modal:    Shadow(color: Color.black.opacity(0.60), radius: 32, x: 0, y: 12)
+        card:     Shadow(color: Color.black.opacity(0.09), radius: 18, x: 0, y: 8),
+        heroCard: Shadow(color: Color.black.opacity(0.14), radius: 28, x: 0, y: 14),
+        modal:    Shadow(color: Color.black.opacity(0.18), radius: 34, x: 0, y: 18)
     )
 }
 

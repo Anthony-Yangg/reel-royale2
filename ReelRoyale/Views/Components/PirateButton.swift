@@ -47,5 +47,5 @@ struct PressFeedbackStyle: ButtonStyle {
     .background(ReelTheme.default.colors.surface.canvas)
     .environment(\.reelTheme, .default)
     .environmentObject(AppState.shared)
-    .preferredColorScheme(.dark)
+    .preferredColorScheme(.light)
 }

@@ -14,7 +14,7 @@ struct ReelRoyaleApp: App {
             ContentView()
                 .environmentObject(appState)
                 .environment(\.reelTheme, .default)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(.light)
         }
     }
 
@@ -30,7 +30,7 @@ struct ReelRoyaleApp: App {
         UINavigationBar.appearance().standardAppearance = navAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
         UINavigationBar.appearance().compactAppearance = navAppearance
-        UINavigationBar.appearance().tintColor = UIColor(theme.colors.brand.seafoam)
+        UINavigationBar.appearance().tintColor = UIColor(theme.colors.brand.deepSea)
 
         // Tab bar — system tab bar retained for fallback; the custom shell hides it where applied
         let tabAppearance = UITabBarAppearance()
@@ -38,7 +38,7 @@ struct ReelRoyaleApp: App {
         tabAppearance.backgroundColor = UIColor(theme.colors.surface.canvas)
         UITabBar.appearance().standardAppearance = tabAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabAppearance
-        UITabBar.appearance().tintColor = UIColor(theme.colors.brand.seafoam)
+        UITabBar.appearance().tintColor = UIColor(theme.colors.brand.deepSea)
         UITabBar.appearance().unselectedItemTintColor = UIColor(theme.colors.text.secondary)
     }
 }

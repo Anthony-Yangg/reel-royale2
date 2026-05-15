@@ -173,6 +173,8 @@ final class GameService: GameServiceProtocol {
             $0.species.lowercased() == input.species.lowercased()
         }
 
+        let persistedSpeciesId = persistedUUID(species?.id ?? input.speciesId)
+
         // Build the catch row. xp_awarded / coins_awarded set by the trigger.
         let now = Date()
         let row = FishCatch(
@@ -180,7 +182,7 @@ final class GameService: GameServiceProtocol {
             spotId: input.spotId,
             photoURL: photoURL,
             species: input.species,
-            speciesId: species?.id ?? input.speciesId,
+            speciesId: persistedSpeciesId,
             sizeValue: input.sizeValue,
             sizeUnit: input.sizeUnit,
             visibility: input.visibility,
@@ -550,5 +552,10 @@ final class GameService: GameServiceProtocol {
     private func catchesInLast(days: Int, in catches: [FishCatch]) -> Int {
         let cutoff = Date().addingTimeInterval(-Double(days) * 86400)
         return catches.filter { $0.createdAt >= cutoff }.count
+    }
+
+    private func persistedUUID(_ value: String?) -> String? {
+        guard let value, UUID(uuidString: value) != nil else { return nil }
+        return value
     }
 }

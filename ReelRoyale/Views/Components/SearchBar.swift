@@ -35,7 +35,7 @@ struct PirateSearchBar: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: theme.radius.button, style: .continuous)
-                .strokeBorder(isFocused ? theme.colors.brand.brassGold.opacity(0.7) : theme.colors.brand.brassGold.opacity(0.18), lineWidth: 1)
+                .strokeBorder(isFocused ? theme.colors.text.primary.opacity(0.35) : Color.black.opacity(0.06), lineWidth: 1)
         )
     }
 }
@@ -61,16 +61,16 @@ struct FilterChip: View {
                     .lineLimit(1)
                     .fixedSize(horizontal: true, vertical: false)
             }
-            .foregroundStyle(isSelected ? theme.colors.text.onLight : theme.colors.text.primary)
+            .foregroundStyle(isSelected ? Color.white : theme.colors.text.primary)
             .padding(.horizontal, theme.spacing.s)
             .padding(.vertical, 7)
             .background(
                 Capsule(style: .continuous)
-                    .fill(isSelected ? theme.colors.brand.brassGold : theme.colors.surface.elevatedAlt)
+                    .fill(isSelected ? theme.colors.text.primary : theme.colors.surface.elevated)
             )
             .overlay(
                 Capsule(style: .continuous)
-                    .strokeBorder(theme.colors.brand.brassGold.opacity(isSelected ? 0 : 0.3), lineWidth: 1)
+                    .strokeBorder(Color.black.opacity(isSelected ? 0 : 0.07), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)

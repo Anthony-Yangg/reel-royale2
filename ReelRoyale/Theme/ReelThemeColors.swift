@@ -10,7 +10,7 @@ struct ReelThemeColors {
     let tier: TierColors
 
     struct Surface {
-        let canvas: Color          // primary background (near-black navy)
+        let canvas: Color          // primary background
         let elevated: Color        // cards, sheets
         let elevatedAlt: Color     // nested cards, headers
         let parchment: Color       // light/inverse surfaces — map land, onboarding
@@ -54,42 +54,42 @@ struct ReelThemeColors {
 
     static let `default` = ReelThemeColors(
         surface: Surface(
-            canvas:       Color(hex: 0x0A1822),
-            elevated:     Color(hex: 0x14222F),
-            elevatedAlt:  Color(hex: 0x1B2D3D),
-            parchment:    Color(hex: 0xF4E8D0),
-            scrim:        Color.black.opacity(0.55)
+            canvas:       Color(hex: 0xF2F0ED),
+            elevated:     Color(hex: 0xFBFAF8),
+            elevatedAlt:  Color(hex: 0xE8E3DF),
+            parchment:    Color(hex: 0xF7F2EA),
+            scrim:        Color.black.opacity(0.26)
         ),
         brand: Brand(
-            deepSea:    Color(hex: 0x0E2C44),
-            tideTeal:   Color(hex: 0x1F6F7A),
-            seafoam:    Color(hex: 0x3FB8AE),
-            brassGold:  Color(hex: 0xC9A24B),
-            crown:      Color(hex: 0xF2C95C),
-            coralRed:   Color(hex: 0xD8553C),
-            walnut:     Color(hex: 0x4A2E1D),
-            parchment:  Color(hex: 0xE8D9B0)
+            deepSea:    Color(hex: 0x111111),
+            tideTeal:   Color(hex: 0x6F9D9A),
+            seafoam:    Color(hex: 0xBFD9D2),
+            brassGold:  Color(hex: 0xB78D4D),
+            crown:      Color(hex: 0xD3A44E),
+            coralRed:   Color(hex: 0xD35F4B),
+            walnut:     Color(hex: 0x282421),
+            parchment:  Color(hex: 0xEEE5DA)
         ),
         text: TextColors(
-            primary:   Color(hex: 0xF0E6D2),
-            secondary: Color(hex: 0xA99E83),
-            muted:     Color(hex: 0x6E6353),
-            onLight:   Color(hex: 0x1B2D3D),
-            accent:    Color(hex: 0xF2C95C)
+            primary:   Color(hex: 0x171717),
+            secondary: Color(hex: 0x625D58),
+            muted:     Color(hex: 0x9C948C),
+            onLight:   Color(hex: 0xFFFFFF),
+            accent:    Color(hex: 0x111111)
         ),
         state: StateColors(
-            success: Color(hex: 0x4FC28A),
-            danger:  Color(hex: 0xD8553C),
-            warning: Color(hex: 0xE5A547)
+            success: Color(hex: 0x4E9D79),
+            danger:  Color(hex: 0xD35F4B),
+            warning: Color(hex: 0xC79545)
         ),
         tier: TierColors(
-            deckhand:   Color(hex: 0x8B7355),
-            sailor:     Color(hex: 0xB0925E),
-            firstMate:  Color(hex: 0xC9A24B),
-            captain:    Color(hex: 0xE5C04A),
-            commodore:  Color(hex: 0x6FA8E8),
-            admiral:    Color(hex: 0xB47EFF),
-            pirateLord: Color(hex: 0xF2C95C)
+            deckhand:   Color(hex: 0xA98761),
+            sailor:     Color(hex: 0x8FA9A4),
+            firstMate:  Color(hex: 0xB78D4D),
+            captain:    Color(hex: 0xD3A44E),
+            commodore:  Color(hex: 0x6C9FB8),
+            admiral:    Color(hex: 0x8E7BC7),
+            pirateLord: Color(hex: 0x111111)
         )
     )
 }
